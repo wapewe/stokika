@@ -129,12 +129,27 @@ function handleMobileCardClick(e) {
         const registerBtn = card.querySelector('.register-btn');
         
         // If clicking the register button, don't toggle expansion
-        if (e.target === registerBtn) {
+        if (e.target === registerBtn || e.target.closest('.register-btn')) {
             return;
         }
         
         e.preventDefault();
+        
+        // Remove expanded class from other card
+        const allCards = document.querySelectorAll('.btn-modal');
+        allCards.forEach(c => {
+            if (c !== card) {
+                c.classList.remove('expanded');
+            }
+        });
+        
+        // Toggle expanded state
         card.classList.toggle('expanded');
+        
+        // Provide haptic feedback on mobile (if supported)
+        if ('vibrate' in navigator && card.classList.contains('expanded')) {
+            navigator.vibrate(10);
+        }
     }
 }
 
@@ -143,8 +158,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const vendorCard = document.getElementById('joinVendor');
     const supplierCard = document.getElementById('joinSupplier');
     
-    vendorCard?.addEventListener('click', handleMobileCardClick);
-    supplierCard?.addEventListener('click', handleMobileCardClick);
+    if (vendorCard) {
+        vendorCard.addEventListener('click', handleMobileCardClick);
+        // Also add touch event for better mobile response
+        vendorCard.addEventListener('touchstart', (e) => {
+            if (window.innerWidth <= 1024 && !e.target.closest('.register-btn')) {
+                vendorCard.style.transform = 'scale(0.98)';
+            }
+        }, { passive: true });
+        vendorCard.addEventListener('touchend', () => {
+            if (window.innerWidth <= 1024) {
+                vendorCard.style.transform = '';
+            }
+        }, { passive: true });
+    }
+    
+    if (supplierCard) {
+        supplierCard.addEventListener('click', handleMobileCardClick);
+        // Also add touch event for better mobile response
+        supplierCard.addEventListener('touchstart', (e) => {
+            if (window.innerWidth <= 1024 && !e.target.closest('.register-btn')) {
+                supplierCard.style.transform = 'scale(0.98)';
+            }
+        }, { passive: true });
+        supplierCard.addEventListener('touchend', () => {
+            if (window.innerWidth <= 1024) {
+                supplierCard.style.transform = '';
+            }
+        }, { passive: true });
+    }
 });
 
 // Handle vendor card click (entire card)
