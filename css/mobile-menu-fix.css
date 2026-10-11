@@ -4,19 +4,23 @@
    ===================================================== */
 
 @media (max-width: 768px) {
-    /* Ensure mobile menu has proper z-index */
+    /* CRITICAL: Mobile menu needs higher z-index than toast notifications */
     .header-nav {
-        z-index: 9998;
+        z-index: 100000;
+        pointer-events: none;
     }
     
     .header-nav.active {
-        z-index: 9998;
+        z-index: 100000;
+        pointer-events: auto;
     }
     
     /* Ensure mobile toggle button is always on top */
     .mobile-menu-toggle {
-        z-index: 9999;
+        z-index: 100001;
         position: fixed;
+        pointer-events: auto;
+        touch-action: manipulation;
     }
     
     /* Ensure all menu items are clickable */
@@ -25,7 +29,14 @@
         display: block;
         position: relative;
         cursor: pointer;
+        pointer-events: auto;
+        touch-action: manipulation;
         -webkit-tap-highlight-color: rgba(16, 185, 129, 0.1);
+        user-select: none;
+        -webkit-user-select: none;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
     }
     
     /* Visual feedback on tap */
@@ -33,5 +44,12 @@
     .header-nav .btn-get-started:active {
         opacity: 0.7;
         background: rgba(16, 185, 129, 0.15);
+        transform: scale(0.98);
+    }
+    
+    /* Prevent any overlays from blocking clicks */
+    .header-nav::before,
+    .header-nav::after {
+        pointer-events: none !important;
     }
 }
