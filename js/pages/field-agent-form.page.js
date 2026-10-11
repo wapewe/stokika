@@ -312,10 +312,11 @@ function setupConditionalFields() {
 async function handleFormSubmit(e) {
     e.preventDefault();
     
-    const formData = new FormData(e.target);
+    const form = e.target;
+    const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
     
-    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const submitBtn = form.querySelector('button[type="submit"]');
     const originalBtnText = submitBtn.textContent;
 
     // ============================================================
@@ -386,8 +387,67 @@ async function handleFormSubmit(e) {
         const applicationCode = codeData;
         
         // ============================================================
-        // STEP 4: Insert Application Record
+        // STEP 4: Upload Documents to Supabase Storage
         // ============================================================
+        
+        submitBtn.textContent = 'Uploading documents...';
+        
+        const fileFields = [
+            { name: 'idFront', required: true },
+            { name: 'idBack', required: true },
+            { name: 'cv', required: true },
+            { name: 'chiefLetter', required: true },
+            { name: 'passportPhoto', required: true },
+            { name: 'goodConduct', required: false }
+        ];
+        
+        const uploadedFiles = {};
+        
+        for (const field of fileFields) {
+            const fileInput = form.querySelector(`input[name="${field.name}"]`);
+            const file = fileInput?.files[0];
+            
+            if (!file) {
+                if (field.required) {
+                    throw new Error(`${field.name} is required but no file was selected`);
+                }
+                uploadedFiles[field.name] = null;
+                continue;
+            }
+            
+            // Generate unique filename
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${applicationCode}_${field.name}_${Date.now()}.${fileExt}`;
+            const filePath = `field-agents/${applicationCode}/${fileName}`;
+            
+            // Upload to Supabase Storage
+            const { data: uploadData, error: uploadError } = await supabase
+                .storage
+                .from('application-documents')
+                .upload(filePath, file, {
+                    cacheControl: '3600',
+                    upsert: false
+                });
+            
+            if (uploadError) {
+                console.error(`Error uploading ${field.name}:`, uploadError);
+                throw new Error(`Failed to upload ${field.name}: ${uploadError.message}`);
+            }
+            
+            // Get public URL
+            const { data: urlData } = supabase
+                .storage
+                .from('application-documents')
+                .getPublicUrl(filePath);
+            
+            uploadedFiles[field.name] = urlData.publicUrl;
+        }
+        
+        // ============================================================
+        // STEP 5: Insert Application Record with Document URLs
+        // ============================================================
+        
+        submitBtn.textContent = 'Saving application...';
         
         // Split full name into first and last name
         const nameParts = data.fullName.trim().split(' ');
@@ -447,6 +507,13 @@ async function handleFormSubmit(e) {
                 code_of_conduct_explanation: data.conductNoExplanation || null,
                 training_willingness: data.agreesToTraining,
                 kra_pin: data.kraPin,
+                // Document URLs
+                id_front_url: uploadedFiles.idFront,
+                id_back_url: uploadedFiles.idBack,
+                cv_url: uploadedFiles.cv,
+                chief_letter_url: uploadedFiles.chiefLetter,
+                passport_photo_url: uploadedFiles.passportPhoto,
+                good_conduct_url: uploadedFiles.goodConduct,
                 agreement: data.agreement ? 'agreed' : 'not_agreed',
                 status: 'pending',
                 application_date: new Date().toISOString(),
@@ -459,7 +526,7 @@ async function handleFormSubmit(e) {
         }
 
         // ============================================================
-        // STEP 5: Redirect to Success Page
+        // STEP 6: Redirect to Success Page
         // ============================================================
         
         // Show success message briefly
@@ -467,7 +534,7 @@ async function handleFormSubmit(e) {
         submitBtn.style.background = '#00A651';
         
         // Clear form on successful submission
-        e.target.reset();
+        form.reset();
         clearIdError();
         
         // Redirect after short delay
@@ -482,6 +549,7 @@ async function handleFormSubmit(e) {
         submitBtn.disabled = false;
         submitBtn.textContent = originalBtnText;
         submitBtn.style.opacity = '1';
+        submitBtn.style.background = '';
         
         const errorMessage = error?.message || '';
 
@@ -493,6 +561,8 @@ async function handleFormSubmit(e) {
             alert('Unable to generate unique code. Please try again.');
         } else if (errorMessage.includes('Failed to initialize Supabase')) {
             alert('Unable to connect to database service. Please check your network and try again.');
+        } else if (errorMessage.includes('Failed to upload')) {
+            alert(`File upload error: ${errorMessage}. Please check your files and try again.`);
         } else if (errorMessage.includes('Network') || errorMessage.includes('network') || errorMessage.includes('Failed to fetch')) {
             alert('Network error. Please check your connection and try again.');
         } else if (errorMessage.includes('Failed to generate application code')) {
