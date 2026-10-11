@@ -4435,6 +4435,9 @@ section {
         color: white;
         cursor: pointer;
         z-index: 10;
+        /* CRITICAL: Hide this - we use .mobile-menu-toggle button instead */
+        display: none !important;
+        pointer-events: none !important;
     }
     
     .header.scrolled .header-content::after {

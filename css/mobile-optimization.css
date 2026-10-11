@@ -66,9 +66,11 @@
         background: #10b981;
     }
     
-    /* Hide header content after in mobile menu styles */
+    /* CRITICAL: Hide duplicate CSS menu icon that blocks clicks */
     .header-content::after {
         display: none !important;
+        pointer-events: none !important;
+        visibility: hidden !important;
     }
     
     /* Mobile Menu Overlay */
