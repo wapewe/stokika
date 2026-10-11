@@ -314,6 +314,9 @@ async function handleFormSubmit(e) {
     
     const formData = new FormData(e.target);
     const data = Object.fromEntries(formData.entries());
+    
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.textContent;
 
     // ============================================================
     // STEP 1: Client-Side Validation
@@ -335,6 +338,11 @@ async function handleFormSubmit(e) {
         alert('You must be at least 18 years old to apply.');
         return;
     }
+
+    // Show loading state
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+    submitBtn.style.opacity = '0.6';
 
     try {
         // ============================================================
@@ -454,14 +462,26 @@ async function handleFormSubmit(e) {
         // STEP 5: Redirect to Success Page
         // ============================================================
         
-        // Clear form and errors on successful submission
+        // Show success message briefly
+        submitBtn.textContent = '✓ Success! Redirecting...';
+        submitBtn.style.background = '#00A651';
+        
+        // Clear form on successful submission
         e.target.reset();
         clearIdError();
         
-        window.location.href = `registration-success.html?code=${applicationCode}`;
+        // Redirect after short delay
+        setTimeout(() => {
+            window.location.href = `registration-success.html?code=${encodeURIComponent(applicationCode)}`;
+        }, 500);
         
     } catch (error) {
         console.error('Error submitting application:', error);
+        
+        // Restore button state
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalBtnText;
+        submitBtn.style.opacity = '1';
         
         const errorMessage = error?.message || '';
 
