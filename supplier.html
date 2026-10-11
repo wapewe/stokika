@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' https://cdn.jsdelivr.net; 
+                   style-src 'self' https://fonts.googleapis.com; 
+                   font-src 'self' https://fonts.gstatic.com; 
+                   connect-src 'self' https://*.supabase.co; 
+                   img-src 'self' data: https:; base-uri 'self'; 
+                   form-action 'self';">
+    <title>Supplier Dashboard - Stokika</title>
+    <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" 
+          rel="stylesheet"
+          integrity="sha384-zM7qmLDXsv7G43sbK2VNrYGye2a5RuU56GHc3OZBpSLeQ4MVC+kkxdOzkOEjKo48"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="css/supplier-dashboard.css">
+</head>
+<body data-protected data-allowed-roles="supplier">
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <a href="https://www.stokika.com" target="_blank" rel="noopener noreferrer">
+                    <img src="assets/logos/logo.png.png" alt="Stokika" class="logo-img">
+                </a>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="overview">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                    <span>Overview</span>
+                </a>
+                <a href="#" class="nav-item" data-page="orders">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    <span>Orders</span>
+                </a>
+                <a href="#" class="nav-item" data-page="products">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                    <span>Products</span>
+                </a>
+                <a href="#" class="nav-item" data-page="payments">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    <span>Payments</span>
+                </a>
+                <a href="#" class="nav-item" data-page="profile">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6m5.2-13.2l-4.2 4.2m0 6l4.2 4.2M23 12h-6m-6 0H5m13.2 5.2l-4.2-4.2m0-6l4.2-4.2"/></svg>
+                    <span>Profile</span>
+                </a>
+                <a href="#" class="nav-item" data-settings>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6m5.2-13.2l-4.2 4.2m0 6l4.2 4.2M23 12h-6m-6 0H5m13.2 5.2l-4.2-4.2m0-6l4.2-4.2"/></svg>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn-logout" id="logoutBtn">Logout</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="dashboard-header">
+                <h1 id="pageTitle">Supplier Dashboard</h1>
+                <div class="header-right">
+                    <span class="supplier-name" id="supplierName">Supplier</span>
+                </div>
+            </header>
+
+            <!-- Overview Page -->
+            <div id="overview-page" class="page-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon green">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-label">Total Orders</div>
+                            <div class="stat-value" id="totalOrders">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-label">Products Listed</div>
+                            <div class="stat-value" id="totalProducts">0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon yellow">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-label">Total Revenue</div>
+                            <div class="stat-value" id="totalRevenue">KES 0</div>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon purple">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-label">Pending Orders</div>
+                            <div class="stat-value" id="pendingOrders">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2>Recent Orders</h2>
+                    <div id="recentOrdersList" class="loading">Loading...</div>
+                </div>
+            </div>
+
+            <!-- Orders Page -->
+            <div id="orders-page" class="page-content">
+                <div class="card">
+                    <h2>All Orders</h2>
+                    <div id="allOrdersList" class="loading">Loading...</div>
+                </div>
+            </div>
+
+            <!-- Products Page -->
+            <div id="products-page" class="page-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>My Products</h2>
+                        <button class="btn-primary" data-add-product>Add Product</button>
+                    </div>
+                    <div id="productsList" class="loading">Loading...</div>
+                </div>
+            </div>
+
+            <!-- Payments Page -->
+            <div id="payments-page" class="page-content">
+                <div class="card">
+                    <h2>Payment History</h2>
+                    <div id="paymentsList" class="loading">Loading...</div>
+                </div>
+            </div>
+
+            <!-- Profile Page -->
+            <div id="profile-page" class="page-content">
+                <div class="card">
+                    <h2>Supplier Profile</h2>
+                    <div id="profileContent" class="loading">Loading...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- TypeScript Compiled Output -->
+    <script type="module" src="dist/pages/supplier.page.js"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" 
+          integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" 
+          crossorigin="anonymous" 
+          referrerpolicy="no-referrer" />
+</body>
+</html>

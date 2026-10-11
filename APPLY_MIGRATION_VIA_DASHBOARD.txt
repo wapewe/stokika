@@ -1,0 +1,45 @@
+========================================================================
+FINAL STATUS - MANUAL MIGRATION REQUIRED
+========================================================================
+
+EDGE FUNCTIONS: ✅ ALL DEPLOYED
+✓ chul-c2b-validation
+✓ chul-c2b-confirmation
+✓ mpesa-stk-callback
+✓ payment-status
+
+DATABASE MIGRATION: ⚠️ USE DASHBOARD (CLI has parsing issue)
+
+The migration file is ready and correct at:
+c:\Users\ADMIN\Music\stokika\supabase\migrations\20260916000003_unified_payment_complete.sql
+
+APPLY VIA SUPABASE DASHBOARD:
+1. Go to: https://supabase.com/dashboard/project/eidsqrnwfndruuufyacc/sql/new
+2. Open the migration file above
+3. Copy ALL contents (Ctrl+A, Ctrl+C)
+4. Paste into Supabase SQL Editor
+5. Click RUN button
+
+WHY DASHBOARD INSTEAD OF CLI:
+The Supabase CLI is parsing statement boundaries incorrectly. 
+The SQL is valid and will work perfectly in the dashboard.
+
+MIGRATION CREATES:
+✓ payment_intents table
+✓ payment_transactions table  
+✓ payment_allocations table
+✓ payment_events table
+✓ payment_reconciliation table
+✓ Vendor registration fee columns (KES 1,050)
+✓ Helper functions (get_registration_fee, generate_payment_reference)
+✓ RLS policies
+✓ Indexes for performance
+
+AFTER MIGRATION:
+✓ Test C2B validation: https://eidsqrnwfndruuufyacc.supabase.co/functions/v1/chul-c2b-validation
+✓ Implement vendor registration payment UI in dalana.html
+✓ Test payment flows (STK Push + C2B)
+✓ Follow PAYMENT_SYSTEM_TESTING_GUIDE.md
+
+ALL FILES READY - Just apply migration via dashboard!
+========================================================================

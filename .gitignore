@@ -1,0 +1,121 @@
+# ============================================
+# Environment variables - NEVER COMMIT THESE
+# ============================================
+.env
+.env.local
+.env.production
+.env.development
+.env.test
+*.env
+!.env.example
+!.env.mpesa.example
+!.env.development.example
+!.env.production.example
+
+# ============================================
+# Credentials & Secrets
+# ============================================
+private/
+config.json
+.user.ini
+*.key
+*.pem
+*.cert
+*.p12
+*.pfx
+*.keystore
+
+# Config files with credentials
+config/database.php
+config/secrets.json
+api/config.dev.php
+
+# ============================================
+# Node modules & Dependencies
+# ============================================
+node_modules/
+package-lock.json
+
+# ============================================
+# Build outputs
+# ============================================
+dist/
+build/
+
+# ============================================
+# IDE & Editor files
+# ============================================
+.vscode/
+.idea/
+.amazonq/
+.kiro/
+*.swp
+*.swo
+*~
+
+# ============================================
+# OS files
+# ============================================
+.DS_Store
+Thumbs.db
+Desktop.ini
+ehthumbs.db
+
+# ============================================
+# Logs & Debug files
+# ============================================
+*.log
+*.csv
+error_log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+supabase_logs.csv
+
+# ============================================
+# Backup files
+# ============================================
+backups/
+*.bak
+*.backup
+*.backup_*
+dalana.html.backup-step5-cleanup
+dalana.html.backup_*
+kit-payment.html.backup_*
+
+# ============================================
+# SQL migration files at root (may contain sensitive data)
+# ============================================
+migration_step*.sql
+deploy_and_test_rpc_functions.sql
+test-task-*.sql
+verify-task-*.sql
+schema.sql
+
+# ============================================
+# Deployment & PowerShell scripts
+# ============================================
+*.ps1
+
+# ============================================
+# Security scan reports
+# ============================================
+xss-scan-report.json
+
+# ============================================
+# Temporary files
+# ============================================
+*.tmp
+*.temp
+.cache/
+
+# ============================================
+# Security sensitive
+# ============================================
+.htpasswd
+.htaccess.backup
+
+# ============================================
+# Deno
+# ============================================
+deno.lock

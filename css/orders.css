@@ -1,0 +1,115 @@
+/* Import common styles */
+@import 'common/base.css';
+@import 'common/layout.css';
+@import 'common/components.css';
+
+/* Orders Page specific styles */
+.search-input {
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    width: 300px;
+    font-size: 0.95rem;
+}
+
+.orders-table-container {
+    overflow-x: auto;
+}
+
+.orders-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.orders-table thead tr {
+    border-bottom: 2px solid #e5e7eb;
+    background: #f9fafb;
+}
+
+.orders-table th {
+    padding: 0.75rem;
+    text-align: left;
+}
+
+.orders-table th.text-right {
+    text-align: right;
+}
+
+.orders-table tbody tr {
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.orders-table td {
+    padding: 0.75rem;
+}
+
+.orders-table td.text-right {
+    text-align: right;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+}
+
+.status-delivered {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-processing {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-pending-admin {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-pending-supplier {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.empty-state {
+    text-align: center;
+    color: #6b7280;
+    padding: 2rem;
+}
+
+/* Dark mode */
+body.dark-mode .search-input {
+    background: #374151;
+    border-color: #4b5563;
+    color: #f3f4f6;
+}
+
+body.dark-mode .orders-table thead tr {
+    background: #374151;
+}
+
+body.dark-mode .orders-table th,
+body.dark-mode .orders-table td {
+    color: #f3f4f6;
+}
+
+body.dark-mode .orders-table tbody tr {
+    border-bottom-color: #4b5563;
+}
+
+body.dark-mode .pagination-btn {
+    background: #374151;
+    border-color: #4b5563;
+    color: #f3f4f6;
+}
+
+body.dark-mode .pagination-btn:hover {
+    background: #4b5563;
+}

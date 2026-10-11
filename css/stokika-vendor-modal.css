@@ -1,0 +1,480 @@
+/**
+ * Stokika Vendor Registration Modal - Brand Design
+ * Colors from logo: Green (#00A651, #006837) + Yellow/Gold (#FDB913, #F7931E)
+ * Modern, sleek, professional, and beautiful
+ */
+
+/* ========================================
+   VENDOR REGISTRATION MODAL
+   ======================================== */
+
+/* Override for vendor modal specifically */
+#vendorRegistrationModal.modal-overlay {
+    background: rgba(0, 52, 35, 0.85);
+    backdrop-filter: blur(12px);
+}
+
+#vendorRegistrationModal .modal-content.vendor-registration {
+    background: #ffffff;
+    border-radius: 32px;
+    box-shadow: 
+        0 32px 64px -12px rgba(0, 166, 81, 0.25),
+        0 0 0 1px rgba(0, 104, 55, 0.1);
+    max-width: 920px;
+    max-height: 94vh;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Beautiful gradient border at top */
+#vendorRegistrationModal .modal-content.vendor-registration::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, 
+        #00A651 0%, 
+        #006837 25%, 
+        #FDB913 50%, 
+        #F7931E 75%, 
+        #00A651 100%
+    );
+    animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+    0%, 100% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+}
+
+/* ========================================
+   CLOSE BUTTON - Stokika Style
+   ======================================== */
+#vendorModalClose {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    width: 48px;
+    height: 48px;
+    border: none;
+    background: linear-gradient(135deg, #f8fafb 0%, #e8f0f2 100%);
+    color: #006837;
+    border-radius: 16px;
+    font-size: 1.75rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 100;
+    font-weight: 300;
+    box-shadow: 
+        0 4px 12px rgba(0, 104, 55, 0.1),
+        inset 0 -2px 8px rgba(0, 0, 0, 0.05);
+}
+
+#vendorModalClose::before {
+    content: '×';
+    display: block;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+#vendorModalClose:hover {
+    background: linear-gradient(135deg, #00A651 0%, #006837 100%);
+    color: #ffffff;
+    transform: rotate(90deg) scale(1.15);
+    box-shadow: 
+        0 8px 24px rgba(0, 166, 81, 0.35),
+        0 0 0 4px rgba(253, 185, 19, 0.2);
+}
+
+#vendorModalClose:hover::before {
+    transform: rotate(-90deg);
+}
+
+#vendorModalClose:active {
+    transform: rotate(90deg) scale(1.05);
+}
+
+/* ========================================
+   REGISTRATION HEADER - Stokika Branding
+   ======================================== */
+.registration-header {
+    padding: 3rem 3rem 1.5rem 3rem;
+    text-align: center;
+    background: linear-gradient(135deg, 
+        rgba(0, 166, 81, 0.03) 0%, 
+        rgba(253, 185, 19, 0.03) 100%
+    );
+    border-bottom: 3px solid transparent;
+    border-image: linear-gradient(90deg, 
+        #00A651 0%, 
+        #FDB913 50%, 
+        #00A651 100%
+    ) 1;
+    position: relative;
+}
+
+.registration-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #00A651 0%, #006837 100%);
+    border-radius: 50%;
+    margin-top: -40px;
+    box-shadow: 
+        0 8px 24px rgba(0, 166, 81, 0.3),
+        0 0 0 8px #ffffff,
+        0 0 0 12px rgba(253, 185, 19, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.registration-header::after {
+    content: '🏪';
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 2.5rem;
+    z-index: 1;
+}
+
+.registration-header h2 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    color: #006837;
+    margin: 1rem 0 0.75rem 0;
+    letter-spacing: -0.03em;
+    text-shadow: 0 2px 4px rgba(0, 104, 55, 0.1);
+}
+
+.registration-tagline {
+    font-size: 1.1rem;
+    color: #555;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* ========================================
+   PROGRESS INDICATORS - Stokika Colors
+   ======================================== */
+.registration-progress {
+    padding: 1.75rem 3rem 1rem 3rem;
+    margin: 0 2.5rem 2rem 2.5rem;
+    background: linear-gradient(135deg, 
+        rgba(0, 166, 81, 0.05) 0%, 
+        rgba(253, 185, 19, 0.05) 100%
+    );
+    border-radius: 20px;
+    border: 2px solid rgba(0, 166, 81, 0.1);
+    overflow: visible;
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.progress-step .step-label {
+    font-size: 0.9rem;
+    color: #666;
+    font-weight: 600;
+    text-align: center;
+    padding: 0.75rem 0.5rem;
+    border-radius: 12px;
+    background: #f8f9fa;
+    border: 2px solid #e0e5e9;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.progress-step.active .step-label {
+    background: linear-gradient(135deg, #00A651 0%, #006837 100%);
+    color: #ffffff;
+    border-color: #00A651;
+    box-shadow: 
+        0 6px 16px rgba(0, 166, 81, 0.3),
+        0 0 0 3px rgba(253, 185, 19, 0.2);
+    transform: scale(1.08);
+    font-weight: 700;
+}
+
+.progress-step.completed .step-label {
+    background: linear-gradient(135deg, #FDB913 0%, #F7931E 100%);
+    color: #ffffff;
+    border-color: #FDB913;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(253, 185, 19, 0.25);
+}
+
+/* ========================================
+   FORM STYLING - Modern & Clean
+   ======================================== */
+.vendor-form {
+    padding: 0 3rem 2.5rem 3rem;
+}
+
+.form-step h3 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #006837;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.02em;
+}
+
+.step-description {
+    font-size: 1.05rem;
+    color: #666;
+    margin: 0 0 2.5rem 0;
+    font-weight: 500;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.6rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    border: 2px solid #e0e5e9;
+    border-radius: 14px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: #333;
+    background: #ffffff;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.form-group input:hover,
+.form-group select:hover,
+.form-group textarea:hover {
+    border-color: #00A651;
+    box-shadow: 0 4px 8px rgba(0, 166, 81, 0.1);
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #00A651;
+    box-shadow: 
+        0 0 0 4px rgba(0, 166, 81, 0.15),
+        0 4px 12px rgba(0, 166, 81, 0.2);
+    transform: translateY(-1px);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #999;
+}
+
+/* Input validation states */
+.form-group input:valid:not(:placeholder-shown),
+.form-group select:valid:not([value=""]) {
+    border-color: #00A651;
+    background: rgba(0, 166, 81, 0.02);
+}
+
+.form-group input:invalid:not(:placeholder-shown):not(:focus) {
+    border-color: #dc3545;
+    background: rgba(220, 53, 69, 0.02);
+}
+
+/* ========================================
+   FORM BUTTONS - Stokika Brand
+   ======================================== */
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.25rem;
+    margin-top: 2.5rem;
+    padding-top: 2.5rem;
+    border-top: 3px solid transparent;
+    border-image: linear-gradient(90deg, 
+        rgba(0, 166, 81, 0.2) 0%, 
+        rgba(253, 185, 19, 0.2) 50%, 
+        rgba(0, 166, 81, 0.2) 100%
+    ) 1;
+}
+
+.btn-previous {
+    padding: 1rem 2.5rem;
+    border: 2px solid #e0e5e9;
+    border-radius: 14px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    cursor: pointer;
+    background: #f8f9fa;
+    color: #666;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.btn-previous:hover {
+    background: #e8ecef;
+    border-color: #00A651;
+    color: #00A651;
+    transform: translateX(-4px);
+    box-shadow: 0 4px 12px rgba(0, 166, 81, 0.15);
+}
+
+.btn-next {
+    padding: 1rem 2.5rem;
+    border: none;
+    border-radius: 14px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    background: linear-gradient(135deg, #00A651 0%, #006837 100%);
+    color: #ffffff;
+    margin-left: auto;
+    transition: all 0.3s ease;
+    box-shadow: 
+        0 4px 12px rgba(0, 166, 81, 0.3),
+        inset 0 -2px 0 rgba(0, 0, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-next::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        rgba(255, 255, 255, 0.3) 50%, 
+        transparent 100%
+    );
+    transition: left 0.5s ease;
+}
+
+.btn-next:hover {
+    background: linear-gradient(135deg, #00A651 0%, #00A651 100%);
+    transform: translateY(-3px);
+    box-shadow: 
+        0 8px 24px rgba(0, 166, 81, 0.4),
+        0 0 0 4px rgba(253, 185, 19, 0.2);
+}
+
+.btn-next:hover::before {
+    left: 100%;
+}
+
+.btn-next:active {
+    transform: translateY(-1px);
+}
+
+/* ========================================
+   RESPONSIVE - Mobile Optimization
+   ======================================== */
+@media (max-width: 768px) {
+    #vendorRegistrationModal .modal-content.vendor-registration {
+        border-radius: 24px;
+        max-height: 96vh;
+    }
+    
+    .registration-header {
+        padding: 2.5rem 2rem 1.25rem 2rem;
+    }
+    
+    .registration-header h2 {
+        font-size: 1.75rem;
+    }
+    
+    .vendor-form {
+        padding: 0 2rem 2rem 2rem;
+    }
+    
+    .registration-progress {
+        margin: 0 1.5rem 1.5rem 1.5rem;
+        padding: 1.25rem 1.5rem 0.75rem 1.5rem;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
+    
+    .form-buttons {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .btn-next,
+    .btn-previous {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    #vendorModalClose {
+        width: 44px;
+        height: 44px;
+        top: 1.25rem;
+        right: 1.25rem;
+    }
+    
+    .registration-header {
+        padding: 2rem 1.5rem 1rem 1.5rem;
+    }
+    
+    .registration-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .registration-tagline {
+        font-size: 1rem;
+    }
+    
+    .vendor-form {
+        padding: 0 1.5rem 1.5rem 1.5rem;
+    }
+    
+    .form-step h3 {
+        font-size: 1.4rem;
+    }
+}
+
+/* ========================================
+   SMOOTH SCROLLBAR
+   ======================================== */
+#vendorRegistrationModal .modal-content::-webkit-scrollbar {
+    width: 10px;
+}
+
+#vendorRegistrationModal .modal-content::-webkit-scrollbar-track {
+    background: linear-gradient(180deg, #f8f9fa 0%, #e8f0f2 100%);
+    border-radius: 10px;
+}
+
+#vendorRegistrationModal .modal-content::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #00A651 0%, #006837 100%);
+    border-radius: 10px;
+    border: 2px solid #f8f9fa;
+}
+
+#vendorRegistrationModal .modal-content::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #FDB913 0%, #F7931E 100%);
+}

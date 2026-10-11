@@ -1,0 +1,2050 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Static CSP Meta Tag -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; 
+                   script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; 
+                   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; 
+                   font-src 'self' https://fonts.gstatic.com; 
+                   connect-src 'self' https://*.supabase.co wss://*.supabase.co https://cdnjs.cloudflare.com https://api.ipify.org; 
+                   img-src 'self' data: https:; 
+                   base-uri 'self'; 
+                   form-action 'self';">
+
+    <title>stokika - Stock Bila Stress | Stock Advance Platform for MSMEs Across Africa</title>
+    <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
+    <link rel="apple-touch-icon" href="assets/logos/favicon.ico.png">
+    <meta name="description"
+        content="stokika helps small businesses access stock and tools of trade upfront. Pay later in realistic business cycles. Stock Now. Pay Later. Grow Always.">
+
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/mobile-optimization.css">
+    <link rel="stylesheet" href="css/testimonials-slider.css">
+    <link rel="stylesheet" href="css/contact-tabs.css">
+    <link rel="stylesheet" href="css/enhanced-toast.css">
+    <link rel="stylesheet" href="css/vendor-registration-modal.css">
+    <link rel="stylesheet" href="css/modern-modal-design.css">
+    <link rel="stylesheet" href="css/stokika-vendor-modal.css">
+    <link rel="stylesheet" href="css/vendor-modal-master-fix.css">
+    <link rel="stylesheet" href="css/vendor-payment-step.css">
+    <!-- CDN Scripts with SRI -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"
+        crossorigin="anonymous"></script>
+    <script src="js/config/supabase-config.js"></script>
+    <!-- REMOVED - Loaded at bottom to avoid duplicates -->
+    <!-- Enhanced Security & Features -->
+    <!-- <script src="js/core/config-loader.js"></script> DISABLED: Using TypeScript bundle config -->
+    <!-- <script src="js/security/indexeddb-crypto.js"></script> -->
+    <!-- <script src="js/security/csrf-protection.js"></script> -->
+    <!-- <script src="js/security/rate-limiter.js"></script> -->
+    <!-- <script src="js/features/audit-logger.js"></script> -->
+    <!-- <script src="js/auth/secure-auth.js"></script> -->
+    <!-- <script src="js/features/enhanced-toast-system.js"></script> -->
+    <!-- <script src="js/features/notification-system.js"></script> -->
+    <!-- <script src="js/features/export-system.js"></script> -->
+    <!-- <script src="js/features/advanced-search.js"></script> -->
+    <!-- <script src="js/features/dark-mode-system.js"></script> -->
+    <!-- <script src="js/features/activity-log-system.js"></script> -->
+    <!-- <script src="js/features/help-support-system.js"></script> -->
+    <!-- <script src="js/core/setup.js"></script> -->
+    <!-- <script src="js/features/offline-manager.js"></script> -->
+    <!-- <script src="js/features/offline-form-handler.js"></script> -->
+    <!-- <script src="js/features/agent-affiliate-system.js"></script> -->
+    <!-- <script src="js/features/vendor-supplier-registration-with-referral.js"></script> -->
+    <link rel="manifest" href="manifest.json">
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="https://www.stokika.com" class="header-logo">
+                    <img src="assets/logos/logo.png.png" alt="stokika" class="logo-light">
+                    <img src="assets/logos/logo-dark.png" alt="stokika" class="logo-dark">
+                </a>
+                <nav class="header-nav">
+                    <a href="#about">About</a>
+                    <a href="#how-it-works">How It Works</a>
+                    <a href="#who-we-serve">Who We Serve</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="#success-stories">Success Stories</a>
+                    <a href="jobs.html">Jobs</a>
+                    <a href="#contact">Contact</a>
+                    <button class="btn-get-started" id="getStartedBtn">Get Started</button>
+                </nav>
+                <!-- Mobile Menu Toggle -->
+                <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Toggle mobile menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section with Vertical Scroll -->
+    <section id="home" class="hero-section">
+        <div class="hero-container">
+            <div class="hero-slide" data-slide="0">
+                <div class="hero-full-content">
+                    <div class="hero-icon-badge-img">
+                        <img src="assets/logos/favicon.ico.png" alt="stokika Icon">
+                    </div>
+                    <h1 class="hero-main-title">sotika na stokika</h1>
+                    <p class="hero-tagline">Get sorted with stokika</p>
+                    <p class="hero-description">Transform your business with stokika's smart stock financing and connect
+                        with trusted suppliers across Africa</p>
+                    <div class="hero-buttons">
+                        <a href="#contact" class="btn-hero-primary">Join stokika Now →</a>
+                        <a href="#how-it-works" class="btn-hero-outline">Learn More</a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="hero-stat-card">
+                            <div class="stat-number">1000+</div>
+                            <div class="stat-text">MSMEs Empowered</div>
+                        </div>
+                        <div class="hero-stat-card">
+                            <div class="stat-number">47</div>
+                            <div class="stat-text">Counties Covered</div>
+                        </div>
+                        <div class="hero-stat-card">
+                            <div class="stat-number">24/7</div>
+                            <div class="stat-text">Platform Support</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-slide" data-slide="1">
+                <div class="hero-full-content">
+                    <div class="hero-icon-badge">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" />
+                            <polyline points="16 7 22 7 22 13" />
+                        </svg>
+                    </div>
+                    <h1 class="hero-main-title gradient-green">Smart Stock Financing for Vendors</h1>
+                    <p class="hero-tagline">Access inventory with flexible repayment cycles</p>
+                    <p class="hero-description">Get the stock you need with competitive interest rates starting from 5%.
+                        Build your business with stokika's vendor financing solutions</p>
+                    <div class="hero-buttons">
+                        <a href="#contact" class="btn-hero-primary green">Start Financing →</a>
+                        <a href="#how-it-works" class="btn-hero-outline">Learn More</a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="hero-stat-card">
+                            <div class="stat-number green">5%</div>
+                            <div class="stat-text">Lowest Interest Rate</div>
+                        </div>
+                        <div class="hero-stat-card">
+                            <div class="stat-number">47</div>
+                            <div class="stat-text">Counties Covered</div>
+                        </div>
+                        <div class="hero-stat-card">
+                            <div class="stat-number pink">24/7</div>
+                            <div class="stat-text">Platform Support</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-slide" data-slide="2">
+                <div class="hero-full-content">
+                    <div class="hero-icon-badge yellow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                    </div>
+                    <h1 class="hero-main-title gradient-yellow">Connect with Verified Suppliers</h1>
+                    <p class="hero-tagline">Access Africa's largest supplier network</p>
+                    <p class="hero-description">Join thousands of verified suppliers on stokika platform. Find quality
+                        products, negotiate better prices, and grow your business network</p>
+                    <div class="hero-buttons">
+                        <a href="#contact" class="btn-hero-primary yellow">Find Suppliers →</a>
+                        <a href="#how-it-works" class="btn-hero-outline">Learn More</a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="hero-stat-card">
+                            <div class="stat-number yellow">500+</div>
+                            <div class="stat-text">Verified Suppliers</div>
+                        </div>
+                        <div class="hero-stat-card">
+                            <div class="stat-number">47</div>
+                            <div class="stat-text">Counties Covered</div>
+                        </div>
+                        <div class="hero-stat-card">
+                            <div class="stat-number pink">24/7</div>
+                            <div class="stat-text">Platform Support</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-slide" data-slide="3">
+                <div class="hero-full-content">
+                    <div class="hero-icon-badge blue">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+                            <line x1="1" y1="10" x2="23" y2="10" />
+                        </svg>
+                    </div>
+                    <h1 class="hero-main-title gradient-blue">Empower Your Business with stokika</h1>
+                    <p class="hero-tagline">Start Growing Today</p>
+                    <p class="hero-description">Unlock stock access today and elevate your business without the cash
+                        constraints.</p>
+                    <div class="hero-buttons">
+                        <a href="#contact" class="btn-hero-primary blue">Learn Payments →</a>
+                        <a href="#how-it-works" class="btn-hero-outline">Learn More</a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="hero-stat-card">
+                            <div class="stat-number blue">24/7</div>
+                            <div class="stat-text">Payment Processing</div>
+                        </div>
+                        <div class="hero-stat-card">
+                            <div class="stat-number">47</div>
+                            <div class="stat-text">Counties Covered</div>
+                        </div>
+                        <div class="hero-stat-card">
+                            <div class="stat-number pink">24/7</div>
+                            <div class="stat-text">Platform Support</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-slide" data-slide="4">
+                <div class="hero-full-content">
+                    <div class="hero-icon-badge purple">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10" />
+                            <line x1="12" y1="20" x2="12" y2="4" />
+                            <line x1="6" y1="20" x2="6" y2="14" />
+                        </svg>
+                    </div>
+                    <h1 class="hero-main-title gradient-purple">Business Analytics & Insights</h1>
+                    <p class="hero-tagline">Data-driven decisions for growth</p>
+                    <p class="hero-description">Track your performance with stokika's comprehensive analytics. Monitor
+                        sales, inventory, and supplier relationships to optimize your business</p>
+                    <div class="hero-buttons">
+                        <a href="#contact" class="btn-hero-primary purple">View Analytics →</a>
+                        <a href="#how-it-works" class="btn-hero-outline">Learn More</a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="hero-stat-card">
+                            <div class="stat-number purple">Real-time</div>
+                            <div class="stat-text">Business Insights</div>
+                        </div>
+                        <div class="hero-stat-card">
+                            <div class="stat-number">47</div>
+                            <div class="stat-text">Counties Covered</div>
+                        </div>
+                        <div class="hero-stat-card">
+                            <div class="stat-number pink">24/7</div>
+                            <div class="stat-text">Platform Support</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-slide" data-slide="5">
+                <div class="hero-full-content">
+                    <div class="hero-icon-badge yellow">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="2" y1="12" x2="22" y2="12" />
+                            <path
+                                d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" />
+                        </svg>
+                    </div>
+                    <h1 class="hero-main-title gradient-yellow">Empowering MSMEs Across Africa</h1>
+                    <p class="hero-tagline">Supporting small businesses everywhere</p>
+                    <p class="hero-description">stokika is dedicated to empowering Micro, Small and Medium Enterprises
+                        across Kenya and Africa with tools, financing, and networks for success</p>
+                    <div class="hero-buttons">
+                        <a href="#contact" class="btn-hero-primary yellow">Join Movement →</a>
+                        <a href="#about" class="btn-hero-outline">Learn More</a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="hero-stat-card">
+                            <div class="stat-number yellow">47</div>
+                            <div class="stat-text">Counties Covered</div>
+                        </div>
+                        <div class="hero-stat-card">
+                            <div class="stat-number yellow">47</div>
+                            <div class="stat-text">Counties Covered</div>
+                        </div>
+                        <div class="hero-stat-card">
+                            <div class="stat-number yellow">24/7</div>
+                            <div class="stat-text">Platform Support</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-slide" data-slide="6">
+                <div class="hero-full-content">
+                    <div class="hero-icon-badge green">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="5" width="20" height="14" rx="2" />
+                            <line x1="2" y1="10" x2="22" y2="10" />
+                            <circle cx="7" cy="15" r="1" />
+                            <circle cx="11" cy="15" r="1" />
+                        </svg>
+                    </div>
+                    <h1 class="hero-main-title gradient-green">Flexible Financing Options</h1>
+                    <p class="hero-tagline">Repayment cycles that work for you</p>
+                    <p class="hero-description">Choose from various repayment options with stokika. From weekly to
+                        monthly cycles, find a plan that matches your business cash flow</p>
+                    <div class="hero-buttons">
+                        <a href="#pricing" class="btn-hero-primary green">Explore Plans →</a>
+                        <a href="#how-it-works" class="btn-hero-outline">Learn More</a>
+                    </div>
+                    <div class="hero-stats">
+                        <div class="hero-stat-card">
+                            <div class="stat-number green">Flexible</div>
+                            <div class="stat-text">Repayment Terms</div>
+                        </div>
+                        <div class="hero-stat-card">
+                            <div class="stat-number">47</div>
+                            <div class="stat-text">Counties Covered</div>
+                        </div>
+                        <div class="hero-stat-card">
+                            <div class="stat-number pink">24/7</div>
+                            <div class="stat-text">Platform Support</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator" id="scrollIndicator">Scroll</div>
+        <div class="slide-indicators" id="slideIndicators">
+            <span class="slide-dot active" data-slide="0"></span>
+            <span class="slide-dot" data-slide="1"></span>
+            <span class="slide-dot" data-slide="2"></span>
+            <span class="slide-dot" data-slide="3"></span>
+            <span class="slide-dot" data-slide="4"></span>
+            <span class="slide-dot" data-slide="5"></span>
+            <span class="slide-dot" data-slide="6"></span>
+        </div>
+    </section>
+
+    <!-- Inventory Management CTA Section -->
+    <section class="inventory-cta-section">
+        <div class="container">
+            <div class="inventory-cta-wrapper">
+                <div class="inventory-cta-visual">
+                    <div class="inventory-preview">
+                        <div class="preview-header">
+                            <div class="preview-dots">
+                                <span></span><span></span><span></span>
+                            </div>
+                        </div>
+                        <div class="preview-content">
+                            <div class="preview-stat">
+                                <div class="stat-icon">📦</div>
+                                <div class="stat-info">
+                                    <span class="stat-value">KES 45K</span>
+                                    <span class="stat-label">Stock Value</span>
+                                </div>
+                            </div>
+                            <div class="preview-stat">
+                                <div class="stat-icon">📋</div>
+                                <div class="stat-info">
+                                    <span class="stat-value">23</span>
+                                    <span class="stat-label">Active Orders</span>
+                                </div>
+                            </div>
+                            <div class="preview-stat">
+                                <div class="stat-icon">📈</div>
+                                <div class="stat-info">
+                                    <span class="stat-value">+25%</span>
+                                    <span class="stat-label">Growth</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="inventory-cta-content">
+                    <span class="cta-badge">New Feature</span>
+                    <h2>Advanced Inventory Management</h2>
+                    <p>Take control of your inventory with real-time tracking, supplier management, and powerful
+                        analytics. Streamline operations and grow your business.</p>
+                    <div class="inventory-features-grid">
+                        <div class="feature-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Real-time tracking</span>
+                        </div>
+                        <div class="feature-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Supplier management</span>
+                        </div>
+                        <div class="feature-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Analytics & reports</span>
+                        </div>
+                        <div class="feature-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Order tracking</span>
+                        </div>
+                    </div>
+                    <a href="/signin" class="btn-inventory">
+                        Launch Dashboard
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                            <polyline points="12 5 19 12 12 19" />
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-tagline">STOCK BILA STRESS</p>
+                <h2 class="section-title">About <span class="text-green">stokika</span></h2>
+                <p class="section-subtitle">Empowering Micro, Small and Medium Enterprises across Kenya and Africa with
+                    smart stock access, supplier networks, and business growth tools.</p>
+            </div>
+
+            <div class="about-story-promise">
+                <div class="about-story">
+                    <h3>Our Story</h3>
+                    <p>stokika was born from a simple observation: countless talented entrepreneurs across Kenya and
+                        Africa have the skills, determination, and market demand to succeed, but lack access to
+                        inventory. We set out to change that by creating a platform that bridges the gap between
+                        ambition and achievement, making stock financing accessible, transparent, and tailored to the
+                        unique rhythms of small businesses.</p>
+                </div>
+
+                <div class="about-promise">
+                    <h3>Our Promise</h3>
+                    <p>We promise to stand by every vendor, supplier, and entrepreneur who trusts us with their business
+                        growth. With transparent pricing, flexible repayment cycles, and dedicated support, we're
+                        committed to being more than a financing platform—we're your growth partner, invested in your
+                        success every step of the way.</p>
+                </div>
+            </div>
+
+            <div class="about-grid">
+                <div class="about-card">
+                    <h3>Mission</h3>
+                    <p>To empower micro, small and medium businesses across Africa by providing accessible stock
+                        financing and tools of trade, enabling sustainable growth without cash flow constraints.</p>
+                </div>
+                <div class="about-card">
+                    <h3>Vision</h3>
+                    <p>A future where no business dream stalls due to lack of stock. Every vendor, from mama mboga to
+                        service providers, has the inventory they need to thrive.</p>
+                </div>
+                <div class="about-card">
+                    <h3>Mission Statement</h3>
+                    <p>We exist to democratize access to business inventory and tools across Africa, creating pathways
+                        for micro, small and medium enterprises to scale sustainably through smart financing, verified
+                        supplier networks, and business intelligence tools.</p>
+                </div>
+            </div>
+
+            <div class="about-different">
+                <h3>What Makes Us Different</h3>
+                <div class="different-grid">
+                    <div class="different-item">
+                        <div class="different-icon">🎯</div>
+                        <h4>Business-Cycle Focused</h4>
+                        <p>Repayment terms that match your actual business cycles—daily, weekly, fortnightly, or
+                            monthly.</p>
+                    </div>
+                    <div class="different-item">
+                        <div class="different-icon">📸</div>
+                        <h4>Verified Delivery</h4>
+                        <p>Photo proof with geo-location, date, and time stamps ensure transparency and accountability.
+                        </p>
+                    </div>
+                    <div class="different-item">
+                        <div class="different-icon">📈</div>
+                        <h4>Growth-Oriented</h4>
+                        <p>Your credit limit grows as you demonstrate consistent repayment and business growth.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="about-values">
+                <h3>Our Values</h3>
+                <div class="values-grid">
+                    <div class="value-card">
+                        <div class="value-icon">💚</div>
+                        <h4>Integrity</h4>
+                        <p>We operate with complete transparency in pricing, terms, and processes.</p>
+                    </div>
+                    <div class="value-card">
+                        <div class="value-icon">🌟</div>
+                        <h4>Empowerment</h4>
+                        <p>We believe in the potential of every entrepreneur and provide tools for success.</p>
+                    </div>
+                    <div class="value-card">
+                        <div class="value-icon">🤲</div>
+                        <h4>Accessibility</h4>
+                        <p>Financial services should be available to all, regardless of business size.</p>
+                    </div>
+                    <div class="value-card">
+                        <div class="value-icon">🚀</div>
+                        <h4>Innovation</h4>
+                        <p>We continuously improve our platform to better serve our community.</p>
+                    </div>
+                    <div class="value-card">
+                        <div class="value-icon">🤝</div>
+                        <h4>Partnership</h4>
+                        <p>Your success is our success—we grow together as partners.</p>
+                    </div>
+                    <div class="value-card">
+                        <div class="value-icon">🎯</div>
+                        <h4>Accountability</h4>
+                        <p>We hold ourselves to the highest standards of service and support.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">1000+</div>
+                    <div class="stat-label">MSMEs Served</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">47</div>
+                    <div class="stat-label">Counties Covered</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">Verified Suppliers</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Success Rate</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section id="how-it-works" class="how-it-works-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">How stokika Works</h2>
+                <p class="section-subtitle">Four simple steps to grow your business</p>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-icon">📝</div>
+                    <h3>Register Your Business</h3>
+                    <p>Quick registration with 24-hour verification. One-time fee based on your business size.</p>
+                    <ul class="step-features">
+                        <li>Fast verification</li>
+                        <li>Secure process</li>
+                        <li>Simple requirements</li>
+                    </ul>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-icon">🏪</div>
+                    <h3>Browse Supplier Network</h3>
+                    <p>Access 500+ verified suppliers or nominate your preferred supplier.</p>
+                    <ul class="step-features">
+                        <li>Verified suppliers</li>
+                        <li>Competitive prices</li>
+                        <li>Wide selection</li>
+                    </ul>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-icon">💰</div>
+                    <h3>Request Stock Financing</h3>
+                    <p>Choose your stock, we pay the supplier directly. Service fees from 5%-20% based on cycle.</p>
+                    <ul class="step-features">
+                        <li>No cash loans</li>
+                        <li>Flexible cycles</li>
+                        <li>Transparent fees</li>
+                    </ul>
+                </div>
+                <div class="step-card step-card-special">
+                    <div class="step-content">
+                        <div class="step-icon">📦</div>
+                        <div class="step-info">
+                            <h3>Receive & Sell Products</h3>
+                            <p class="step-description">Get delivery with photo proof (geo-location, date, time). Repay
+                                after selling based on your cycle.</p>
+                        </div>
+                    </div>
+                    <div class="step-features-special">
+                        <div class="feature-item">
+                            <span class="feature-check">✓</span>
+                            <span>Verified delivery</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-check">✓</span>
+                            <span>Track performance</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-check">✓</span>
+                            <span>Grow your limit</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Who We Serve -->
+    <section id="who-we-serve" class="who-we-serve-section">
+        <div class="who-we-serve-bubbles">
+            <span class="serve-bubble-1"></span>
+            <span class="serve-bubble-2"></span>
+            <span class="serve-bubble-3"></span>
+            <span class="serve-bubble-4"></span>
+            <span class="serve-bubble-5"></span>
+            <span class="serve-bubble-6"></span>
+            <span class="serve-bubble-7"></span>
+            <span class="serve-bubble-8"></span>
+            <span class="serve-bubble-9"></span>
+            <span class="serve-bubble-10"></span>
+        </div>
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Who We Serve</h2>
+                <p class="section-subtitle">Supporting diverse businesses across Kenya and Africa</p>
+            </div>
+            <div class="audience-grid">
+                <div class="audience-card">
+                    <div class="audience-icon">🏪</div>
+                    <h3>Retail Stores</h3>
+                    <p>Kiosks/ stalls, grocery shops, wine & spirits</p>
+                    <span class="cycle-badge">Weekly Cycle</span>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">👕</div>
+                    <h3>Mitumba Sellers</h3>
+                    <p>Clothing vendors, bale traders</p>
+                    <span class="cycle-badge blue">Monthly Cycle</span>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">🍞</div>
+                    <h3>Fast-Moving Goods</h3>
+                    <p>Milk vendors, smokie sellers, doughnut vendors, mama mboga, chips stalls</p>
+                    <span class="cycle-badge purple">Daily Cycle</span>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">✂️</div>
+                    <h3>Service Providers</h3>
+                    <p>Barbers, salons, photographers, videographers/ filmmakers, podcasters</p>
+                    <span class="cycle-badge pink">Tools of Trade</span>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">🌾</div>
+                    <h3>Cereal Traders</h3>
+                    <p>Maize, beans, rice, flour distributors</p>
+                    <span class="cycle-badge teal">Fortnightly Cycle</span>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">🚀</div>
+                    <h3>Aspiring Entrepreneurs</h3>
+                    <p>Start your business with stock or tools of trade</p>
+                    <span class="cycle-badge special">5% Starter Fee</span>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">🏗️</div>
+                    <h3>Hardware Stores</h3>
+                    <p>Building materials, tools, construction supplies</p>
+                    <span class="cycle-badge orange">Monthly Cycle</span>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">💊</div>
+                    <h3>Pharmacies</h3>
+                    <p>Medicine, health products, medical supplies, e.t.c</p>
+                    <span class="cycle-badge green">Weekly Cycle</span>
+                </div>
+                <div class="audience-card">
+                    <div class="audience-icon">📱</div>
+                    <h3>Electronics Dealers</h3>
+                    <p>Phones & accessories, laptops & accessories, gadgets, repairs, e.t.c</p>
+                    <span class="cycle-badge cyan">Fortnightly Cycle</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Success Stories -->
+    <section id="success-stories" class="success-section">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-tagline">✨ Real Impact Stories</p>
+                <h2 class="section-title">Real <span class="text-purple">Success</span></h2>
+                <p class="section-subtitle centered">Discover how stokika has transformed the lives and businesses of
+                    entrepreneurs across Kenya and Africa through smart financing solutions.</p>
+            </div>
+            <div class="testimonials-slider">
+                <div class="testimonials-grid">
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <div class="quote-icon green">❝</div>
+                            <p class="testimonial-text">"stokika helped me expand from 1 to 3 stalls. My monthly revenue
+                                increased by 200% and I can now support my family better."</p>
+                            <div class="testimonial-rating">
+                                <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                                <span class="rating-text">(5/5)</span>
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">MW</div>
+                                <div>
+                                    <h4>Mary Wanjiku</h4>
+                                    <p>Fruit Vendor, Nairobi</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-metrics">
+                            <h4>Success Metrics</h4>
+                            <div class="metric-item">
+                                <div class="metric-value green">200%</div>
+                                <div class="metric-label">Revenue</div>
+                                <div class="metric-icon">📈</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value green">3 stalls</div>
+                                <div class="metric-label">Growth</div>
+                                <div class="metric-icon">📈</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value green">6 months</div>
+                                <div class="metric-label">Time</div>
+                                <div class="metric-icon">📈</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <div class="quote-icon blue">❝</div>
+                            <p class="testimonial-text">"With stokika's supplier network, I found better deals and
+                                improved my profit margins by 40%. The platform is a game-changer."</p>
+                            <div class="testimonial-rating">
+                                <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                                <span class="rating-text">(5/5)</span>
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">JK</div>
+                                <div>
+                                    <h4>John Kimani</h4>
+                                    <p>Electronics Shop, Mombasa</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-metrics">
+                            <h4>Success Metrics</h4>
+                            <div class="metric-item">
+                                <div class="metric-value blue">40%</div>
+                                <div class="metric-label">Profit</div>
+                                <div class="metric-icon">📈</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value blue">KES 50K</div>
+                                <div class="metric-label">Savings</div>
+                                <div class="metric-icon">📈</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value blue">12 new</div>
+                                <div class="metric-label">Suppliers</div>
+                                <div class="metric-icon">📈</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <div class="quote-icon purple">❝</div>
+                            <p class="testimonial-text">"stokika's flexible financing allowed me to stock seasonal items
+                                without cash flow issues. My inventory turnover improved dramatically."</p>
+                            <div class="testimonial-rating">
+                                <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                                <span class="rating-text">(5/5)</span>
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">GA</div>
+                                <div>
+                                    <h4>Grace Akinyi</h4>
+                                    <p>Clothing Boutique, Kisumu</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-metrics">
+                            <h4>Success Metrics</h4>
+                            <div class="metric-item">
+                                <div class="metric-value purple">300%</div>
+                                <div class="metric-label">Inventory</div>
+                                <div class="metric-icon">📈</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value purple">4 covered</div>
+                                <div class="metric-label">Seasons</div>
+                                <div class="metric-icon">📈</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value purple">Improved</div>
+                                <div class="metric-label">Cashflow</div>
+                                <div class="metric-icon">📈</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <div class="quote-icon yellow">❝</div>
+                            <p class="testimonial-text">"Getting bales upfront without paying cash first was a game
+                                changer. I can now stock more varieties and my customers love it."</p>
+                            <div class="testimonial-rating">
+                                <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                                <span class="rating-text">(5/5)</span>
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">PA</div>
+                                <div>
+                                    <h4>Pamela Aoko</h4>
+                                    <p>Mitumba Seller, Migori</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-metrics">
+                            <h4>Success Metrics</h4>
+                            <div class="metric-item">
+                                <div class="metric-value yellow">150%</div>
+                                <div class="metric-label">Sales Growth</div>
+                                <div class="metric-icon">📈</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value yellow">5 bales</div>
+                                <div class="metric-label">Per Month</div>
+                                <div class="metric-icon">📈</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value yellow">Varieties</div>
+                                <div class="metric-label">More Stock</div>
+                                <div class="metric-icon">📈</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <div class="quote-icon pink">❝</div>
+                            <p class="testimonial-text">"I got my salon equipment through stokika and paid gradually.
+                                Now I have a fully equipped salon and steady income."</p>
+                            <div class="testimonial-rating">
+                                <span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span><span>⭐</span>
+                                <span class="rating-text">(5/5)</span>
+                            </div>
+                            <div class="testimonial-author">
+                                <div class="author-avatar">JO</div>
+                                <div>
+                                    <h4>Jeniffer Oketch</h4>
+                                    <p>Salon Owner, Mbita</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="testimonial-metrics">
+                            <h4>Success Metrics</h4>
+                            <div class="metric-item">
+                                <div class="metric-value pink">100%</div>
+                                <div class="metric-label">Business Started</div>
+                                <div class="metric-icon">📈</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value pink">6 months</div>
+                                <div class="metric-label">Flexible Repayment</div>
+                                <div class="metric-icon">📈</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-value pink">Steady</div>
+                                <div class="metric-label">Income</div>
+                                <div class="metric-icon">📈</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-indicators">
+                    <span class="testimonial-dot active" data-index="0"></span>
+                    <span class="testimonial-dot" data-index="1"></span>
+                    <span class="testimonial-dot" data-index="2"></span>
+                    <span class="testimonial-dot" data-index="3"></span>
+                    <span class="testimonial-dot" data-index="4"></span>
+                </div>
+            </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="pricing-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Transparent Pricing</h2>
+                <p class="section-subtitle">Pricing based on business experience and category</p>
+            </div>
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Starter</h3>
+                        <div class="pricing-rate">15%</div>
+                        <p>For Aspiring Entrepreneurs</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>✓ Up to KES 30,000</li>
+                        <li>✓ 14-day terms</li>
+                        <li>✓ Daily/Weekly cycles</li>
+                        <li>✓ All product categories</li>
+                        <li>✓ Business analytics</li>
+                        <li>✓ Dedicated support</li>
+                        <li>✓ Dedicated stokika account</li>
+                    </ul>
+                    <button class="btn-pricing">Get Started</button>
+                </div>
+                <div class="pricing-card popular">
+                    <div class="popular-badge">Most Popular</div>
+                    <div class="pricing-header">
+                        <h3>Builder</h3>
+                        <div class="pricing-rate">8%</div>
+                        <p>For Businesses Under 3.5 Years</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>✓ Up to KES 150,000</li>
+                        <li>✓ 30-day terms</li>
+                        <li>✓ Weekly/Fortnightly cycles</li>
+                        <li>✓ All product categories</li>
+                        <li>✓ Business analytics</li>
+                        <li>✓ Dedicated support</li>
+                        <li>✓ Dedicated stokika account</li>
+                    </ul>
+                    <button class="btn-pricing">Get Started</button>
+                </div>
+                <div class="pricing-card">
+                    <div class="pricing-header">
+                        <h3>Gwiji</h3>
+                        <div class="pricing-rate">5%</div>
+                        <p>For Mature & Established MSEs</p>
+                    </div>
+                    <ul class="pricing-features">
+                        <li>✓ Up to KES 500,000</li>
+                        <li>✓ 60-day terms</li>
+                        <li>✓ Monthly cycles</li>
+                        <li>✓ All product categories</li>
+                        <li>✓ Bulk orders</li>
+                        <li>✓ Business analytics</li>
+                        <li>✓ Dedicated support</li>
+                        <li>✓ Dedicated stokika account</li>
+                    </ul>
+                    <button class="btn-pricing">Get Started</button>
+                </div>
+
+            </div>
+
+            <!-- Supplier Section -->
+            <div class="supplier-section">
+                <div class="supplier-header">
+                    <h3>For Suppliers</h3>
+                    <p>Join our network and connect with verified vendors</p>
+                </div>
+
+                <div class="supplier-card">
+                    <div class="supplier-content">
+                        <div class="supplier-icon">
+                            📦
+                        </div>
+                        <div class="supplier-info">
+                            <h4>Supplier Network</h4>
+                            <p class="supplier-price">FREE to Join</p>
+                            <p class="supplier-description">Connect with verified vendors across Kenya and Africa. Grow
+                                your business through our trusted platform with no upfront costs.</p>
+                        </div>
+                    </div>
+                    <div class="supplier-features">
+                        <div class="feature-item">
+                            <span class="feature-check">✓</span>
+                            <span>Free platform registration</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-check">✓</span>
+                            <span>Product catalog listing</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-check">✓</span>
+                            <span>Direct vendor connections</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-check">✓</span>
+                            <span>Mobile money payment processing</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-check">✓</span>
+                            <span>Order management system</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-check">✓</span>
+                            <span>Analytics dashboard</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-check">✓</span>
+                            <span>Customer support</span>
+                        </div>
+                        <div class="feature-item">
+                            <span class="feature-check">✓</span>
+                            <span>Dedicated stokika account</span>
+                        </div>
+                    </div>
+                    <button class="btn-supplier">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                        Join as Supplier
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="pricing-cta">
+            <p>Ready to transform your business? Choose your path and get started today.</p>
+            <div class="cta-buttons">
+                <button class="btn-cta vendor">I'm a Vendor</button>
+                <button class="btn-cta supplier">I'm a Supplier</button>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <div class="section-header">
+                <p class="section-tagline">🌟 Let's Connect</p>
+                <h2 class="section-title">Get In <span class="text-green">Touch</span></h2>
+                <p class="section-subtitle">Ready to transform your business with stokika? We're here to help you get
+                    started. Reach out to us and let's discuss how we can support your growth.</p>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-form-container">
+                    <h3>Send us a Message</h3>
+                    <p>Fill out the form below and we'll get back to you within 24 hours.</p>
+                    <form id="contactForm" class="contact-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Full Name *</label>
+                                <input type="text" name="name" placeholder="Your full name" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address *</label>
+                                <input type="email" name="email" placeholder="your.email@example.com" required>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Phone Number *</label>
+                                <input type="tel" name="phone" placeholder="+254 700 123 456" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Business Type</label>
+                                <select name="business_type" title="Select your business type" id="contactBusinessType">
+                                    <option value="">Select your business type</option>
+                                    <option value="retail">Retail Store</option>
+                                    <option value="mitumba">Mitumba Seller</option>
+                                    <option value="fast-moving">Fast-Moving Goods</option>
+                                    <option value="service">Service Provider</option>
+                                    <option value="cereal">Cereal Trader</option>
+                                    <option value="cereal">Aspiring Entrepreneur</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row hidden-field" id="contactOtherBusinessType">
+                            <div class="form-group">
+                                <label>Specify Business Type *</label>
+                                <input type="text" name="other_business_type"
+                                    placeholder="Please specify your business type" id="contactOtherInput">
+                            </div>
+                            <div class="form-group"></div>
+                        </div>
+                        <div class="form-group">
+                            <label>Message *</label>
+                            <textarea name="message" rows="5"
+                                placeholder="Tell us about your business and how we can help..." required></textarea>
+                        </div>
+                        <button type="submit" class="btn-submit">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="22" y1="2" x2="11" y2="13" />
+                                <polygon points="22 2 15 22 11 13 2 9 22 2" />
+                            </svg>
+                            Send Message
+                        </button>
+
+
+
+                    </form>
+                </div>
+                <div class="contact-info">
+                    <h3>Contact Information</h3>
+                    <p>Get in touch with us through any of these channels. We're always ready to help you grow your
+                        business.</p>
+                    <div class="contact-cards-grid">
+                        <div class="contact-card">
+                            <div class="contact-icon green">📞</div>
+                            <h4>Call Us</h4>
+                            <a href="tel:+254728011976" class="contact-link">+254 728 011 976</a>
+                            <p>Mon-Fri 8AM-6PM EAT</p>
+                        </div>
+                        <div class="contact-card">
+                            <div class="contact-icon blue">📧</div>
+                            <h4>Email Us</h4>
+                            <a href="mailto:hello@stokika.com" class="contact-link">info@stokika.com</a>
+                            <p>We reply within 24 hours</p>
+                        </div>
+                        <div class="contact-card whatsapp-centered">
+                            <div class="contact-icon orange">💬</div>
+                            <h4>WhatsApp</h4>
+                            <a href="https://wa.me/254728011976" target="_blank" rel="noopener"
+                                class="contact-link">+254 728 011 976</a>
+                            <p>Quick support available</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter -->
+    <section class="newsletter-section">
+        <div class="container">
+            <div class="newsletter-content">
+                <h3>Stay Updated</h3>
+                <p>Get the latest updates on stock financing and business growth tips</p>
+                <form id="newsletterForm" class="newsletter-form">
+                    <input type="text" name="name" placeholder="Enter your name" required>
+                    <input type="email" name="email" placeholder="Enter your email" required>
+                    <button type="submit" class="btn-newsletter">Subscribe</button>
+
+
+
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col">
+                    <img src="assets/logos/logo.png.png" alt="stokika" class="footer-logo">
+                    <p>Stock Bila Stress. Empowering MSMEs across Africa with smart stock financing.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="/terms">Terms of Service</a></li>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/cookies">Cookie Policy</a></li>
+                        <li><a href="/compliance">Compliance</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="#contact">Contact Us</a></li>
+                        <li><a href="/signin">Inventory System</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; <span id="copyrightYear"></span> Stokika Limited. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+
+
+    <!-- Animated Background Bubbles -->
+    <div class="bubbles">
+        <span class="bubble-1"></span>
+        <span class="bubble-2"></span>
+        <span class="bubble-3"></span>
+        <span class="bubble-4"></span>
+        <span class="bubble-5"></span>
+        <span class="bubble-6"></span>
+        <span class="bubble-7"></span>
+        <span class="bubble-8"></span>
+        <span class="bubble-9"></span>
+        <span class="bubble-10"></span>
+        <span class="bubble-11"></span>
+        <span class="bubble-12"></span>
+        <span class="bubble-13"></span>
+        <span class="bubble-14"></span>
+        <span class="bubble-15"></span>
+    </div>
+
+    <!-- Back to Top Button -->
+    <button class="back-to-top" id="backToTop" aria-label="Back to top">
+        ↑
+    </button>
+
+    <!-- Get Started Modal -->
+    <div class="modal-overlay" id="getStartedModal">
+        <div class="modal-content">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div class="modal-header">
+                <h3>Choose How You Want to Get Started</h3>
+                <p>Select the option that best describes your business needs</p>
+            </div>
+            <div class="modal-body">
+                <div class="modal-buttons">
+                    <div class="btn-modal vendor" id="joinVendor">
+                        <div class="modal-icon-circle green">
+                            🏪
+                        </div>
+                        <h4>Get Started as a Vendor</h4>
+                        <p class="modal-subtitle">I need to buy products for my business</p>
+                        <div class="feature-list">
+                            <div class="feature-item">
+                                <span class="feature-check">✓</span>
+                                <span>Access verified suppliers</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-check">✓</span>
+                                <span>Manage inventory efficiently</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-check">✓</span>
+                                <span>Get competitive prices</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-check">✓</span>
+                                <span>Flexible stocking cycles</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-check">✓</span>
+                                <span>Access stocks at finger tips</span>
+                            </div>
+                        </div>
+                        <button class="register-btn green">Register as Vendor</button>
+                    </div>
+                    <div class="btn-modal supplier" id="joinSupplier">
+                        <div class="modal-icon-circle blue">
+                            🚚
+                        </div>
+                        <h4>Get Started as a Supplier</h4>
+                        <p class="modal-subtitle">I want to supply products to businesses</p>
+                        <div class="feature-list">
+                            <div class="feature-item">
+                                <span class="feature-check">✓</span>
+                                <span>Connect with verified vendors</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-check">✓</span>
+                                <span>Expand your customer base</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-check">✓</span>
+                                <span>Free registration</span>
+                            </div>
+                            <div class="feature-item">
+                                <span class="feature-check">✓</span>
+                                <span>Manage orders efficiently</span>
+                            </div>
+                        </div>
+                        <button class="register-btn blue">Register as Supplier</button>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <p>Not sure which option is right for you? <a href="#contact" id="contactGuidance">Contact us for
+                        guidance</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vendor Registration Modal -->
+    <div class="modal-overlay" id="vendorRegistrationModal">
+        <div class="modal-content vendor-registration">
+            <button class="modal-close" id="vendorModalClose" aria-label="Close modal">&times;</button>
+
+            <!-- Modal Header -->
+            <div class="registration-header">
+                <h2>Vendor Registration</h2>
+                <p class="registration-tagline">Join stokika - Empowering African Entrepreneurs</p>
+            </div>
+
+            <!-- Progress Indicator -->
+            <div class="registration-progress">
+                <div class="progress-step active" data-step="1">
+                    <span class="step-number">1</span>
+                    <span class="step-label">Basic Information</span>
+                </div>
+                <div class="progress-step" data-step="2">
+                    <span class="step-number">2</span>
+                    <span class="step-label">Business Profile</span>
+                </div>
+                <div class="progress-step" data-step="3" id="bmcProgressStep">
+                    <span class="step-number">3</span>
+                    <span class="step-label">Business Plan</span>
+                    <span class="step-status"></span>
+                </div>
+                <div class="progress-step" data-step="4">
+                    <span class="step-number">4</span>
+                    <span class="step-label">Stock Needs</span>
+                </div>
+                <div class="progress-step" data-step="5">
+                    <span class="step-number">5</span>
+                    <span class="step-label">Account Activation</span>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <form id="vendorRegistrationForm" class="vendor-form">
+
+                <!-- Step 1: Basic Information -->
+                <div class="form-step active" data-step="1">
+                    <h3>Basic Information</h3>
+                    <p class="step-description">Tell us about your business and how to reach you</p>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fullName">Full Name *</label>
+                            <input type="text" id="fullName" name="fullName" placeholder="Enter your full name" required
+                                aria-required="true">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="businessName">Business Name *</label>
+                            <input type="text" id="businessName" name="businessName"
+                                placeholder="Enter your business name" required aria-required="true">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="businessCategory">Business Category *</label>
+                            <select id="businessCategory" name="businessCategory" required aria-required="true">
+                                <option value="">Select category...</option>
+                                <!-- Options will be populated dynamically by TypeScript from lookup service -->
+                            </select>
+                        </div>
+
+                        <div class="form-group hidden" id="otherCategoryField">
+                            <label for="otherCategory">Please specify your business category *</label>
+                            <input type="text" id="otherCategory" name="otherCategory"
+                                placeholder="Specify your business category">
+                        </div>
+                    </div>
+
+                    <div class="business-location">
+                        <h4>📍 Business Location</h4>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="county">County *</label>
+                                <select id="county" name="county" required aria-required="true">
+                                    <option value="">Select county...</option>
+                                    <!-- Options will be populated dynamically -->
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="town">Town *</label>
+                                <input type="text" id="town" name="town" placeholder="e.g., Westlands" required
+                                    aria-required="true">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="center">Business Center/Area *</label>
+                            <input type="text" id="center" name="center" placeholder="e.g., Sarit Centre" required
+                                aria-required="true">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phone">Phone Number *</label>
+                            <input type="tel" id="phone" name="phone" placeholder="+254 7XX XXX XXX"
+                                pattern="^(\+254|0)[17]\d{8}$" required aria-required="true"
+                                title="Enter a valid Kenyan mobile number (e.g., 012 345 678 or 0712 345 678)">
+                            <span class="field-hint">Format: +254 7XX XXX XXX or 07XX XXX XXX</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" name="email" placeholder="your@email.com" required
+                                aria-required="true">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="idNumber">Government ID Number *</label>
+                            <input type="text" id="idNumber" name="idNumber" placeholder="12345678" required
+                                pattern="[0-9]{8}" maxlength="8" inputmode="numeric" aria-required="true"
+                                aria-describedby="idNumberHint">
+                            <span id="idNumberHint" class="field-hint">
+                                Enter your 8-digit Kenyan national ID number
+                            </span>
+                            <span class="error-message" id="idNumberError"></span>
+                        </div>
+                    </div>
+
+                    <!-- Referral/Affiliate Section -->
+                    <div class="form-group referral-section">
+                        <label for="referralCode">
+                            Referral Code (Optional)
+                            <span class="field-hint-inline">Were you referred by an agent?</span>
+                        </label>
+                        <input type="text" id="referralCode" name="referralCode" placeholder="Enter agent referral code"
+                            class="referral-input">
+                        <span class="field-hint">If an agent referred you, their code will appear here
+                            automatically</span>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="button" class="btn-next" data-next-step="2">Next</button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Business Profile -->
+                <div class="form-step" data-step="2">
+                    <h3>Business Profile</h3>
+                    <p class="step-description">Help us understand your business across three key dimensions</p>
+
+                    <div class="dimension-cards">
+                        <div class="dimension-card">
+                            <div class="dimension-label">WHERE you are</div>
+                            <div class="form-group">
+                                <label for="businessStatus">Business Status *</label>
+                                <select id="businessStatus" name="businessStatus" required aria-required="true">
+                                    <option value="">Select status...</option>
+                                    <!-- Options will be populated dynamically from lookup service -->
+                                </select>
+                                <span class="field-hint">What stage is your business at?</span>
+                            </div>
+                        </div>
+
+                        <div class="dimension-card">
+                            <div class="dimension-label">HOW BIG you are</div>
+                            <div class="form-group">
+                                <label for="businessSize">Business Size *</label>
+                                <select id="businessSize" name="businessSize" required aria-required="true">
+                                    <option value="">Select size...</option>
+                                    <!-- Options will be populated dynamically from lookup service -->
+                                </select>
+                                <span class="field-hint">What's the scale of your operations?</span>
+                            </div>
+                        </div>
+
+                        <div class="dimension-card">
+                            <div class="dimension-label">HOW you operate</div>
+                            <div class="form-group">
+                                <label for="businessModel">Business Model *</label>
+                                <select id="businessModel" name="businessModel" required aria-required="true">
+                                    <option value="">Select model...</option>
+                                    <!-- Options will be populated dynamically from lookup service -->
+                                </select>
+                                <span class="field-hint">How does your business work?</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="button" class="btn-previous" data-prev-step="1">Previous</button>
+                        <button type="button" class="btn-next" data-next-step="3">Next</button>
+                    </div>
+                </div>
+
+                <!-- Step 3: Business Model Canvas (Conditional) -->
+                <div class="form-step" data-step="3">
+                    <div class="bmc-header">
+                        <h3>📋 Business Model Canvas</h3>
+                        <p class="bmc-description" id="bmcDescription">Complete your business plan to strengthen your
+                            application</p>
+                        <div class="bmc-requirement-indicator" id="bmcRequirement">
+                            <span class="requirement-badge" id="bmcOptionalBadge">Optional</span>
+                            <span class="requirement-badge hidden" id="bmcRequiredBadge">Required</span>
+                        </div>
+                    </div>
+
+                    <!-- BMC Section Navigation -->
+                    <div class="bmc-progress-info">
+                        <p class="bmc-section-info">Section <span id="bmcCurrentSection">1</span> of 9</p>
+                        <div class="bmc-progress">
+                            <div class="bmc-progress-bar" id="bmcProgressBar"></div>
+                        </div>
+                    </div>
+
+                    <!-- BMC Section Content -->
+                    <div class="bmc-content" id="bmcContent">
+                        <div class="bmc-section">
+                            <h4 class="bmc-section-title" id="bmcSectionTitle">Value Proposition</h4>
+                            <p class="bmc-question" id="bmcQuestion">What unique value does your business provide to
+                                customers?</p>
+                            <p class="bmc-example" id="bmcExample">Example: "Fresh, organic vegetables delivered within
+                                2 hours of harvest"</p>
+
+                            <div class="form-group">
+                                <label for="bmcTextarea" class="visually-hidden">Business Model Canvas Section
+                                    Input</label>
+                                <textarea id="bmcTextarea" name="bmcTextarea" rows="6"
+                                    placeholder="Describe your answer here (minimum 30 characters)..." minlength="30"
+                                    aria-describedby="bmcCharCounter"></textarea>
+                                <div class="char-counter" id="bmcCharCounter">
+                                    <span class="char-count">0</span>/30 characters minimum
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BMC Section Grid (Visual Progress) -->
+                    <div class="bmc-grid">
+                        <div class="bmc-card" data-section="value-proposition">
+                            <span class="bmc-card-number">1</span>
+                            <span class="bmc-card-label">Value Proposition</span>
+                        </div>
+                        <div class="bmc-card" data-section="customer-segments">
+                            <span class="bmc-card-number">2</span>
+                            <span class="bmc-card-label">Customer Segments</span>
+                        </div>
+                        <div class="bmc-card" data-section="channels">
+                            <span class="bmc-card-number">3</span>
+                            <span class="bmc-card-label">Channels</span>
+                        </div>
+                        <div class="bmc-card" data-section="customer-relationships">
+                            <span class="bmc-card-number">4</span>
+                            <span class="bmc-card-label">Customer Relationships</span>
+                        </div>
+                        <div class="bmc-card" data-section="revenue-streams">
+                            <span class="bmc-card-number">5</span>
+                            <span class="bmc-card-label">Revenue Streams</span>
+                        </div>
+                        <div class="bmc-card" data-section="key-resources">
+                            <span class="bmc-card-number">6</span>
+                            <span class="bmc-card-label">Key Resources</span>
+                        </div>
+                        <div class="bmc-card" data-section="key-activities">
+                            <span class="bmc-card-number">7</span>
+                            <span class="bmc-card-label">Key Activities</span>
+                        </div>
+                        <div class="bmc-card" data-section="key-partnerships">
+                            <span class="bmc-card-number">8</span>
+                            <span class="bmc-card-label">Key Partnerships</span>
+                        </div>
+                        <div class="bmc-card" data-section="cost-structure">
+                            <span class="bmc-card-number">9</span>
+                            <span class="bmc-card-label">Cost Structure</span>
+                        </div>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="button" class="btn-previous" id="bmcPreviousBtn">Previous Section</button>
+                        <button type="button" class="btn-next" id="bmcNextBtn">Next Section</button>
+                        <button type="button" class="btn-complete hidden" id="bmcCompleteBtn">Complete BMC</button>
+                        <button type="button" class="btn-skip hidden" id="bmcSkipBtn">Skip (Optional)</button>
+                    </div>
+                </div>
+
+                <!-- Step 4: Stock Needs -->
+                <div class="form-step" data-step="4">
+                    <h3>Stock Needs</h3>
+                    <p class="step-description">Tell us about your inventory requirements so we can support your
+                        business growth</p>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="stockCycle">Stock Cycle *</label>
+                            <select id="stockCycle" name="stockCycle" required aria-required="true">
+                                <option value="">Select cycle...</option>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="fortnightly">Fortnightly</option>
+                                <option value="monthly">Monthly</option>
+                            </select>
+                            <span class="field-hint">How often do you need inventory replenishment?</span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="stockRequirement">Estimated Stock Requirement per Cycle (KES) *</label>
+                            <input type="number" id="stockRequirement" name="stockRequirement" placeholder="e.g., 50000"
+                                min="1" required aria-required="true">
+                            <span class="field-hint">Average amount you need each cycle</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="stockJustification">Why do you need this stock cycle and amount? *</label>
+                        <textarea id="stockJustification" name="stockJustification"
+                            placeholder="Explain your stock needs (e.g., daily sales pattern, cash flow needs, customer demand, storage capacity, etc.)"
+                            rows="4" minlength="20" required aria-required="true"
+                            aria-describedby="stockCharCounter"></textarea>
+                        <div class="char-counter" id="stockCharCounter">
+                            <span class="char-count">0</span>/20 characters minimum
+                        </div>
+                        <p class="form-hint">Be specific about your business needs and how this cycle fits your
+                            operations.</p>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="button" class="btn-previous" data-prev-step="3">Previous</button>
+                        <button type="button" class="btn-next" id="continueToPayment" data-next-step="5">Continue to
+                            Payment</button>
+                    </div>
+                </div>
+
+                <!-- Step 5: Account Activation -->
+                <div class="form-step" data-step="5">
+                    <h3>Account Activation Fee</h3>
+                    <p class="step-description">Complete payment to activate your vendor account</p>
+
+                    <div class="fee-display">
+                        <h4>Registration Fee</h4>
+                        <div class="fee-amount">KES 1,050.00</div>
+                        <p class="fee-note">
+                            <span>✓ One-time payment</span>
+                            <span>✓ Secure M-Pesa</span>
+                            <span>✓ Instant activation</span>
+                        </p>
+                    </div>
+
+                    <!-- Payment Method Selector -->
+                    <div class="payment-method-selector">
+                        <h4>Select Payment Method</h4>
+
+                        <div class="payment-methods">
+                            <label class="payment-method active" data-method="stkpush">
+                                <input type="radio" name="paymentMethod" id="paymentMethodSTK" value="stkpush" checked
+                                    aria-label="STK Push payment method">
+                                <div class="method-content">
+                                    <div class="method-icon" aria-hidden="true">📱</div>
+                                    <div class="method-info">
+                                        <strong>STK Push (Instant)</strong>
+                                        <span>Receive payment prompt on your phone</span>
+                                    </div>
+                                    <div class="method-badge">Recommended</div>
+                                </div>
+                            </label>
+
+                            <label class="payment-method" data-method="manual">
+                                <input type="radio" name="paymentMethod" id="paymentMethodManual" value="manual"
+                                    aria-label="Manual paybill payment method">
+                                <div class="method-content">
+                                    <div class="method-icon" aria-hidden="true">💳</div>
+                                    <div class="method-info">
+                                        <strong>Manual Paybill Payment</strong>
+                                        <span>Pay using M-Pesa paybill on your phone</span>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- STK Push Interface (shown by default) -->
+                    <div id="stkPushInterface" class="payment-interface active">
+                        <div class="form-group">
+                            <label for="mpesaPhone">M-Pesa Phone Number *</label>
+                            <input type="tel" id="mpesaPhone" name="mpesaPhone" placeholder="254712345678 or 0712345678"
+                                required aria-required="true" pattern="^(\+?254|0)[0-9]{9}$">
+                            <span class="field-hint">Enter the phone number to receive M-Pesa payment prompt</span>
+                        </div>
+
+                        <div id="paymentStatusMessage" class="payment-status hidden">
+                            Processing payment...
+                        </div>
+
+                        <div id="paymentStatus" class="payment-status hidden">
+                            <div class="status-spinner"></div>
+                            <p id="paymentStatusDetail">Check your phone for the M-Pesa prompt</p>
+                        </div>
+
+                        <div class="form-buttons">
+                            <button type="button" class="btn-previous" data-prev-step="4">Previous</button>
+                            <button type="button" class="btn-pay" id="payWithMpesa">
+                                Pay with M-Pesa
+                            </button>
+                            <button type="button" class="btn-retry hidden" id="retryPayment">
+                                Retry Payment
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Manual Payment Interface (hidden by default) -->
+                    <div id="manualPaymentInterface" class="payment-interface hidden">
+                        <div class="manual-payment-instructions">
+                            <div class="instruction-header">
+                                <span class="icon">💳</span>
+                                <h4>How to Pay via M-Pesa Paybill</h4>
+                            </div>
+
+                            <div class="payment-details">
+                                <div class="detail-item">
+                                    <label>Paybill Number</label>
+                                    <div class="detail-value">
+                                        <strong>1140839</strong>
+                                        <button type="button" class="btn-copy" data-copy="1140839"
+                                            title="Copy paybill number">📋</button>
+                                    </div>
+                                </div>
+
+                                <div class="detail-item highlight">
+                                    <label>Account Number</label>
+                                    <div class="detail-value">
+                                        <strong id="accountNumberDisplay"></strong>
+                                        <button type="button" class="btn-copy" data-copy-id="accountNumberDisplay"
+                                            title="Copy account number">📋</button>
+                                    </div>
+                                    <span class="detail-note">⚠️ Use your ID number as account number</span>
+                                </div>
+
+                                <div class="detail-item">
+                                    <label>Amount</label>
+                                    <div class="detail-value">
+                                        <strong>KES 1,050.00</strong>
+                                        <button type="button" class="btn-copy" data-copy="1050"
+                                            title="Copy amount">📋</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="step-by-step">
+                                <h5>Step-by-Step Instructions:</h5>
+                                <ol>
+                                    <li>Open M-Pesa menu on your phone</li>
+                                    <li>Select <strong>Lipa na M-Pesa</strong></li>
+                                    <li>Select <strong>Pay Bill</strong></li>
+                                    <li>Enter Paybill Number: <strong>1140839</strong></li>
+                                    <li>Enter Account Number: <strong id="accountNumberStep"></strong></li>
+                                    <li>Enter Amount: <strong>1050</strong></li>
+                                    <li>Enter your M-Pesa PIN and confirm</li>
+                                </ol>
+                            </div>
+
+                            <div class="payment-notice">
+                                <span class="icon">⏱️</span>
+                                <div>
+                                    <strong>Payment Confirmation</strong>
+                                    <p>After sending payment, it may take 1-5 minutes for confirmation.
+                                        Please wait on this page for automatic verification.</p>
+                                </div>
+                            </div>
+
+                            <div id="manualPaymentStatus" class="payment-status hidden">
+                                <div class="status-spinner"></div>
+                                <p id="manualPaymentMessage">Waiting for payment confirmation...</p>
+                                <p id="manualPaymentDetail">Checking for payment receipt...</p>
+                            </div>
+                        </div>
+
+                        <div class="form-buttons">
+                            <button type="button" class="btn-previous" data-prev-step="4">Previous</button>
+                            <button type="button" class="btn-confirm" id="confirmManualPayment">
+                                I Have Paid
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- Supplier Registration Modal -->
+    <div class="modal-overlay" id="supplierRegistrationModal">
+        <div class="modal-content supplier-registration">
+            <button class="modal-close" id="supplierModalClose">&times;</button>
+            <div class="registration-header">
+                <h2>Supplier Registration</h2>
+                <p class="registration-tagline">Join stokika - Empowering African Entrepreneurs</p>
+            </div>
+
+            <form id="supplierRegistrationForm" class="supplier-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Company Name *</label>
+                        <input type="text" name="companyName" placeholder="Enter company name" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Contact Person Name *</label>
+                        <input type="text" name="contactPerson" placeholder="Full name of contact person" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Phone Number *</label>
+                        <input type="tel" name="phone" placeholder="e.g., +254 700 000 000"
+                            pattern="[+]?[0-9\s\-\(\)]{10,15}" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address *</label>
+                        <input type="email" name="email" placeholder="company@example.com" required>
+                    </div>
+                </div>
+
+                <div class="form-row-three">
+                    <div class="form-group">
+                        <label>Business Registration Number</label>
+                        <input type="text" name="registrationNumber" placeholder="Optional">
+                    </div>
+                    <div class="form-group">
+                        <label>Years in Business *</label>
+                        <select name="yearsInBusiness" required title="Select years in business">
+                            <option value="">Select years</option>
+                            <option value="0-1">0-1 years</option>
+                            <option value="2-5">2-5 years</option>
+                            <option value="6-10">6-10 years</option>
+                            <option value="11-20">11-20 years</option>
+                            <option value="20+">20+ years</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Number of Employees *</label>
+                        <select name="numberOfEmployees" required title="Select number of employees">
+                            <option value="">Select range</option>
+                            <option value="1-5">1-5 employees</option>
+                            <option value="6-20">6-20 employees</option>
+                            <option value="21-50">21-50 employees</option>
+                            <option value="51-100">51-100 employees</option>
+                            <option value="100+">100+ employees</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Counties You Operate In * (select multiple)</label>
+                    <div class="checkbox-grid" id="countiesGrid">
+                        <label><input type="checkbox" name="counties" value="Baringo"> Baringo</label>
+                        <label><input type="checkbox" name="counties" value="Bomet"> Bomet</label>
+                        <label><input type="checkbox" name="counties" value="Bungoma"> Bungoma</label>
+                        <label><input type="checkbox" name="counties" value="Busia"> Busia</label>
+                        <label><input type="checkbox" name="counties" value="Elgeyo-Marakwet"> Elgeyo-Marakwet</label>
+                        <label><input type="checkbox" name="counties" value="Embu"> Embu</label>
+                        <label><input type="checkbox" name="counties" value="Garissa"> Garissa</label>
+                        <label><input type="checkbox" name="counties" value="Homa Bay"> Homa Bay</label>
+                        <label><input type="checkbox" name="counties" value="Isiolo"> Isiolo</label>
+                        <label><input type="checkbox" name="counties" value="Kajiado"> Kajiado</label>
+                        <label><input type="checkbox" name="counties" value="Kakamega"> Kakamega</label>
+                        <label><input type="checkbox" name="counties" value="Kericho"> Kericho</label>
+                        <label><input type="checkbox" name="counties" value="Kiambu"> Kiambu</label>
+                        <label><input type="checkbox" name="counties" value="Kilifi"> Kilifi</label>
+                        <label><input type="checkbox" name="counties" value="Kirinyaga"> Kirinyaga</label>
+                        <label><input type="checkbox" name="counties" value="Kisii"> Kisii</label>
+                        <label><input type="checkbox" name="counties" value="Kisumu"> Kisumu</label>
+                        <label><input type="checkbox" name="counties" value="Kitui"> Kitui</label>
+                        <label><input type="checkbox" name="counties" value="Kwale"> Kwale</label>
+                        <label><input type="checkbox" name="counties" value="Laikipia"> Laikipia</label>
+                        <label><input type="checkbox" name="counties" value="Lamu"> Lamu</label>
+                        <label><input type="checkbox" name="counties" value="Machakos"> Machakos</label>
+                        <label><input type="checkbox" name="counties" value="Makueni"> Makueni</label>
+                        <label><input type="checkbox" name="counties" value="Mandera"> Mandera</label>
+                        <label><input type="checkbox" name="counties" value="Marsabit"> Marsabit</label>
+                        <label><input type="checkbox" name="counties" value="Meru"> Meru</label>
+                        <label><input type="checkbox" name="counties" value="Migori"> Migori</label>
+                        <label><input type="checkbox" name="counties" value="Mombasa"> Mombasa</label>
+                        <label><input type="checkbox" name="counties" value="Murang'a"> Murang'a</label>
+                        <label><input type="checkbox" name="counties" value="Nairobi"> Nairobi</label>
+                        <label><input type="checkbox" name="counties" value="Nakuru"> Nakuru</label>
+                        <label><input type="checkbox" name="counties" value="Nandi"> Nandi</label>
+                        <label><input type="checkbox" name="counties" value="Narok"> Narok</label>
+                        <label><input type="checkbox" name="counties" value="Nyamira"> Nyamira</label>
+                        <label><input type="checkbox" name="counties" value="Nyandarua"> Nyandarua</label>
+                        <label><input type="checkbox" name="counties" value="Nyeri"> Nyeri</label>
+                        <label><input type="checkbox" name="counties" value="Samburu"> Samburu</label>
+                        <label><input type="checkbox" name="counties" value="Siaya"> Siaya</label>
+                        <label><input type="checkbox" name="counties" value="Taita-Taveta"> Taita-Taveta</label>
+                        <label><input type="checkbox" name="counties" value="Tana River"> Tana River</label>
+                        <label><input type="checkbox" name="counties" value="Tharaka-Nithi"> Tharaka-Nithi</label>
+                        <label><input type="checkbox" name="counties" value="Trans Nzoia"> Trans Nzoia</label>
+                        <label><input type="checkbox" name="counties" value="Turkana"> Turkana</label>
+                        <label><input type="checkbox" name="counties" value="Uasin Gishu"> Uasin Gishu</label>
+                        <label><input type="checkbox" name="counties" value="Vihiga"> Vihiga</label>
+                        <label><input type="checkbox" name="counties" value="Wajir"> Wajir</label>
+                        <label><input type="checkbox" name="counties" value="West Pokot"> West Pokot</label>
+                    </div>
+                </div>
+
+                <div class="form-group towns-section-hidden" id="townsSection">
+                    <label>Towns/Areas in Selected Counties</label>
+                    <p class="form-hint">Specify the towns or areas you serve in each county</p>
+                    <div id="townInputs"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>Product Categories * (select multiple)</label>
+                    <div class="checkbox-grid">
+                        <label><input type="checkbox" name="categories" value="Fresh Produce"> Fresh Produce (Fruits &
+                            Vegetables)</label>
+                        <label><input type="checkbox" name="categories" value="Grains & Cereals"> Grains & Cereals
+                            (Maize, Rice, Wheat, etc.)</label>
+                        <label><input type="checkbox" name="categories" value="Dairy Products"> Dairy Products (Milk,
+                            Cheese, Yogurt)</label>
+                        <label><input type="checkbox" name="categories" value="Meat & Poultry"> Meat & Poultry (Beef,
+                            Chicken, Fish)</label>
+                        <label><input type="checkbox" name="categories" value="Household Items"> Household Items
+                            (Cleaning, Kitchen)</label>
+                        <label><input type="checkbox" name="categories" value="Electronics"> Electronics (Phones,
+                            Accessories)</label>
+                        <label><input type="checkbox" name="categories" value="Clothing & Textiles"> Clothing &
+                            Textiles</label>
+                        <label><input type="checkbox" name="categories" value="Building Materials"> Building Materials
+                            (Cement, Iron, etc.)</label>
+                        <label><input type="checkbox" name="categories" value="Stationery & Office Supplies"> Stationery
+                            & Office Supplies</label>
+                        <label><input type="checkbox" name="categories" value="Beauty & Personal Care"> Beauty &
+                            Personal Care</label>
+                        <label><input type="checkbox" name="categories" value="Pharmaceuticals & Health">
+                            Pharmaceuticals & Health</label>
+                        <label><input type="checkbox" name="categories" value="Agricultural Inputs"> Agricultural Inputs
+                            (Seeds, Fertilizer)</label>
+                        <label><input type="checkbox" name="categories" value="Automotive Parts & Services"> Automotive
+                            Parts & Services</label>
+                        <label><input type="checkbox" name="categories" value="Other" id="otherCategory"> Other</label>
+                    </div>
+                </div>
+
+                <div class="form-group other-category-hidden" id="otherCategoryField">
+                    <label>Specify Other Category *</label>
+                    <input type="text" name="otherCategoryText" placeholder="Please specify your product category">
+                </div>
+
+                <div class="form-group">
+                    <label>Minimum Order Quantity *</label>
+                    <input type="text" name="minimumOrderQuantity" placeholder="e.g., 10 units, 1 bag, 5 boxes"
+                        required>
+                </div>
+
+                <div class="form-group">
+                    <label>Certifications/Licenses (Optional)</label>
+                    <textarea name="certifications"
+                        placeholder="List any relevant certifications, licenses, or quality standards (e.g., KEBS, ISO, Organic certification)"
+                        rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Payment Terms * (select multiple)</label>
+                    <div class="checkbox-grid payment-terms">
+                        <label><input type="checkbox" name="paymentTerms" value="Cash"> Cash</label>
+                        <label><input type="checkbox" name="paymentTerms" value="Bank Transfer"> Bank Transfer</label>
+                        <label><input type="checkbox" name="paymentTerms" value="M-Pesa"> M-Pesa</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Do you accept credit sales?</label>
+                    <div class="radio-group centered">
+                        <label><input type="radio" name="acceptsCredit" value="yes" id="creditYes"> Yes</label>
+                        <label><input type="radio" name="acceptsCredit" value="no" id="creditNo"> No (cash only)</label>
+                    </div>
+                </div>
+
+                <div class="form-group credit-duration-hidden" id="creditDurationField">
+                    <label>Credit Duration *</label>
+                    <select name="creditDuration" id="creditDurationSelect" title="Select credit duration">
+                        <option value="">Select duration</option>
+                        <option value="7 days">7 days</option>
+                        <option value="14 days">14 days</option>
+                        <option value="30 days">30 days</option>
+                        <option value="60 days">60 days</option>
+                        <option value="90 days">90 days</option>
+                    </select>
+                </div>
+
+
+
+            </form>
+        </div>
+    </div>
+
+    <!-- Core Configuration (must load first) -->
+    <!-- <script src="js/core/config-loader.js"></script> <!-- DISABLED: Using TypeScript bundle config -->
+
+    <!-- Security Layer (depends on config-loader) -->
+    <script src="js/security/indexeddb-crypto.js"></script>
+    <script src="js/security/xss-protection.js"></script>
+    <script src="js/security/csrf-protection.js"></script>
+    <script src="js/security/rate-limiter.js"></script>
+    <script src="js/security/secure-session.js"></script>
+
+    <!-- Supabase Setup (depends on config-loader) -->
+    <!-- DISABLED: TypeScript module handles own Supabase init -->
+    <!-- <script src="js/core/setup.js"></script> -->
+
+    <!-- Authentication (depends on setup.js) -->
+    <!-- DISABLED: TypeScript module handles own auth -->
+    <!-- <script src="js/auth/secure-auth.js"></script> -->
+
+    <!-- Feature Systems -->
+    <script src="js/features/audit-logger.js"></script>
+    <script src="js/features/enhanced-toast-system.js"></script>
+    <script src="js/features/notification-system.js"></script>
+    <script src="js/features/export-system.js"></script>
+    <script src="js/features/advanced-search.js"></script>
+    <!-- DISABLED: CSP violation with inline styles -->
+    <!-- <script src="js/features/dark-mode-system.js"></script> -->
+    <script src="js/features/activity-log-system.js"></script>
+    <script src="js/features/help-support-system.js"></script>
+    <script src="js/features/offline-manager.js"></script>
+    <script src="js/features/offline-form-handler.js"></script>
+
+    <!-- Application-Specific Features -->
+    <!-- DISABLED: Conflicts with TypeScript vendor registration module -->
+    <!-- <script src="js/features/agent-affiliate-system.js"></script> -->
+    <!-- <script src="js/features/vendor-supplier-registration-with-referral.js"></script> -->
+
+    <!-- Vendor Registration TypeScript Module (NEW) -->
+    <!-- TEMPORARILY DISABLED: TypeScript bundle causing 401 errors -->
+    <!-- <script src="dist/vendor-registration.js"></script> -->
+
+    <!-- Page-Specific Scripts -->
+    <script src="js/script.js"></script>
+    <script src="js/testimonials-slider.js"></script>
+    <script src="js/contact-tabs.js"></script>
+    <script src="js/newsletter-fix.js"></script>
+    <!-- Supabase Configuration loaded in <head> at line 42 -->
+
+    <!-- Payment Notification System -->
+    <script src="js/features/payment-notification-handler.js"></script>
+    <script src="js/features/payment-notification-integration.js"></script>
+    <!-- Vendor Registration Payment System -->
+    <script src="js/vendor-error-handler.js"></script>
+    <script src="js/vendor-registration-validation.js"></script>
+    <script src="js/vendor-payment-status-poller.js"></script>
+    <script src="js/vendor-registration-payment.js"></script>
+    <script src="js/vendor-payment-method-selector.js"></script>
+    <script src="js/vendor-manual-payment-handler.js"></script>
+
+
+    <!-- Modal Handler (must load last to override) -->
+    <script src="js/vendor-modal-fix.js"></script>
+    <script src="js/get-started-modal.js"></script>
+</body>
+
+</html>

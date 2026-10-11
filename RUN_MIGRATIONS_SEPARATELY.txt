@@ -1,0 +1,7 @@
+Creating tables one at a time to avoid order issues...
+
+Run these SQL statements ONE AT A TIME in Supabase Dashboard:
+https://supabase.com/dashboard/project/eidsqrnwfndruuufyacc/sql/new
+
+Copy and paste each block separately, clicking RUN after each one.
+

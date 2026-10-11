@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Static CSP Meta Tag -->
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' https://cdn.jsdelivr.net; 
+                   style-src 'self' https://cdnjs.cloudflare.com; 
+                   font-src 'self' https://cdnjs.cloudflare.com; 
+                   connect-src 'self' https://*.supabase.co; 
+                   img-src 'self' data: https:; base-uri 'self'; 
+                   form-action 'self';">
+    
+    <title>Vendor Shop - Stokika</title>
+    <link rel="stylesheet" 
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="css/vendor-shop.css">
+</head>
+<body>
+    <div class="container">
+        <div id="shopContainer">
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Loading shop...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CDN Scripts with SRI -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
+            crossorigin="anonymous"></script>
+    
+    <!-- Application Scripts -->
+    <script src="js/core/config-loader.js"></script>
+    <script src="js/core/pages-common.js"></script>
+    <script src="js/security/xss-protection.js"></script>
+    <script src="js/security/secure-session.js"></script>
+    <script src="js/security/csrf-protection.js"></script>
+    <script src="js/pages/vendor-public-shop.page.js"></script>
+</body>
+</html>

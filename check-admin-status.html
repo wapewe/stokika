@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Static CSP Meta Tag -->
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' https://cdn.jsdelivr.net; 
+                   style-src 'self'; 
+                   connect-src 'self' https://*.supabase.co; 
+                   img-src 'self' data: https:; base-uri 'self'; 
+                   form-action 'self';">
+    
+    <title>Check Admin Status</title>
+    
+    <!-- External CSS -->
+    <link rel="stylesheet" href="css/pages/check-admin-status.css">
+</head>
+<body>
+    <h1>🔍 Admin Status Checker</h1>
+    
+    <div id="results"></div>
+
+    <!-- CDN Scripts with SRI -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+            integrity="sha384-rcI/lnSf66vhaK4FWgYm5ز+p3LLm2WNgw6dE2QKvGUqSz7qx8YJhBBmN1Q6U7a"
+            crossorigin="anonymous"></script>
+    
+    <!-- Security Scripts -->
+    <script src="js/core/config-loader.js"></script>
+    <script src="js/security/xss-protection.js"></script>
+    <script src="js/security/secure-session.js"></script>
+    <script src="js/security/csrf-protection.js"></script>
+    
+    <!-- Page Module -->
+    <script src="js/pages/check-admin-status.page.js" type="module"></script>
+</body>
+</html>

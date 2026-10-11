@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Static Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' https://cdn.jsdelivr.net; 
+                   style-src 'self' https://fonts.googleapis.com; 
+                   font-src 'self' https://fonts.gstatic.com; 
+                   connect-src 'self' https://*.supabase.co; 
+                   img-src 'self' data: https:; base-uri 'self'; 
+                   form-action 'self';">
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    
+    <title>Sign In - Stokika</title>
+    <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
+    
+    <!-- Google Fonts with SRI -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" 
+          rel="stylesheet"
+          integrity="sha384-zM7qmLDXsv7G43sbK2VNrYGye2a5RuU56GHc3OZBpSLeQ4MVC+kkxdOzkOEjKo48"
+          crossorigin="anonymous">
+    
+    <!-- Page Styles -->
+    <link rel="stylesheet" href="css/pages/signin.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <a href="https://www.stokika.com" target="_blank" rel="noopener noreferrer">
+                <img src="assets/logos/logo.png.png" alt="Stokika Logo">
+            </a>
+        </div>
+        <h1>Sign In</h1>
+        <p>Access your dashboard</p>
+        
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+        
+        <form id="loginForm" data-sanitize="true" data-on-valid-submit="handleValidatedLogin">
+            <div class="form-group">
+                <label for="userRole">I am a</label>
+                <select id="userRole" name="userRole" required data-sanitize-type="string">
+                    <option value="vendor">Vendor</option>
+                    <option value="supplier">Supplier</option>
+                    <option value="supervisor">Supervisor</option>
+                    <option value="field_agent">Field Agent</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required maxlength="254" autocomplete="username" data-sanitize-type="email">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required minlength="12" maxlength="128" autocomplete="current-password" data-sanitize-type="string">
+                <div class="password-requirements">
+                    <small>Minimum 12 characters with uppercase, lowercase, number, and special character</small>
+                </div>
+            </div>
+            <button type="submit" class="btn-login" id="loginBtn">
+                <span class="btn-text">Sign In</span>
+                <span class="btn-loading">Signing in...</span>
+            </button>
+        </form>
+        
+        <div class="back-link">
+            <a href="/dalana.html">← Back to Website</a>
+            <span>|</span>
+            <a href="#" id="forgotPasswordLink">Forgot Password?</a>
+        </div>
+    </div>
+
+    <!-- Supabase CDN with SRI -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
+            crossorigin="anonymous"></script>
+    
+    <!-- Core Configuration (load before page module) -->
+    <script src="js/core/config-loader.js"></script>
+    <script src="js/core/setup.js"></script>
+    
+    <!-- Security Modules (non-module scripts) -->
+    <script src="js/security/xss-protection.js"></script>
+    <script src="js/security/secure-session.js"></script>
+    <script src="js/security/csrf-protection.js"></script>
+    <script src="js/auth/secure-auth.js"></script>
+    
+    <!-- Page Module (ES6 Module) - Handles all page logic -->
+    <script src="js/pages/signin.page.js" type="module"></script>
+</body>
+</html>

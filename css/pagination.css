@@ -1,0 +1,166 @@
+/* Import common styles */
+@import 'common/base.css';
+@import 'common/layout.css';
+@import 'common/components.css';
+@import 'common/navigation.css';
+
+/* Page-specific Pagination Styles */
+.table-info {
+    margin-bottom: 1rem;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding: 1rem;
+}
+
+.btn-pagination {
+    padding: 0.75rem 1.5rem;
+    border: 2px solid #e5e7eb;
+    background: white;
+    color: #374151;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-pagination:hover:not(:disabled) {
+    background: #10b981;
+    color: white;
+    border-color: #10b981;
+    transform: translateY(-2px);
+}
+
+.btn-pagination:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #f9fafb;
+    color: #9ca3af;
+}
+
+.pagination-info {
+    font-weight: 600;
+    color: #374151;
+    padding: 0.75rem 1rem;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 2px solid #e5e7eb;
+}
+
+/* Mobile Users Cards */
+.users-container {
+    width: 100%;
+}
+
+.mobile-cards {
+    display: none;
+}
+
+.desktop-table {
+    display: table;
+    width: 100%;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+    .desktop-table {
+        min-width: 800px;
+    }
+}
+
+@media (max-width: 768px) {
+    .desktop-table {
+        display: none !important;
+    }
+    
+    .mobile-cards {
+        display: block !important;
+    }
+}
+
+.user-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.user-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.user-header h3 {
+    margin: 0;
+    color: #1e293b;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.user-badges {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.user-info {
+    margin-bottom: 1.5rem;
+}
+
+.user-info p {
+    margin: 0.5rem 0;
+    color: #64748b;
+    font-size: 0.9rem;
+}
+
+.user-info strong {
+    color: #374151;
+}
+
+.user-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.user-actions .btn-action {
+    flex: 1;
+    min-width: 80px;
+    text-align: center;
+    font-size: 0.8rem;
+    padding: 0.5rem 0.75rem;
+}
+
+@media (max-width: 768px) {
+    .table-info {
+        text-align: center;
+        margin-bottom: 1rem;
+    }
+    
+    .pagination {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .btn-pagination {
+        width: 100%;
+        max-width: 200px;
+    }
+}

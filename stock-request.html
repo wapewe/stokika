@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self';
+                   script-src 'self' https://cdn.jsdelivr.net;
+                   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+                   font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+                   connect-src 'self' https://*.supabase.co;
+                   img-src 'self' data: https:;
+                   base-uri 'self';
+                   form-action 'self';">
+    <title>Stock Request - Stokika</title>
+    <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/stock-request.css">
+</head>
+<body>
+    <div class="header">
+        <h1><i class="fas fa-box"></i> New Stock Request</h1>
+        <button id="backBtn" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </button>
+    </div>
+
+    <div class="container">
+        <!-- Eligibility Info (populated by JS) -->
+        <div id="eligibilityInfo"></div>
+
+        <form id="stockRequestForm">
+            <!-- Supplier Selection -->
+            <div class="card">
+                <h2>Supplier Information</h2>
+                <div class="form-group">
+                    <label for="supplier_id">Supplier ID *</label>
+                    <input type="text" 
+                           id="supplier_id" 
+                           name="supplier_id" 
+                           placeholder="Enter supplier UUID" 
+                           required>
+                    <small>Enter the UUID of the supplier you wish to order from</small>
+                </div>
+                <div class="form-group">
+                    <label for="delivery_date">Requested Delivery Date</label>
+                    <input type="date" 
+                           id="delivery_date" 
+                           name="delivery_date">
+                </div>
+            </div>
+
+            <!-- Items Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Order Items</h2>
+                    <button type="button" id="addItemBtn" class="btn btn-secondary">
+                        <i class="fas fa-plus"></i> Add Item
+                    </button>
+                </div>
+
+                <div id="requestItems">
+                    <!-- Items will be added here by JavaScript -->
+                </div>
+
+                <div class="total-section">
+                    <span class="label">Total Amount:</span>
+                    <span class="amount" id="totalAmount">KES 0.00</span>
+                </div>
+
+                <div id="remainingCreditWarning"></div>
+            </div>
+
+            <!-- Additional Notes -->
+            <div class="card">
+                <h2>Additional Notes</h2>
+                <div class="form-group">
+                    <label for="notes">Notes (Optional)</label>
+                    <textarea id="notes" 
+                              name="notes" 
+                              rows="4" 
+                              placeholder="Add any special instructions or notes..."></textarea>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="button" id="cancelBtn" class="btn btn-secondary" onclick="window.location.href='vendor-dashboard.html'">
+                    Cancel
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i> Submit Request
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Load Supabase config before the app to avoid "process is not defined" error -->
+    <script src="js/config/supabase-config.js"></script>
+    <script type="module" src="dist/stock-request.js"></script>
+</body>
+</html>

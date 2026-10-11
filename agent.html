@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Static CSP Meta Tag -->
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' https://cdn.jsdelivr.net; 
+                   style-src 'self' https://fonts.googleapis.com; 
+                   font-src 'self' https://fonts.gstatic.com; 
+                   connect-src 'self' https://*.supabase.co; 
+                   img-src 'self' data: https:; 
+                   base-uri 'self'; 
+                   form-action 'self';">
+    
+    <title>Field Agent Dashboard - Stokika</title>
+    <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
+    <link rel="apple-touch-icon" href="assets/logos/logo-dark.png">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" 
+          rel="stylesheet"
+          crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="css/agent-dashboard.css">
+    <link rel="stylesheet" href="css/offline-styles.css">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#667eea">
+</head>
+<body>
+    <div id="onlineStatus" class="status-online">🟢 Online</div>
+    <div id="syncBadge" class="sync-badge sync-badge--hidden" aria-label="Pending sync items">0</div>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo"><a href="https://www.stokika.com" target="_blank" rel="noopener noreferrer"><img src="assets/logos/logo.png.png" alt="Stokika"></a></div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="overview"><span>📊</span> Overview</a>
+                <a href="#" class="nav-item" data-page="vendors"><span>🏪</span> My Vendors</a>
+                <a href="#" class="nav-item" data-page="visits"><span>📍</span> Visit Logs</a>
+                <a href="#" class="nav-item" data-page="orders"><span>🛒</span> Create Order</a>
+                <a href="#" class="nav-item" data-page="referrals"><span>🔗</span> My Referrals</a>
+                <a href="#" class="nav-item" data-page="performance"><span>📈</span> Performance</a>
+                <a href="#" class="nav-item" id="settingsNavItem"><span>⚙️</span> Settings</a>
+            </nav>
+            <button class="btn-logout" id="logoutBtn">Logout</button>
+        </aside>
+        <main class="main-content">
+            <header class="header">
+                <h1 id="pageTitle">Overview</h1>
+                <div class="user-info"><span id="agentName">Agent</span></div>
+            </header>
+            <div id="overview-page" class="page active">
+                <div class="stats-grid">
+                    <div class="stat-card"><h3 id="todayVisits">0</h3><p>Today's Visits</p></div>
+                    <div class="stat-card"><h3 id="assignedVendors">0</h3><p>Assigned Vendors</p></div>
+                    <div class="stat-card"><h3 id="ordersCreated">0</h3><p>Orders Created</p></div>
+                    <div class="stat-card"><h3 id="commission">KES 0</h3><p>Commission</p></div>
+                </div>
+                <div class="card"><h2>Today's Tasks</h2><div id="todayTasks"><p>No tasks for today</p></div></div>
+            </div>
+            <div id="vendors-page" class="page">
+                <div id="vendorsList">Loading...</div>
+            </div>
+            <div id="visits-page" class="page">
+                <button class="btn-primary" id="logVisitBtn">Log Visit</button>
+                <div id="visitsList">Loading...</div>
+            </div>
+            <div id="orders-page" class="page">
+                <div class="card">
+                    <h2>Create Order for Vendor</h2>
+                    <form id="orderForm">
+                        <label for="vendorSelect">Vendor *</label>
+                        <select id="vendorSelect" required><option value="">Select Vendor</option></select>
+                        
+                        <label for="supplierSelect">Supplier *</label>
+                        <select id="supplierSelect" required><option value="">Select Supplier</option></select>
+                        
+                        <label for="productName">Product Name *</label>
+                        <input type="text" id="productName" placeholder="Enter product name" required>
+                        
+                        <label for="quantity">Quantity *</label>
+                        <input type="number" id="quantity" placeholder="Enter quantity" required>
+                        
+                        <label for="amount">Amount (KES) *</label>
+                        <input type="number" id="amount" placeholder="Enter amount in KES" required>
+                        
+                        <button type="submit" class="btn-primary">Create Order</button>
+                    </form>
+                </div>
+            </div>
+            <div id="performance-page" class="page">
+                <div class="card"><h2>Performance Metrics</h2><div id="performanceData"><p>Loading...</p></div></div>
+            </div>
+            <div id="referrals-page" class="page">
+                <div class="card">
+                    <h2>My Referrals</h2>
+                    <div class="referral-stats" id="referralStats">
+                        <div class="stat-card"><h3 id="totalReferrals">0</h3><p>Total Referrals</p></div>
+                        <div class="stat-card"><h3 id="activeReferrals">0</h3><p>Active</p></div>
+                        <div class="stat-card"><h3 id="totalCommission">KES 0</h3><p>Commission Earned</p></div>
+                    </div>
+                    <div class="affiliate-link-section">
+                        <h3>Your Affiliate Links</h3>
+                        <div class="affiliate-link-row">
+                            <label for="vendorAffiliateLink" class="affiliate-label">Vendor Registration Link:</label>
+                            <div class="affiliate-input-group">
+                                <input type="text" id="vendorAffiliateLink" placeholder="Your vendor referral link" readonly class="affiliate-input">
+                                <button class="btn-primary btn-copy" data-copy-type="vendor">Copy</button>
+                            </div>
+                        </div>
+                        <div class="affiliate-link-row">
+                            <label for="supplierAffiliateLink" class="affiliate-label">Supplier Registration Link:</label>
+                            <div class="affiliate-input-group">
+                                <input type="text" id="supplierAffiliateLink" placeholder="Your supplier referral link" readonly class="affiliate-input">
+                                <button class="btn-primary btn-copy" data-copy-type="supplier">Copy</button>
+                            </div>
+                        </div>
+                        <p class="affiliate-hint">Share these links with vendors and suppliers to track your referrals</p>
+                    </div>
+                    <div id="referralsList">Loading...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <!-- CDN Scripts with SRI -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
+            crossorigin="anonymous"></script>
+    
+    <!-- Application Scripts -->
+    <script src="dist/agent.js"></script>

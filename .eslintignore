@@ -1,0 +1,28 @@
+# Build output
+dist/
+build/
+
+# Dependencies
+node_modules/
+
+# Backups
+backups/
+
+# JavaScript files (legacy - will be migrated)
+*.js
+!build.config.js
+
+# Config files
+.eslintrc.js
+build.config.js
+
+# External libraries
+assets/
+api/
+
+# Test files (temporarily)
+**/*.test.ts
+**/*.spec.ts
+
+# Documentation
+*.md

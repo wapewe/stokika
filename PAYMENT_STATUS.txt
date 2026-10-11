@@ -1,0 +1,40 @@
+UNIFIED PAYMENT ARCHITECTURE - IMPLEMENTATION STATUS
+
+ISSUE: Migration failed because it references 'users' table which doesn't exist
+SOLUTION: Need to use 'profiles' table instead
+
+MIGRATION FILES STATUS:
+- Original file deleted: 20260916000001_unified_payment_architecture.sql
+- New migration needs to be created manually with correct table references
+
+KEY CHANGES NEEDED:
+1. Replace user_id with profile_id throughout
+2. Replace REFERENCES users(id) with REFERENCES profiles(id)
+3. Add vendor registration fee columns to vendors table
+4. Add get_registration_fee() function
+
+NEXT STEPS:
+1. Manually create corrected migration file
+2. Apply migration: supabase db push
+3. Deploy Edge Functions
+4. Implement vendor registration payment UI in dalana.html
+
+EDGE FUNCTIONS READY TO DEPLOY:
+- mpesa-c2b-validation
+- mpesa-c2b-confirmation  
+- mpesa-stk-callback
+- payment-status
+
+VENDOR REGISTRATION REQUIREMENTS:
+- Registration fee: KES 1,050 (server-side only)
+- Support STK Push and manual C2B
+- Payment must be confirmed before registration completes
+- Frontend cannot manipulate the fee amount
+
+DOCUMENTATION CREATED:
+- UNIFIED_PAYMENT_ARCHITECTURE.md
+- PAYMENT_SYSTEM_TESTING_GUIDE.md
+- TypeScript payment service library
+- Payment modal example component
+
+

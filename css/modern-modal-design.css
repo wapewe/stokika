@@ -1,0 +1,539 @@
+/**
+ * Modern Sleek Modal Design
+ * Professional, clean, and beautiful styling for vendor registration
+ */
+
+/* ========================================
+   MODAL OVERLAY - Modern backdrop
+   ======================================== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal-overlay.active {
+    display: flex;
+    opacity: 1;
+}
+
+/* ========================================
+   MODAL CONTENT - Sleek container
+   ======================================== */
+.modal-content {
+    background: #ffffff;
+    border-radius: 24px;
+    box-shadow: 
+        0 25px 50px -12px rgba(0, 0, 0, 0.25),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
+    max-width: 640px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    transform: scale(0.95);
+    transition: transform 0.3s ease;
+    animation: modalSlideIn 0.3s ease forwards;
+}
+
+.modal-overlay.active .modal-content {
+    transform: scale(1);
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-20px) scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Vendor Registration Modal - Larger */
+.modal-content.vendor-registration {
+    max-width: 900px;
+    max-height: 92vh;
+}
+
+/* ========================================
+   CLOSE BUTTON - Beautiful X icon
+   ======================================== */
+.modal-close {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: #f1f5f9;
+    color: #64748b;
+    border-radius: 12px;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 10;
+    font-weight: 300;
+}
+
+.modal-close:hover {
+    background: #10b981;
+    color: #ffffff;
+    transform: rotate(90deg) scale(1.1);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.modal-close:active {
+    transform: rotate(90deg) scale(0.95);
+}
+
+/* ========================================
+   MODAL HEADER - Professional styling
+   ======================================== */
+.modal-header {
+    padding: 2rem 2rem 1.5rem 2rem;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: center;
+}
+
+.modal-header h3 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.025em;
+}
+
+.modal-header p {
+    font-size: 1rem;
+    color: #64748b;
+    margin: 0;
+    font-weight: 400;
+}
+
+/* ========================================
+   REGISTRATION HEADER - Vendor modal
+   ======================================== */
+.registration-header {
+    padding: 2rem 2.5rem 1rem 2.5rem;
+    text-align: center;
+    border-bottom: 2px solid #f1f5f9;
+}
+
+.registration-header h2 {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.03em;
+}
+
+.registration-tagline {
+    font-size: 1.05rem;
+    color: #64748b;
+    font-weight: 500;
+    margin: 0;
+}
+
+/* ========================================
+   MODAL BODY - Clean content area
+   ======================================== */
+.modal-body {
+    padding: 2rem;
+}
+
+/* ========================================
+   GET STARTED BUTTONS - Modern cards
+   ======================================== */
+.modal-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.btn-modal {
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-modal::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(16, 185, 129, 0.05) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.btn-modal:hover {
+    border-color: #10b981;
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px -8px rgba(16, 185, 129, 0.25);
+}
+
+.btn-modal:hover::before {
+    opacity: 1;
+}
+
+.btn-modal h4 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 1rem 0 0.5rem 0;
+}
+
+.modal-subtitle {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 0 0 1.5rem 0;
+    font-weight: 500;
+}
+
+/* Icon Circle */
+.modal-icon-circle {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin: 0 auto 1rem auto;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.btn-modal:hover .modal-icon-circle {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.modal-icon-circle.green {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.modal-icon-circle.blue {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+/* Feature List */
+.feature-list {
+    text-align: left;
+    margin: 1.5rem 0;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.9rem;
+    color: #475569;
+}
+
+.feature-check {
+    width: 20px;
+    height: 20px;
+    background: #10b981;
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* Register Buttons */
+.register-btn {
+    width: 100%;
+    padding: 0.875rem 1.5rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #ffffff;
+    margin-top: 1rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.register-btn.green {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.register-btn.blue {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.register-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+}
+
+.register-btn:active {
+    transform: translateY(0);
+}
+
+/* ========================================
+   MODAL FOOTER
+   ======================================== */
+.modal-footer {
+    padding: 1.5rem 2rem 2rem 2rem;
+    text-align: center;
+    border-top: 1px solid #e2e8f0;
+}
+
+.modal-footer p {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin: 0;
+}
+
+.modal-footer a {
+    color: #10b981;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.modal-footer a:hover {
+    color: #059669;
+    text-decoration: underline;
+}
+
+/* ========================================
+   PROGRESS INDICATORS - Already styled
+   ======================================== */
+.registration-progress {
+    padding: 1.5rem 2.5rem 1rem 2.5rem;
+    margin-bottom: 1.5rem;
+    overflow: visible;
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    background: #f8fafc;
+    border-radius: 16px;
+    margin: 0 2rem 2rem 2rem;
+}
+
+/* ========================================
+   FORM STYLING - Modern inputs
+   ======================================== */
+.vendor-form {
+    padding: 0 2.5rem 2rem 2.5rem;
+}
+
+.form-step h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 0 0 0.5rem 0;
+}
+
+.step-description {
+    font-size: 1rem;
+    color: #64748b;
+    margin: 0 0 2rem 0;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 0.5rem;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+    color: #0f172a;
+    background: #ffffff;
+    transition: all 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: #94a3b8;
+}
+
+/* Form Row */
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Form Buttons */
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid #f1f5f9;
+}
+
+.btn-previous,
+.btn-next {
+    padding: 0.875rem 2rem;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 120px;
+}
+
+.btn-previous {
+    background: #f1f5f9;
+    color: #64748b;
+}
+
+.btn-previous:hover {
+    background: #e2e8f0;
+    transform: translateX(-2px);
+}
+
+.btn-next {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: #ffffff;
+    margin-left: auto;
+}
+
+.btn-next:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.3);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+@media (max-width: 768px) {
+    .modal-content {
+        max-width: 100%;
+        border-radius: 16px;
+        max-height: 95vh;
+    }
+    
+    .modal-buttons {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .modal-header,
+    .registration-header {
+        padding: 1.5rem 1.5rem 1rem 1.5rem;
+    }
+    
+    .modal-body {
+        padding: 1.5rem;
+    }
+    
+    .vendor-form {
+        padding: 0 1.5rem 1.5rem 1.5rem;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .registration-progress {
+        margin: 0 1rem 1.5rem 1rem;
+        padding: 1rem 1rem 0.75rem 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal-close {
+        width: 36px;
+        height: 36px;
+        font-size: 1.25rem;
+    }
+    
+    .registration-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .form-buttons {
+        flex-direction: column;
+    }
+    
+    .btn-next {
+        margin-left: 0;
+    }
+}
+
+/* ========================================
+   SCROLLBAR STYLING
+   ======================================== */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Static CSP Meta Tag -->
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' https://cdn.jsdelivr.net; 
+                   style-src 'self' https://cdnjs.cloudflare.com; 
+                   font-src 'self' https://cdnjs.cloudflare.com; 
+                   connect-src 'self' https://*.supabase.co; 
+                   img-src 'self' data: https:; base-uri 'self'; 
+                   form-action 'self';">
+    
+    <title>Vendor Shops Directory - Stokika</title>
+    
+    <!-- Font Awesome with CORS (no SRI for frequently updated CDN) -->
+    <link rel="stylesheet" 
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+          crossorigin="anonymous">
+    
+    <!-- Page Styles -->
+    <link rel="stylesheet" href="css/vendor-shops-directory.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-logo">
+                <img src="assets/logos/logo.png.png" alt="Stokika">
+            </div>
+            <h1>Vendor Shops Directory</h1>
+            <p>Discover amazing products from verified vendors across Kenya. Each vendor has their own branded shop with unique products and competitive prices.</p>
+        </div>
+
+        <div id="shopsGrid" class="shops-grid">
+            <div class="loading grid-full-span">
+                <i class="fas fa-spinner fa-spin loading-spinner-icon"></i>
+                <p>Loading vendor shops...</p>
+            </div>
+        </div>
+
+        <div class="vendor-info">
+            <h2>Why Shop with Our Vendors?</h2>
+            <p>Our verified vendors offer quality products with personalized service and competitive pricing.</p>
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-icon"><i class="fas fa-shield-alt"></i></div>
+                    <div class="info-title">Verified Vendors</div>
+                    <div class="info-desc">All vendors are verified and approved by our team to ensure quality and reliability.</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon"><i class="fas fa-palette"></i></div>
+                    <div class="info-title">Custom Branding</div>
+                    <div class="info-desc">Each vendor has their own branded shop with unique design and personalized experience.</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon"><i class="fas fa-shipping-fast"></i></div>
+                    <div class="info-title">Fast Delivery</div>
+                    <div class="info-desc">Vendors offer various delivery options including dropshipping for faster fulfillment.</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon"><i class="fas fa-headset"></i></div>
+                    <div class="info-title">Direct Support</div>
+                    <div class="info-desc">Get direct support from vendors through WhatsApp, phone, or email for personalized service.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h2>Want to Start Your Own Shop?</h2>
+            <p>Join our platform as a vendor and create your own branded online shop with dropshipping capabilities.</p>
+            <a href="vendor-dashboard.html" class="cta-btn">
+                <i class="fas fa-store"></i> Start Your Shop
+            </a>
+        </div>
+    </div>
+
+    <!-- Configuration Loader (loads before Supabase) -->
+    <script src="js/core/config-loader.js"></script>
+    
+    <!-- Supabase CDN with SRI -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
+            crossorigin="anonymous"></script>
+    
+    <!-- Page Module (ES6 Module) -->
+    <script src="js/pages/vendor-shops-directory.page.js" type="module"></script>
+</body>
+</html>

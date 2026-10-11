@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Animation Diagnostic Test</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #0f172a; color: white; }
+        
+        .hero-section {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .hero-full-content {
+            max-width: 800px;
+            text-align: center;
+        }
+        
+        /* Initial state - all elements hidden */
+        .hero-full-content > * {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        
+        /* Animation keyframe */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Triggered animations when .loaded class is added */
+        .hero-slide.loaded .hero-icon-badge {
+            animation: fadeInUp 0.8s ease-out 0.2s forwards;
+        }
+        
+        .hero-slide.loaded .hero-main-title {
+            animation: fadeInUp 0.8s ease-out 0.4s forwards;
+        }
+        
+        .hero-slide.loaded .hero-tagline {
+            animation: fadeInUp 0.8s ease-out 0.6s forwards;
+        }
+        
+        .hero-slide.loaded .hero-description {
+            animation: fadeInUp 0.8s ease-out 0.8s forwards;
+        }
+        
+        .hero-slide.loaded .hero-buttons {
+            animation: fadeInUp 0.8s ease-out 1.0s forwards;
+        }
+        
+        .hero-slide.loaded .hero-stats {
+            animation: fadeInUp 0.8s ease-out 1.2s forwards;
+        }
+        
+        /* Styling */
+        .hero-icon-badge {
+            width: 80px;
+            height: 80px;
+            background: #10b981;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .hero-icon-badge svg {
+            width: 40px;
+            height: 40px;
+            color: white;
+        }
+        
+        .hero-main-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+        
+        .hero-tagline {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            opacity: 0.9;
+        }
+        
+        .hero-description {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            opacity: 0.8;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        
+        .btn-hero-primary {
+            padding: 1rem 2rem;
+            background: white;
+            color: #667eea;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        
+        .hero-stats {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+        }
+        
+        .hero-stat-card {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #10b981;
+        }
+        
+        .stat-text {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        #diagnostic {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.8);
+            padding: 1rem;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            max-width: 300px;
+            z-index: 9999;
+        }
+        
+        #diagnostic div {
+            margin: 0.5rem 0;
+            padding: 0.5rem;
+            border-left: 3px solid #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div id="diagnostic">
+        <strong>🔍 Diagnostic Panel</strong>
+    </div>
+    
+    <section class="hero-section">
+        <div class="hero-slide" data-slide="0">
+            <div class="hero-full-content">
+                <div class="hero-icon-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+                    </svg>
+                </div>
+                <h1 class="hero-main-title">Welcome to stokika</h1>
+                <p class="hero-tagline">Get sorted with stokika</p>
+                <p class="hero-description">Transform your business with smart stock financing</p>
+                <div class="hero-buttons">
+                    <a href="#" class="btn-hero-primary">Join Now →</a>
+                </div>
+                <div class="hero-stats">
+                    <div class="hero-stat-card">
+                        <div class="stat-number">1000+</div>
+                        <div class="stat-text">MSMEs</div>
+                    </div>
+                    <div class="hero-stat-card">
+                        <div class="stat-number">47</div>
+                        <div class="stat-text">Counties</div>
+                    </div>
+                    <div class="hero-stat-card">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-text">Support</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const diagnosticPanel = document.getElementById('diagnostic');
+        const heroSlide = document.querySelector('.hero-slide');
+        
+        function log(message, emoji = '📝') {
+            console.log(emoji + ' ' + message);
+            const div = document.createElement('div');
+            div.textContent = emoji + ' ' + message;
+            diagnosticPanel.appendChild(div);
+        }
+        
+        log('Script loaded', '✅');
+        log('Slide found: ' + (heroSlide ? 'YES' : 'NO'), heroSlide ? '✅' : '❌');
+        
+        const elements = {
+            icon: document.querySelector('.hero-icon-badge'),
+            title: document.querySelector('.hero-main-title'),
+            tagline: document.querySelector('.hero-tagline'),
+            description: document.querySelector('.hero-description'),
+            buttons: document.querySelector('.hero-buttons'),
+            stats: document.querySelector('.hero-stats')
+        };
+        
+        Object.entries(elements).forEach(([name, el]) => {
+            if (el) {
+                const computed = window.getComputedStyle(el);
+                log(`${name}: opacity=${computed.opacity}`, '👁️');
+            } else {
+                log(`${name}: NOT FOUND`, '❌');
+            }
+        });
+        
+        log('Adding .loaded class...', '⏳');
+        
+        setTimeout(() => {
+            heroSlide.classList.add('loaded');
+            log('loaded class added!', '✅');
+            
+            setTimeout(() => {
+                Object.entries(elements).forEach(([name, el]) => {
+                    if (el) {
+                        const computed = window.getComputedStyle(el);
+                        log(`${name}: opacity=${computed.opacity}`, '🎬');
+                    }
+                });
+            }, 2000);
+        }, 500);
+    </script>
+</body>
+</html>

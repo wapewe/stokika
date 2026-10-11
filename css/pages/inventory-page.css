@@ -1,0 +1,251 @@
+/* Import common styles */
+@import '../common/base.css';
+@import '../common/layout.css';
+@import '../common/components.css';
+@import '../common/navigation.css';
+
+/* Inventory Page specific styles */
+.sidebar { 
+    background: #065f46; 
+}
+
+.btn-primary { 
+    background: #10b981; 
+    color: #fff; 
+    border: none; 
+    padding: 0.75rem 1.5rem; 
+    border-radius: 8px; 
+    font-weight: 600; 
+    cursor: pointer; 
+    transition: background 0.2s; 
+}
+
+.btn-primary:hover { 
+    background: #f59e0b; 
+}
+
+.filters { 
+    display: flex; 
+    gap: 1rem; 
+    margin-bottom: 1.5rem; 
+}
+
+.filters input, 
+.filters select { 
+    padding: 0.75rem; 
+    border: 1px solid #e2e8f0; 
+    border-radius: 8px; 
+    flex: 1; 
+}
+
+.stats-row { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+    gap: 1.5rem; 
+    margin-bottom: 2rem; 
+}
+
+.stat-card h3 { 
+    color: #10b981; 
+}
+
+.logo {
+    padding: 16px 20px;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo a { 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+}
+
+.logo img { 
+    max-width: 130px; 
+    height: auto; 
+    display: block; 
+}
+
+.badge.in-stock { 
+    background: #dcfce7; 
+    color: #166534; 
+}
+
+.badge.low-stock { 
+    background: #fef3c7; 
+    color: #92400e; 
+}
+
+.badge.out-of-stock { 
+    background: #fee2e2; 
+    color: #991b1b; 
+}
+
+.btn-action { 
+    padding: 0.5rem 1rem; 
+    border: none; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    font-size: 0.875rem; 
+    margin-right: 0.5rem; 
+}
+
+.btn-edit { 
+    background: #dbeafe; 
+    color: #1e40af; 
+}
+
+.btn-delete { 
+    background: #fee2e2; 
+    color: #991b1b; 
+}
+
+.table-loading-cell { 
+    text-align: center; 
+    padding: 2rem; 
+}
+
+/* Empty state styles */
+.empty-inventory {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.empty-icon {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 2rem;
+    opacity: 0.3;
+}
+
+.empty-title {
+    margin: 0 0 1rem;
+    color: #111827;
+    font-size: 1.5rem;
+}
+
+.empty-description {
+    margin: 0 0 2rem;
+    color: #6b7280;
+    font-size: 1rem;
+}
+
+.btn-request-stock {
+    display: inline-block;
+    padding: 0.875rem 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    text-decoration: none;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    box-shadow: 0 4px 6px rgba(102, 126, 234, 0.3);
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+.btn-request-stock:hover {
+    transform: translateY(-2px);
+}
+
+.btn-icon {
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 0.5rem;
+}
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+.modal-content {
+    background: #fff;
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 500px;
+    width: 90%;
+}
+
+.modal-title {
+    margin-bottom: 1.5rem;
+}
+
+.modal-input {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 1rem;
+}
+
+.modal-buttons .btn-primary {
+    flex: 1;
+}
+
+.btn-cancel {
+    flex: 1;
+    padding: 0.75rem;
+    background: #f3f4f6;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-cancel:hover {
+    background: #e5e7eb;
+}
+
+/* Dark mode */
+body.dark-mode .empty-title {
+    color: #f3f4f6;
+}
+
+body.dark-mode .empty-description {
+    color: #9ca3af;
+}
+
+body.dark-mode .modal-content {
+    background: #1f2937;
+}
+
+body.dark-mode .modal-title {
+    color: #f3f4f6;
+}
+
+body.dark-mode .modal-input {
+    background: #374151;
+    border-color: #4b5563;
+    color: #f3f4f6;
+}
+
+body.dark-mode .btn-cancel {
+    background: #374151;
+    color: #f3f4f6;
+}
+
+body.dark-mode .btn-cancel:hover {
+    background: #4b5563;
+}

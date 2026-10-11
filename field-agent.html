@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Static CSP Meta Tag -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; 
+                   script-src 'self' https://cdn.jsdelivr.net; 
+                   style-src 'self' https://fonts.googleapis.com; 
+                   font-src 'self' https://fonts.gstatic.com; 
+                   connect-src 'self' https://*.supabase.co; 
+                   img-src 'self' data: https:; base-uri 'self'; 
+                   form-action 'self';">
+
+    <title>Field Agent Application - stokika</title>
+    <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
+    <link rel="apple-touch-icon" href="assets/logos/logo-dark.png">
+
+    <!-- Google Fonts with crossorigin -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" crossorigin="anonymous">
+
+    <!-- Page-specific CSS -->
+    <link rel="stylesheet" href="css/pages/field-agent.css">
+</head>
+
+<body>
+    <div class="back-to-home">
+        <a href="jobs.html" class="btn-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back to Jobs
+        </a>
+    </div>
+
+    <div class="onboarding-container">
+        <div class="onboarding-header">
+            <h1>📄 stokika FIELD AGENT ONBOARDING FORM</h1>
+            <p>Confidential – For Internal Recruitment Use Only</p>
+        </div>
+
+        <form id="fieldAgentForm" data-sanitize="true">
+            <!-- Section 1: Personal Information -->
+            <div class="form-section">
+                <h2 class="section-title">1. PERSONAL INFORMATION</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fullName">Full Name *</label>
+                        <input type="text" name="fullName" id="fullName" placeholder="e.g. John Kamau Mwangi" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number *</label>
+                        <input type="tel" name="phone" id="phone" placeholder="07XX, 01XX or 254X format"
+                            data-sanitize-type="phone" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" name="email" id="email" placeholder="e.g. john.mwangi@gmail.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="idNumber">National ID Number *</label>
+                        <input type="text" name="idNumber" id="idNumber" placeholder="e.g. 12345678 (8 digits)"
+                            pattern="[0-9]{8}" maxlength="8" title="Enter exactly 8 digits" data-sanitize-type="numeric"
+                            required>
+                        <span id="idNumberError" class="error-message"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dateOfBirth">Date of Birth *</label>
+                        <input type="date" name="dateOfBirth" id="dateOfBirth" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Gender *</label>
+                        <select name="gender" id="gender" required>
+                            <option value="">Select gender</option>
+                            <option value="male">Male</option>
+                            <option value="female">Female</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <div id="genderOtherField" class="conditional-field">
+                            <label for="genderOther" class="sr-only">Specify Other Gender</label>
+                            <input type="text" name="genderOther" id="genderOther" placeholder="Please specify">
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="county">County *</label>
+                        <input type="text" name="county" id="county" placeholder="e.g. Nairobi, Kiambu, Mombasa"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="subCounty">Sub-County *</label>
+                        <input type="text" name="subCounty" id="subCounty" placeholder="e.g. Westlands, Thika, Nyali"
+                            required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="town">Town *</label>
+                        <input type="text" name="town" id="town" placeholder="e.g. Nairobi, Thika, Mombasa" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ward">Ward / Village / Estate *</label>
+                        <input type="text" name="ward" id="ward" placeholder="e.g. Parklands Ward, Githurai Estate"
+                            required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Next of Kin -->
+            <div class="form-section">
+                <h2 class="section-title">2. NEXT OF KIN DETAILS</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="kinName">Full Name *</label>
+                        <input type="text" name="kinName" id="kinName" placeholder="e.g. Mary Wanjiku Kamau" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="kinRelationship">Relationship to Applicant *</label>
+                        <input type="text" name="kinRelationship" id="kinRelationship"
+                            placeholder="e.g. Mother, Brother, Spouse" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="kinPhone">Phone Number *</label>
+                        <input type="tel" name="kinPhone" id="kinPhone" placeholder="07XX, 01XX or 254X format"
+                            data-sanitize-type="phone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="kinAddress">Address</label>
+                        <input type="text" name="kinAddress" id="kinAddress" placeholder="e.g. P.O Box 123, Nairobi">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Role Summary -->
+            <div class="role-summary">
+                <h2 class="section-title">ROLE SUMMARY</h2>
+                <p>A stokika Field Agent is a mandated employee responsible for <span class="highlight">acquiring,
+                        onboarding, and managing micro-vendors</span> who require stock advances. The agent acts as the
+                    bridge between stokika and the informal sector by <strong>collecting accurate business data,
+                        verifying stock needs, educating vendors, and supporting both deliveries and
+                        repayments</strong>. They maintain strong field visibility and safeguard stokika from fraud by
+                    ensuring that all vendors, stock movements, and business activities are legitimate, active, and
+                    productive.</p>
+            </div>
+
+            <!-- Scope of Work -->
+            <div class="form-section">
+                <h2 class="section-title">SCOPE OF WORK</h2>
+                <p>stokika field agents will:</p>
+                <ul class="deliverables-list">
+                    <li>Recruit and onboard eligible vendors within assigned zones</li>
+                    <li>Verify vendor identity and business legitimacy</li>
+                    <li>Collect accurate business and personal data through the stokika platform</li>
+                    <li>Support vendors during their first stock advance cycle</li>
+                    <li>Ensure repayments are properly tracked and recorded</li>
+                    <li>Maintain ongoing field presence for vendor support and follow-ups</li>
+                    <li>Report field activity to the Operations Team Leader/ Supervisor</li>
+                </ul>
+            </div>
+
+            <!-- Key Responsibilities -->
+            <div class="form-section">
+                <h2 class="section-title">KEY RESPONSIBILITIES</h2>
+
+                <h4>A. Vendor Acquisition</h4>
+                <ul class="deliverables-list">
+                    <li>Identify potential vendors (kiosks, salons, mitumba sellers, mama mbogas, etc.)</li>
+                    <li>Educate them on how the stokika Stock Advance works</li>
+                    <li>Submit complete onboarding forms and supporting documents</li>
+                </ul>
+
+                <h4>B. Vendor Verification & Data Collection</h4>
+                <ul class="deliverables-list">
+                    <li>Capture business details accurately (location, stock needs, sales capacity)</li>
+                    <li>Assist vendors in uploading photos, IDs, and required documents</li>
+                    <li>Confirm business legitimacy through physical visits</li>
+                </ul>
+
+                <h4>C. Operational Support</h4>
+                <ul class="deliverables-list">
+                    <li>Guide vendors on repayment schedules</li>
+                    <li>Follow up on repayments where necessary</li>
+                    <li>Assist with order placement if the vendor needs help</li>
+                    <li>Verifying vendor stock levels</li>
+                    <li>Approving stock orders (within their assigned limits)</li>
+                    <li>Reporting stale, expired, or slow-moving stock</li>
+                </ul>
+
+                <h4>D. Stock Verification & Approval</h4>
+                <p>Agents are responsible for ground-level stock validation to reduce risk of fraud and misallocation.
+                </p>
+                <p>They shall:</p>
+                <ul class="deliverables-list">
+                    <li>Conduct physical checks of current stock levels</li>
+                    <li>Confirm whether the vendor is eligible for stock advance</li>
+                    <li>Flag suspicious, malice or biased requests</li>
+                    <li>Approve recommended stock quantities (within agent approval limits)</li>
+                    <li>Report stale, expired, out-of- market, or </go-slow> items observed</li>
+                    <li>Provide timely feedback on product performance to the Supplier & Ops Team</li>
+                </ul>
+
+                <h4>E. Reporting</h4>
+                <ul class="deliverables-list">
+                    <li>Provide daily/weekly field reports</li>
+                    <li>Highlight challenges, risks, limmits and opportunities(voids) in the area</li>
+                    <li>Maintain strict compliance with stokika policies</li>
+                </ul>
+            </div>
+
+            <!-- Section 3: Employment & Experience -->
+            <div class="form-section">
+                <h2 class="section-title">3. EMPLOYMENT & EXPERIENCE</h2>
+                <div class="form-group">
+                    <label>Are you currently employed? *</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" name="currentlyEmployed" value="yes" id="employed-yes" required>
+                            <label for="employed-yes">Yes</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="currentlyEmployed" value="no" id="employed-no">
+                            <label for="employed-no">No</label>
+                        </div>
+                    </div>
+                    <div id="employmentDetails" class="conditional-field">
+                        <label for="currentEmployer" class="sr-only">Current Employer</label>
+                        <input type="text" name="currentEmployer" id="currentEmployer"
+                            placeholder="e.g. ABC Company, Self-employed">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Do you have previous field experience? *</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" name="hasFieldExperience" value="yes" id="field-exp-yes" required>
+                            <label for="field-exp-yes">Yes</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="hasFieldExperience" value="no" id="field-exp-no">
+                            <label for="field-exp-no">No</label>
+                        </div>
+                    </div>
+                    <div id="fieldExperienceDetails" class="conditional-field">
+                        <label>Previous field experience (select all that apply):</label>
+                        <div class="checkbox-group">
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="fieldExperienceTypes" value="sales-agent" id="exp-sales">
+                                <label for="exp-sales">Sales agent</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="fieldExperienceTypes" value="community-mobilizer"
+                                    id="exp-community">
+                                <label for="exp-community">Community mobilizer</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="fieldExperienceTypes" value="loan-officer" id="exp-loan">
+                                <label for="exp-loan">Microfinance / loan officer</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="fieldExperienceTypes" value="fmcg-distribution"
+                                    id="exp-fmcg">
+                                <label for="exp-fmcg">FMCG distribution</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="fieldExperienceTypes" value="market-research"
+                                    id="exp-research">
+                                <label for="exp-research">Market research</label>
+                            </div>
+                            <div class="checkbox-item">
+                                <input type="checkbox" name="fieldExperienceTypes" value="other" id="exp-other">
+                                <label for="exp-other">Other</label>
+                            </div>
+                        </div>
+                        <div id="otherExperienceField" class="conditional-field">
+                            <label for="otherExperience" class="sr-only">Other Field Experience</label>
+                            <input type="text" name="otherExperience" id="otherExperience"
+                                placeholder="Specify your other field experience">
+                        </div>
+
+                        <div class="form-group" id="yearsExperienceGroup">
+                            <label>Number of years of relevant experience *</label>
+                            <div class="radio-group">
+                                <div class="radio-item">
+                                    <input type="radio" name="yearsExperience" value="<1" id="years-less-1">
+                                    <label for="years-less-1">&lt;1 year</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="yearsExperience" value="1-2" id="years-1-2">
+                                    <label for="years-1-2">1–2</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="yearsExperience" value="2-3" id="years-2-3">
+                                    <label for="years-2-3">2–3</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="yearsExperience" value="4-5" id="years-4-5">
+                                    <label for="years-4-5">4–5</label>
+                                </div>
+                                <div class="radio-item">
+                                    <input type="radio" name="yearsExperience" value="5+" id="years-5plus">
+                                    <label for="years-5plus">5+</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Briefly describe your experience working with SMEs or informal traders *</label>
+                            <textarea name="experienceDescription" rows="4"
+                                placeholder="e.g. I worked as a sales agent for 2 years visiting small shops and kiosks in Eastlands area. I helped them with product orders and payments..."></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Language & Locality -->
+            <div class="form-section">
+                <h2 class="section-title">4. LANGUAGE & LOCALITY PROFICIENCY</h2>
+                <div class="form-group">
+                    <label>Languages Spoken Fluently (select all that apply):</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="languages" value="english" id="lang-english">
+                            <label for="lang-english">English</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="languages" value="kiswahili" id="lang-kiswahili">
+                            <label for="lang-kiswahili">Kiswahili</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="languages" value="local" id="lang-local">
+                            <label for="lang-local">Local language(s)</label>
+                        </div>
+                    </div>
+                    <div id="localLanguagesField" class="conditional-field">
+                        <label for="localLanguages" class="sr-only">Local Languages</label>
+                        <input type="text" name="localLanguages" id="localLanguages"
+                            placeholder="Specify local languages you speak e.g. Gikuyu, Kamba, Luo, Giriama, Maragoli, Kalenjin, Kisii, Maasai">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Are you familiar with the local market and its MSMEs? *</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" name="familiarWithMarket" value="yes" id="market-yes" required>
+                            <label for="market-yes">Yes</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="familiarWithMarket" value="no" id="market-no">
+                            <label for="market-no">No</label>
+                        </div>
+                    </div>
+                    <div id="marketKnowledgeDetails" class="conditional-field">
+                        <label for="marketAreas" class="sr-only">Market Areas You Know</label>
+                        <input type="text" name="marketAreas" id="marketAreas"
+                            placeholder="If yes, specify the area(s) you know best: e.g. Eastlands markets, Kawangware, Kibera">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 5: Technology & Device Readiness -->
+            <div class="form-section">
+                <h2 class="section-title">5. TECHNOLOGY & DEVICE READINESS</h2>
+                <div class="form-group">
+                    <label>Do you own a smartphone? *</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" name="ownsSmartphone" value="yes" id="smartphone-yes" required>
+                            <label for="smartphone-yes">Yes</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="ownsSmartphone" value="no" id="smartphone-no">
+                            <label for="smartphone-no">No</label>
+                        </div>
+                    </div>
+                    <div id="smartphoneDetails" class="conditional-field">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="phoneBrand">Brand & Model *</label>
+                                <input type="text" name="phoneBrand" id="phoneBrand"
+                                    placeholder="e.g. Samsung Galaxy A12, Tecno Spark">
+                            </div>
+                            <div class="form-group">
+                                <label for="androidVersion">Operating System (O.S) Version *</label>
+                                <input type="text" name="androidVersion" id="androidVersion"
+                                    placeholder="e.g. Android 11, Android 12">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Can you use smartphone for apps, forms, and uploading documents? *</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" name="canUseSmartphone" value="yes" id="can-use-yes" required>
+                            <label for="can-use-yes">Yes</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="canUseSmartphone" value="no" id="can-use-no">
+                            <label for="can-use-no">No</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Do you have Internet Access:</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="internetAccess" value="mobile-data" id="internet-mobile">
+                            <label for="internet-mobile">Mobile Data</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="internetAccess" value="wifi" id="internet-wifi">
+                            <label for="internet-wifi">Wi-Fi</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="internetAccess" value="no-access" id="internet-no">
+                            <label for="internet-no">No reliable access</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 6: Referees -->
+            <div class="form-section">
+                <h2 class="section-title">6. REFEREES</h2>
+                <p>Provide TWO professional or community referees.</p>
+
+                <h4>Referee 1</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ref1Name">Name *</label>
+                        <input type="text" name="ref1Name" id="ref1Name" placeholder="e.g. Peter Kiprotich Mutai"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ref1Phone">Phone *</label>
+                        <input type="tel" name="ref1Phone" id="ref1Phone" placeholder="07XX, 01XX or 254X format"
+                            data-sanitize-type="phone" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ref1Relationship">Relationship *</label>
+                    <input type="text" name="ref1Relationship" id="ref1Relationship"
+                        placeholder="e.g. Former supervisor, Pastor, Community leader" required>
+                </div>
+
+                <h4>Referee 2</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="ref2Name">Name *</label>
+                        <input type="text" name="ref2Name" id="ref2Name" placeholder="e.g. Grace Akinyi Ochieng"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="ref2Phone">Phone *</label>
+                        <input type="tel" name="ref2Phone" id="ref2Phone" placeholder="07XX, 01XX or 254X format"
+                            data-sanitize-type="phone" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="ref2Relationship">Relationship *</label>
+                    <input type="text" name="ref2Relationship" id="ref2Relationship"
+                        placeholder="e.g. Former colleague, Teacher, Business partner" required>
+                </div>
+            </div>
+
+            <!-- Section 8: Character & Declarations -->
+            <div class="form-section">
+                <h2 class="section-title">7. CHARACTER & DECLARATIONS</h2>
+                <div class="form-group">
+                    <label>Have you ever been involved in financial misconduct, fraud, or criminal activity? *</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" name="hasMisconduct" value="yes" id="misconduct-yes" required>
+                            <label for="misconduct-yes">Yes</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="hasMisconduct" value="no" id="misconduct-no">
+                            <label for="misconduct-no">No</label>
+                        </div>
+                    </div>
+                    <div id="misconductDetails" class="conditional-field">
+                        <textarea name="misconductExplanation" rows="4"
+                            placeholder="If yes, explain: Please provide full details of the incident, when it occurred, and current status"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Are you willing to adhere to stokika's Agent Code of Conduct? *</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" name="agreesToConduct" value="yes" id="conduct-yes" required>
+                            <label for="conduct-yes">Yes</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="agreesToConduct" value="no" id="conduct-no">
+                            <label for="conduct-no">No</label>
+                        </div>
+                    </div>
+                    <div id="conductNoReason" class="conditional-field">
+                        <textarea name="conductNoExplanation" rows="3"
+                            placeholder="If no, explain/give reason why"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Are you willing to undergo training and performance evaluations? *</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" name="agreesToTraining" value="yes" id="training-yes" required>
+                            <label for="training-yes">Yes</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="agreesToTraining" value="no" id="training-no">
+                            <label for="training-no">No</label>
+                        </div>
+                    </div>
+                    <div id="trainingNoReason" class="conditional-field">
+                        <textarea name="trainingNoExplanation" rows="3"
+                            placeholder="If no, explain/give reason why"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 9: Document Submission -->
+            <div class="form-section">
+                <h2 class="section-title">8. DOCUMENT SUBMISSION *</h2>
+                <p>Upload CLEAR photos/scans of the following documents:</p>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="idFront">National ID Front *</label>
+                        <input type="file" name="idFront" id="idFront" accept=".pdf,.png,.jpg,.jpeg" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="idBack">National ID Back *</label>
+                        <input type="file" name="idBack" id="idBack" accept=".pdf,.png,.jpg,.jpeg" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="cv">Updated CV *</label>
+                        <input type="file" name="cv" id="cv" accept=".pdf,.doc,.docx" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="chiefLetter">Letter from Area Chief (stamped, signed & dated) *</label>
+                        <input type="file" name="chiefLetter" id="chiefLetter" accept=".pdf" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="passportPhoto">Passport Photo *</label>
+                        <input type="file" name="passportPhoto" id="passportPhoto" accept=".jpg,.jpeg,.png" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="goodConduct">Certificate of Good Conduct (optional)</label>
+                        <input type="file" name="goodConduct" id="goodConduct" accept=".pdf">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="kraPin">KRA PIN Number (optional)</label>
+                    <input type="text" name="kraPin" id="kraPin" placeholder="Enter KRA PIN">
+                </div>
+            </div>
+
+            <!-- Declaration -->
+            <div class="declaration-box">
+                <h2 class="section-title">DECLARATION & AGREEMENT</h2>
+                <p>I hereby declare that:</p>
+                <ul>
+                    <li>The information I have provided is true and accurate</li>
+                    <li>I agree to represent stokika professionally at all times</li>
+                    <li>I shall follow all company policies regarding vendor onboarding, data handling, and field
+                        operations</li>
+                    <li>I understand that any fraudulent activity will result in immediate termination and potential
+                        legal action</li>
+                </ul>
+                <div class="form-group">
+                    <div class="checkbox-item checkbox-agreement">
+                        <input type="checkbox" name="agreement" id="agreement" required>
+                        <label for="agreement">I agree to all the above terms and conditions *</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Section -->
+            <div class="submit-section">
+                <button type="submit" class="btn-submit-onboarding">Submit Application</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Supabase CDN with SRI -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+        integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
+        crossorigin="anonymous"></script>
+
+    <!-- Core Setup Scripts -->
+    <script src="js/core/config-loader.js"></script>
+    <script src="js/core/setup.js"></script>
+    <script src="js/core/supabase-config.js"></script>
+
+    <!-- Security Scripts -->
+    <script src="js/security/input-sanitizer.js"></script>
+    <script src="js/security/xss-protection.js"></script>
+    <script src="js/security/secure-session.js"></script>
+    <script src="js/security/csrf-protection.js"></script>
+
+    <!-- Page-Specific Script -->
+    <script src="js/pages/field-agent-form.page.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,21 @@
+Contact: security@stokika.com
+Contact: mailto:admin@stokika.com
+Expires: 2025-12-31T23:59:59.000Z
+Encryption: https://stokika.com/pgp-key.txt
+Acknowledgments: https://stokika.com/security/hall-of-fame
+Policy: https://stokika.com/security/policy
+Hiring: https://stokika.com/careers/security
+
+# Security Contact Information
+# Report security vulnerabilities to: security@stokika.com
+# For urgent security issues, call: +254-XXX-XXXXXX
+# PGP Key fingerprint: XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX
+
+# Scope
+# In scope: *.stokika.com, mobile applications
+# Out of scope: Third-party services, social engineering
+
+# Responsible Disclosure
+# We follow a 90-day disclosure timeline
+# Acknowledgment within 24 hours
+# Initial response within 72 hours

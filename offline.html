@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Static Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' https://cdn.jsdelivr.net; 
+                   style-src 'self'; 
+                   font-src 'self'; 
+                   connect-src 'self' https://*.supabase.co; 
+                   img-src 'self' data: https:; base-uri 'self'; 
+                   form-action 'self';">
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    
+    <title>Offline - Stokika</title>
+    <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
+    <link rel="stylesheet" href="css/offline.css">
+</head>
+<body>
+    <div class="offline-container">
+        <div class="offline-logo">
+            <a href="https://www.stokika.com" target="_blank" rel="noopener noreferrer">
+                <img src="assets/logos/logo.png.png" alt="Stokika">
+            </a>
+        </div>
+        <div class="offline-icon">📡</div>
+        <h1>You're Offline</h1>
+        <p>Check your internet connection and try again.</p>
+        <button class="btn-retry" id="retryBtn">Retry</button>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
+            crossorigin="anonymous"></script>
+    <!-- Security Scripts -->
+    <script src="js/core/config-loader.js"></script>
+    <script src="js/security/xss-protection.js"></script>
+    <script src="js/security/secure-session.js"></script>
+    <script src="js/security/csrf-protection.js"></script>
+    <script src="js/pages/offline.page.js"></script>
+</body>
+</html>

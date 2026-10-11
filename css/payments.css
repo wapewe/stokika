@@ -1,0 +1,110 @@
+/* Import common styles */
+@import 'common/base.css';
+@import 'common/layout.css';
+@import 'common/components.css';
+
+/* Payments Page specific styles */
+.search-input {
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    width: 300px;
+    font-size: 0.95rem;
+}
+
+.payments-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.payment-card {
+    padding: 1.5rem;
+    border-radius: 4px;
+    background: #f9fafb;
+}
+
+.payment-card.status-verified {
+    border-left: 4px solid #059669;
+}
+
+.payment-card.status-rejected {
+    border-left: 4px solid #dc2626;
+}
+
+.payment-card.status-pending {
+    border-left: 4px solid #f59e0b;
+}
+
+.payment-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+}
+
+.payment-vendor {
+    font-size: 1.125rem;
+    font-weight: 600;
+}
+
+.payment-amount {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a202c;
+}
+
+.payment-details {
+    font-size: 0.875rem;
+    color: #64748b;
+}
+
+.payment-status {
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+}
+
+.payment-status.verified {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.payment-status.rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.payment-status.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.empty-state {
+    text-align: center;
+    color: #6b7280;
+    padding: 2rem;
+}
+
+/* Dark mode */
+body.dark-mode .search-input {
+    background: #374151;
+    border-color: #4b5563;
+    color: #f3f4f6;
+}
+
+body.dark-mode .payment-card {
+    background: #374151;
+}
+
+body.dark-mode .payment-amount {
+    color: #f3f4f6;
+}
+
+body.dark-mode .pagination-btn {
+    background: #374151;
+    border-color: #4b5563;
+    color: #f3f4f6;
+}
+
+body.dark-mode .pagination-btn:hover {
+    background: #4b5563;
+}

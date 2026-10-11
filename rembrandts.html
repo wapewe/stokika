@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Static CSP Meta Tag -->
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' https://cdn.jsdelivr.net; 
+                   style-src 'self' https://fonts.googleapis.com; 
+                   font-src 'self' https://fonts.gstatic.com; 
+                   connect-src 'self' https://*.supabase.co; 
+                   img-src 'self' data: https:; base-uri 'self'; 
+                   form-action 'self';">
+    
+    <title>Admin Dashboard - stokika</title>
+    <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" 
+          rel="stylesheet"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/rembrandts.css">
+    <link rel="stylesheet" href="css/payment-timeout-config.css">
+    <link rel="stylesheet" href="css/manual-payment-verification.css">
+    <link rel="stylesheet" href="css/pagination.css">
+    <link rel="stylesheet" href="css/advanced-features.css">
+</head>
+<body>
+    <aside class="sidebar sidebar-scrollable">
+        <div class="logo-container">
+            <a href="https://www.stokika.com" target="_blank" rel="noopener noreferrer">
+                <img src="assets/logos/logo.png.png" alt="stokika Logo" class="dashboard-logo">
+            </a>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="nav-item active" data-tab="agents"><span class="nav-icon">👥</span><span class="nav-text">Field Agents</span></div>
+            <div class="nav-item" data-tab="vendors"><span class="nav-icon">🏪</span><span class="nav-text">Vendors</span></div>
+            <div class="nav-item" data-tab="suppliers"><span class="nav-icon">📦</span><span class="nav-text">Suppliers</span></div>
+            <div class="nav-item" data-tab="orders"><span class="nav-icon">🛒</span><span class="nav-text">Orders</span></div>
+            <div class="nav-item" data-tab="payments"><span class="nav-icon">💳</span><span class="nav-text">Payments</span></div>
+            <div class="nav-item" data-tab="mpesa-transactions"><span class="nav-icon">📱</span><span class="nav-text">M-Pesa Transactions</span></div>
+            <div class="nav-item" data-tab="contacts"><span class="nav-icon">📧</span><span class="nav-text">Contacts</span></div>
+            <div class="nav-item" data-tab="supervisors"><span class="nav-icon">👨‍💼</span><span class="nav-text">Supervisors</span></div>
+            <div class="nav-item" data-tab="users"><span class="nav-icon">👤</span><span class="nav-text">Users</span></div>
+            <div class="nav-item" data-tab="gps"><span class="nav-icon">📍</span><span class="nav-text">GPS Tracking</span></div>
+            <div class="nav-item" data-tab="analytics"><span class="nav-icon">📊</span><span class="nav-text">Analytics</span></div>
+            <div class="nav-item" data-tab="delivery"><span class="nav-icon">🚚</span><span class="nav-text">Delivery Tracking</span></div>
+            <div class="nav-item" data-tab="products"><span class="nav-icon">📦</span><span class="nav-text">Product Catalog</span></div>
+            <div class="nav-item" data-tab="loyalty"><span class="nav-icon">🎁</span><span class="nav-text">Loyalty Program</span></div>
+            <div class="nav-item" data-tab="sms"><span class="nav-icon">📱</span><span class="nav-text">SMS Notifications</span></div>
+            <div class="nav-item" data-tab="messaging"><span class="nav-icon">💬</span><span class="nav-text">In-App Messaging</span></div>
+            <div class="nav-item" data-tab="financial"><span class="nav-icon">💰</span><span class="nav-text">Financial Dashboard</span></div>
+            <div class="nav-item" data-tab="applications"><span class="nav-icon">📋</span><span class="nav-text">Applications</span></div>
+            <div class="nav-item" data-tab="onboarding"><span class="nav-icon">🎯</span><span class="nav-text">Onboarding</span></div>
+            <div class="nav-item" data-tab="settings"><span class="nav-icon">⚙️</span><span class="nav-text">Settings</span></div>
+            <div class="nav-item" data-tab="advanced"><span class="nav-icon">🔧</span><span class="nav-text">Advanced Settings</span></div>
+            <div class="nav-item" data-tab="timeout-config"><span class="nav-icon">⏱️</span><span class="nav-text">Payment Timeout Settings</span></div>
+            <div class="nav-item" data-tab="manual-payments"><span class="nav-icon">✋</span><span class="nav-text">Manual Payments</span></div>
+        </nav>
+        <div class="sidebar-footer">
+            <button class="btn-logout" id="logoutBtn">🚪 Logout</button>
+        </div>
+    </aside>
+    <div class="main-content">
+        <div class="admin-header">
+            <div><h1>Admin Dashboard</h1><p>Comprehensive management system</p></div>
+            <div class="admin-user-info">
+                <span id="adminUserName">Admin</span>
+                <button class="btn-logout-mobile" id="logoutBtnMobile">Logout</button>
+            </div>
+        </div>
+        <!-- Revenue Dashboard Section -->
+        <div class="revenue-dashboard">
+            <div class="revenue-header">
+                <h2>💰 Revenue Overview</h2>
+                <button class="btn-refresh" id="btnRefreshRevenue">🔄 Refresh</button>
+            </div>
+            
+            <!-- Time Period Tabs -->
+            <div class="revenue-period-tabs">
+                <button class="period-tab active" data-period="day">Today</button>
+                <button class="period-tab" data-period="week">This Week</button>
+                <button class="period-tab" data-period="month">This Month</button>
+            </div>
+            
+            <!-- Revenue Summary Cards -->
+            <div class="revenue-summary-grid">
+                <!-- Total Revenue -->
+                <div class="revenue-card total-revenue">
+                    <div class="revenue-icon">💵</div>
+                    <div class="revenue-info">
+                        <div class="revenue-label">Total Revenue</div>
+                        <div class="revenue-amount" id="totalRevenue">KES 0</div>
+                        <div class="revenue-change" id="revenueChange">+0%</div>
+                    </div>
+                </div>
+                
+                <!-- Field Agents Revenue -->
+                <div class="revenue-card agents-revenue">
+                    <div class="revenue-icon">👥</div>
+                    <div class="revenue-info">
+                        <div class="revenue-label">Field Agents</div>
+                        <div class="revenue-amount" id="agentsRevenue">KES 0</div>
+                        <div class="revenue-detail" id="agentsCount">0 payments</div>
+                    </div>
+                </div>
+                
+                <!-- Supervisors Revenue -->
+                <div class="revenue-card supervisors-revenue">
+                    <div class="revenue-icon">👨‍💼</div>
+                    <div class="revenue-info">
+                        <div class="revenue-label">Supervisors</div>
+                        <div class="revenue-amount" id="supervisorsRevenue">KES 0</div>
+                        <div class="revenue-detail" id="supervisorsCount">0 payments</div>
+                    </div>
+                </div>
+                
+                <!-- Vendors Revenue -->
+                <div class="revenue-card vendors-revenue">
+                    <div class="revenue-icon">🏪</div>
+                    <div class="revenue-info">
+                        <div class="revenue-label">Vendors</div>
+                        <div class="revenue-amount" id="vendorsRevenue">KES 0</div>
+                        <div class="revenue-detail" id="vendorsCount">0 orders</div>
+                    </div>
+                </div>
+                
+                <!-- Money Out (Supplier Payments) -->
+                <div class="revenue-card expenses-out">
+                    <div class="revenue-icon">📤</div>
+                    <div class="revenue-info">
+                        <div class="revenue-label">Supplier Payments</div>
+                        <div class="revenue-amount expense" id="supplierPayments">KES 0</div>
+                        <div class="revenue-detail" id="supplierPaymentsCount">0 payments</div>
+                    </div>
+                </div>
+                
+                <!-- Net Profit -->
+                <div class="revenue-card net-profit">
+                    <div class="revenue-icon">📊</div>
+                    <div class="revenue-info">
+                        <div class="revenue-label">Net Profit</div>
+                        <div class="revenue-amount profit" id="netProfit">KES 0</div>
+                        <div class="revenue-detail" id="profitMargin">0% margin</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Detailed Breakdown -->
+            <div class="revenue-breakdown">
+                <button class="btn-toggle-breakdown" id="btnToggleBreakdown">
+                    📈 View Detailed Breakdown
+                </button>
+                <div class="breakdown-content hidden" id="breakdownContent">
+                    <div class="breakdown-grid">
+                        <div class="breakdown-section">
+                            <h3>Revenue Sources</h3>
+                            <div id="revenueSourcesTable"></div>
+                        </div>
+                        <div class="breakdown-section">
+                            <h3>Expenses</h3>
+                            <div id="expensesTable"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card"><div class="stat-icon">👥</div><div class="stat-info"><div class="stat-number" id="totalAgents">-</div><div class="stat-label">Field Agents</div></div></div>
+            <div class="stat-card"><div class="stat-icon">⏳</div><div class="stat-info"><div class="stat-number" id="pendingAgents">-</div><div class="stat-label">Pending</div></div></div>
+            <div class="stat-card"><div class="stat-icon">🏪</div><div class="stat-info"><div class="stat-number" id="totalVendors">-</div><div class="stat-label">Vendors</div></div></div>
+            <div class="stat-card"><div class="stat-icon">📦</div><div class="stat-info"><div class="stat-number" id="totalSuppliers">-</div><div class="stat-label">Suppliers</div></div></div>
+            <div class="stat-card"><div class="stat-icon">👨‍💼</div><div class="stat-info"><div class="stat-number" id="totalSupervisors">-</div><div class="stat-label">Supervisors</div></div></div>
+            <div class="stat-card"><div class="stat-icon">🛒</div><div class="stat-info"><div class="stat-number" id="totalOrders">-</div><div class="stat-label">Orders</div></div></div>
+        </div>
+        <div id="agents-tab" class="tab-content active">
+            <div class="toolbar"><h2>Field Agent Applications</h2>
+                <div class="bulk-actions">
+                    <button class="btn-bulk btn-email" id="btnBulkEmailAgents">📧 Bulk Email</button>
+                    <button class="btn-bulk btn-export" id="btnExportAgents">📊 Export</button>
+                </div>
+            </div>
+            
+            <div class="sub-tabs">
+                <button class="sub-tab-btn active" data-subtab="all" data-tab-type="agent">All Agents</button>
+                <button class="sub-tab-btn" data-subtab="paid" data-tab-type="agent">✅ Paid</button>
+                <button class="sub-tab-btn" data-subtab="not-paid" data-tab-type="agent">⏳ Not Paid</button>
+            </div>
+            
+            <div id="agentSubTabAll" class="sub-tab-content active">
+                <div class="search-filters">
+                    <div class="filter-group"><label for="agentNameSearch">Search Name</label><input type="text" id="agentNameSearch" placeholder="Enter name..."></div>
+                    <div class="filter-group"><label for="agentStatusFilter">Status</label><select id="agentStatusFilter" title="Filter by status"><option value="">All Status</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="suspended">Suspended</option></select></div>
+                    <div class="filter-group"><label for="agentCountySearch">County</label><input type="text" id="agentCountySearch" placeholder="Enter county..."></div>
+                    <button class="btn-search" id="btnSearchAgents">Search</button>
+                </div>
+                <div id="agentsLoading" class="loading">Loading applications...</div>
+                <div id="agentsTable"></div>
+            </div>
+            
+            <div id="agentSubTabPaid" class="sub-tab-content">
+                <div id="agentsPaidLoading" class="loading">Loading paid agents...</div>
+                <div id="agentsPaidTable"></div>
+            </div>
+            
+            <div id="agentSubTabNotPaid" class="sub-tab-content">
+                <div id="agentsNotPaidLoading" class="loading">Loading agents pending payment...</div>
+                <div id="agentsNotPaidTable"></div>
+            </div>
+        </div>
+        <div id="vendors-tab" class="tab-content"><h2>Vendor Registrations</h2><div id="vendorsLoading" class="loading">Loading registrations...</div><div id="vendorsTable"></div></div>
+        <div id="suppliers-tab" class="tab-content"><h2>Supplier Applications</h2><div id="suppliersLoading" class="loading">Loading applications...</div><div id="suppliersTable"></div></div>
+        <div id="orders-tab" class="tab-content"><h2>Order Management</h2><div class="search-filters"><div class="filter-group"><label for="orderStatusFilter">Status</label><select id="orderStatusFilter" title="Filter by status"><option value="">All Orders</option><option value="pending_admin">Pending Admin</option><option value="pending_supplier">Pending Supplier</option><option value="accepted">Accepted</option><option value="declined">Declined</option><option value="processing">Processing</option><option value="delivered">Delivered</option></select></div><button class="btn-search" id="btnRefreshOrders">Refresh</button></div><div id="ordersLoading" class="loading">Loading orders...</div><div id="ordersTable"></div></div>
+        <div id="payments-tab" class="tab-content"><h2>Payment Management</h2><div class="search-filters"><div class="filter-group"><label for="paymentStatusFilter">Status</label><select id="paymentStatusFilter" title="Filter by status"><option value="">All Payments</option><option value="pending">Pending</option><option value="verified">Verified</option><option value="rejected">Rejected</option></select></div><button class="btn-search" id="btnRefreshPayments">Refresh</button></div><div id="paymentsLoading" class="loading">Loading payments...</div><div id="paymentsTable"></div></div>
+        <div id="mpesa-transactions-tab" class="tab-content">
+            <div class="toolbar">
+                <h2>M-Pesa Transactions</h2>
+                <div class="bulk-actions">
+                    <button class="btn-bulk btn-export" id="btnExportMpesa">📊 Export</button>
+                    <button class="btn-bulk btn-view" id="btnReconciliation">🔍 Reconciliation Report</button>
+                </div>
+            </div>
+            <div id="mpesaStatsOverview"></div>
+            <div class="search-filters">
+                <div class="filter-group">
+                    <label>Search</label>
+                    <input type="text" id="mpesaSearchInput" placeholder="Application code, phone, receipt...">
+                </div>
+                <div class="filter-group">
+                    <label for="mpesaStatusFilter">Status</label>
+                    <select id="mpesaStatusFilter" title="Filter by status">
+                        <option value="">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                        <option value="failed">Failed</option>
+                        <option value="timeout">Timeout</option>
+                        <option value="awaiting_verification">Awaiting Verification</option>
+                        <option value="verified">Verified</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="mpesaUserTypeFilter">User Type</label>
+                    <select id="mpesaUserTypeFilter" title="Filter by user type">
+                        <option value="">All Types</option>
+                        <option value="field_agent">Field Agent</option>
+                        <option value="supervisor">Supervisor</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Date From</label>
+                    <input type="date" id="mpesaDateFrom" title="Filter from date" aria-label="Date from">
+                </div>
+                <div class="filter-group">
+                    <label>Date To</label>
+                    <input type="date" id="mpesaDateTo" title="Filter to date" aria-label="Date to">
+                </div>
+                <button class="btn-search" id="btnSearchMpesa">Search</button>
+                <button class="btn-search btn-search-reset" id="btnResetMpesaFilters">Reset</button>
+            </div>
+            <div id="mpesaLoading" class="loading">Loading transactions...</div>
+            <div id="mpesaTable"></div>
+        </div>
+        <div id="contacts-tab" class="tab-content"><h2>Contact Submissions</h2><div id="contactsLoading" class="loading">Loading submissions...</div><div id="contactsTable"></div></div>
+        <div id="supervisors-tab" class="tab-content">
+            <div class="toolbar"><h2>Supervisor Applications</h2>
+                <div class="bulk-actions">
+                    <button class="btn-bulk btn-email" id="btnBulkEmailSupervisors">📧 Bulk Email</button>
+                    <button class="btn-bulk btn-export" id="btnExportSupervisors">📊 Export</button>
+                </div>
+            </div>
+            
+            <div class="sub-tabs">
+                <button class="sub-tab-btn active" data-subtab="all" data-tab-type="supervisor">All Supervisors</button>
+                <button class="sub-tab-btn" data-subtab="paid" data-tab-type="supervisor">✅ Paid</button>
+                <button class="sub-tab-btn" data-subtab="not-paid" data-tab-type="supervisor">⏳ Not Paid</button>
+            </div>
+            
+            <div id="supervisorSubTabAll" class="sub-tab-content active">
+                <div class="search-filters">
+                    <div class="filter-group"><label for="supervisorNameSearch">Search Name</label><input type="text" id="supervisorNameSearch" placeholder="Enter name..."></div>
+                    <div class="filter-group"><label for="supervisorStatusFilter">Status</label><select id="supervisorStatusFilter" title="Filter by status"><option value="">All Status</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="suspended">Suspended</option></select></div>
+                    <div class="filter-group"><label for="supervisorCountySearch">County</label><input type="text" id="supervisorCountySearch" placeholder="Enter county..."></div>
+                    <button class="btn-search" id="btnSearchSupervisors">Search</button>
+                </div>
+                <div id="supervisorsLoading" class="loading">Loading applications...</div>
+                <div id="supervisorsTable"></div>
+            </div>
+            
+            <div id="supervisorSubTabPaid" class="sub-tab-content">
+                <div id="supervisorsPaidLoading" class="loading">Loading paid supervisors...</div>
+                <div id="supervisorsPaidTable"></div>
+            </div>
+            
+            <div id="supervisorSubTabNotPaid" class="sub-tab-content">
+                <div id="supervisorsNotPaidLoading" class="loading">Loading supervisors pending payment...</div>
+                <div id="supervisorsNotPaidTable"></div>
+            </div>
+        </div>
+        <div id="users-tab" class="tab-content"><div class="toolbar"><h2>User Management</h2><button class="btn-bulk btn-email" id="btnCreateUser">➕ Create User</button></div><div id="usersLoading" class="loading">Loading users...</div><div id="usersTable"></div></div>
+        <div id="gps-tab" class="tab-content"><div class="toolbar"><h2>GPS Tracking & Territory Management</h2><div class="bulk-actions"><button class="btn-bulk btn-view" id="btnViewMap">🗺️ View Map</button><button class="btn-bulk btn-export" id="btnExportGPS">📊 Export Data</button></div></div><div id="gpsLoading" class="loading">Loading GPS data...</div><div id="gpsContent"></div></div>
+        <div id="analytics-tab" class="tab-content"><div class="toolbar"><h2>Predictive Analytics & Insights</h2><div class="bulk-actions"><button class="btn-bulk btn-view" id="btnGenerateReport">📈 Generate Report</button><button class="btn-bulk btn-export" id="btnExportAnalytics">📊 Export Analytics</button></div></div><div id="analyticsLoading" class="loading">Loading analytics...</div><div id="analyticsContent"></div></div>
+        <div id="delivery-tab" class="tab-content"><div class="toolbar"><h2>🚚 Delivery Tracking with GPS</h2><div class="bulk-actions"><button class="btn-bulk btn-export" id="btnExportDeliveries">📊 Export Deliveries</button></div></div><div id="deliveryLoading" class="loading">Loading delivery data...</div><div id="deliveryContent"></div></div>
+        <div id="products-tab" class="tab-content"><div class="toolbar"><h2>📦 Product Catalog & Shopping Cart</h2><div class="bulk-actions"><button class="btn-bulk btn-import" id="btnImportProducts">📥 Import Products</button><button class="btn-bulk btn-export" id="btnExportProducts">📊 Export Products</button></div></div><div id="productCatalogContent"></div></div>
+        <div id="loyalty-tab" class="tab-content"><div class="toolbar"><h2>🎁 Loyalty Program Management</h2><div class="bulk-actions"><button class="btn-bulk btn-export" id="btnExportLoyalty">📊 Export Loyalty Data</button></div></div><div id="loyaltyContent"></div></div>
+        <div id="sms-tab" class="tab-content"><div class="toolbar"><h2>📱 SMS Notifications & Campaigns</h2><div class="bulk-actions"><button class="btn-bulk btn-export" id="btnExportSMS">📊 Export SMS Logs</button></div></div><div id="smsContent"></div></div>
+        <div id="messaging-tab" class="tab-content"><div class="toolbar"><h2>💬 In-App Messaging System</h2></div><div id="messagingContent"></div></div>
+        <div id="financial-tab" class="tab-content"><div class="toolbar"><h2>💰 Financial Dashboard & Reports</h2><div class="bulk-actions"><button class="btn-bulk btn-export" id="btnExportFinancial">📊 Export Financial Data</button></div></div><div id="financialContent"></div></div>
+        <div id="applications-tab" class="tab-content">
+            <div class="toolbar"><h2>All Applications</h2>
+                <div class="bulk-actions">
+                    <select id="appTypeFilter" title="Filter by type">
+                        <option value="">All Types</option>
+                        <option value="field_agent">Field Agents</option>
+                        <option value="supervisor">Supervisors</option>
+                        <option value="vendor">Vendors</option>
+                        <option value="supplier">Suppliers</option>
+                    </select>
+                    <button class="btn-bulk btn-export" id="btnExportApplications">📊 Export</button>
+                </div>
+            </div>
+            <div id="applicationsLoading" class="loading hidden">Loading applications...</div>
+            <div id="applicationsTable"></div>
+        </div>
+        <div id="onboarding-tab" class="tab-content">
+            <div id="onboardingLoading" class="loading hidden">Loading onboarding data...</div>
+            <div id="admin-onboarding-content"></div>
+        </div>
+        <div id="settings-tab" class="tab-content"><div class="toolbar"><h2>Website Settings</h2></div><div class="settings-section"><h3>Website Status</h3><div class="form-group"><label for="siteStatus">Site Status</label><select id="siteStatus" title="Select site status"><option value="online">Online</option><option value="maintenance">Maintenance Mode</option><option value="offline">Offline</option></select></div><div class="form-group"><label for="maintenanceMessage">Maintenance Message</label><textarea id="maintenanceMessage" rows="3" placeholder="Message shown during maintenance"></textarea></div><button class="btn-submit" id="btnUpdateSiteStatus">Update Status</button></div><div class="settings-section"><h3>Feature Toggles</h3><div class="toggle-group"><label class="toggle-label"><input type="checkbox" id="featureVendor" class="toggle-checkbox"><span>Vendor Registration</span></label></div><div class="toggle-group"><label class="toggle-label"><input type="checkbox" id="featureSupplier" class="toggle-checkbox"><span>Supplier Registration</span></label></div><div class="toggle-group"><label class="toggle-label"><input type="checkbox" id="featureFieldAgent" class="toggle-checkbox"><span>Field Agent Applications</span></label></div><div class="toggle-group"><label class="toggle-label"><input type="checkbox" id="featureContact" class="toggle-checkbox"><span>Contact Form</span></label></div><button class="btn-submit" id="btnUpdateFeatures">Save Features</button></div><div class="settings-section"><h3>Business Hours</h3><div class="form-row"><div class="form-group"><label for="businessHoursStart">Opening Time</label><input type="time" id="businessHoursStart" value="08:00"></div><div class="form-group"><label for="businessHoursEnd">Closing Time</label><input type="time" id="businessHoursEnd" value="18:00"></div></div><button class="btn-submit" id="btnSaveBusinessHours">Save Business Hours</button></div><div class="settings-section"><h3>Notification Preferences</h3><div class="toggle-group"><label class="toggle-label"><input type="checkbox" id="emailNotifications" class="toggle-checkbox" checked><span>Email Notifications</span></label></div><div class="toggle-group"><label class="toggle-label"><input type="checkbox" id="smsNotifications" class="toggle-checkbox"><span>SMS Notifications</span></label></div><div class="form-group"><label for="adminNotificationEmail">Admin Notification Email</label><input type="email" id="adminNotificationEmail" placeholder="admin@stokika.com"></div><button class="btn-submit" id="btnSaveNotifications">Save Notifications</button></div><div class="settings-section"><h3>Commission Rates</h3><div class="form-row"><div class="form-group"><label for="agentCommissionRate">Field Agent Commission (%)</label><input type="number" id="agentCommissionRate" value="5" min="0" max="100" step="0.1"></div><div class="form-group"><label for="supervisorCommissionRate">Supervisor Commission (%)</label><input type="number" id="supervisorCommissionRate" value="3" min="0" max="100" step="0.1"></div></div><div class="form-group"><label for="referralBonus">Referral Bonus (KES)</label><input type="number" id="referralBonus" value="500" min="0" step="50"></div><button class="btn-submit" id="btnSaveCommissions">Save Commission Rates</button></div><div class="settings-section"><h3>Payment Gateway</h3><div class="form-row"><div class="form-group"><label for="mpesaPaybill">M-Pesa Paybill Number</label><input type="text" id="mpesaPaybill" placeholder="123456"></div><div class="form-group"><label for="mpesaAccount">M-Pesa Account Name</label><input type="text" id="mpesaAccount" placeholder="STOKIKA"></div></div><button class="btn-submit" id="btnSavePayment">Save Payment Settings</button></div><div class="settings-section"><h3>Content Management</h3><div class="form-group"><label for="homepageBanner">Homepage Banner Text</label><input type="text" id="homepageBanner" placeholder="Welcome to Stokika"></div><div class="form-group"><label for="announcementText">System Announcement</label><textarea id="announcementText" rows="2" placeholder="Important announcement..."></textarea></div><div class="toggle-group"><label class="toggle-label"><input type="checkbox" id="announcementActive" class="toggle-checkbox"><span>Show Announcement Banner</span></label></div><button class="btn-submit" id="btnSaveContent">Save Content</button></div><div class="settings-section"><h3>Approval Workflows</h3><div class="form-group"><label for="autoApproveThreshold">Auto-Approve Orders Below (KES)</label><input type="number" id="autoApproveThreshold" value="10000" min="0" step="1000"></div><div class="toggle-group"><label class="toggle-label"><input type="checkbox" id="requireSupervisorApproval" class="toggle-checkbox" checked><span>Require Supervisor Approval for Agents</span></label></div><button class="btn-submit" id="btnSaveWorkflow">Save Workflow Settings</button></div></div>
+        <div id="advanced-tab" class="tab-content">
+            <div class="toolbar"><h2>Advanced Settings</h2></div>
+            <div class="settings-section">
+                <h3>Database Management</h3>
+                <p class="settings-hint">Manage database operations and maintenance tasks.</p>
+                <button class="btn-submit" id="btnBackupDatabase">Backup Database</button>
+                <button class="btn-submit btn-danger-action" id="btnClearCache">Clear Cache</button>
+            </div>
+            <div class="settings-section">
+                <h3>System Configuration</h3>
+                <div class="form-group">
+                    <label for="maxUploadSize">Max Upload Size (MB)</label>
+                    <input type="number" id="maxUploadSize" value="10" min="1" max="100">
+                </div>
+                <div class="form-group">
+                    <label for="sessionTimeout">Session Timeout (minutes)</label>
+                    <input type="number" id="sessionTimeout" value="30" min="5" max="120">
+                </div>
+                <button class="btn-submit" id="btnSaveConfiguration">Save Configuration</button>
+            </div>
+            <div class="settings-section">
+                <h3>Email Configuration</h3>
+                <div class="form-group">
+                    <label for="smtpHost">SMTP Host</label>
+                    <input type="text" id="smtpHost" placeholder="smtp.example.com">
+                </div>
+                <div class="form-group">
+                    <label for="smtpPort">SMTP Port</label>
+                    <input type="number" id="smtpPort" placeholder="587">
+                </div>
+                <div class="form-group">
+                    <label for="smtpUser">SMTP Username</label>
+                    <input type="text" id="smtpUser" placeholder="user@example.com">
+                </div>
+                <button class="btn-submit" id="btnSaveEmailSettings">Save Email Settings</button>
+            </div>
+            <div class="settings-section">
+                <h3>Security Settings</h3>
+                <div class="toggle-group">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="enable2FA" class="toggle-checkbox">
+                        <span>Enable Two-Factor Authentication</span>
+                    </label>
+                </div>
+                <div class="toggle-group">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="enableIPWhitelist" class="toggle-checkbox">
+                        <span>Enable IP Whitelist</span>
+                    </label>
+                </div>
+                <div class="toggle-group">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="enableAuditLog" class="toggle-checkbox" checked>
+                        <span>Enable Audit Logging</span>
+                    </label>
+                </div>
+                <button class="btn-submit" id="btnSaveSecuritySettings">Save Security Settings</button>
+            </div>
+            <div class="settings-section">
+                <h3>API Configuration</h3>
+                <div class="form-group">
+                    <label for="apiRateLimit">API Rate Limit (requests/minute)</label>
+                    <input type="number" id="apiRateLimit" value="60" min="10" max="1000">
+                </div>
+                <div class="toggle-group">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="enableAPIAccess" class="toggle-checkbox">
+                        <span>Enable External API Access</span>
+                    </label>
+                </div>
+                <button class="btn-submit" id="btnSaveAPISettings">Save API Settings</button>
+            </div>
+            <div class="settings-section">
+                <h3>Audit Logs</h3>
+                <p class="settings-hint">View recent settings changes and system activity.</p>
+                <button class="btn-submit" id="btnLoadAuditLogs">Load Audit Logs</button>
+                <div id="auditLogsTable" class="audit-logs-table"></div>
+            </div>
+            <div class="settings-section">
+                <h3>Performance Monitoring</h3>
+                <div class="perf-metrics-grid">
+                    <div class="perf-metric-card">
+                        <p class="perf-metric-label">Database Size</p>
+                        <p class="perf-metric-value">-</p>
+                    </div>
+                    <div class="perf-metric-card">
+                        <p class="perf-metric-label">Active Sessions</p>
+                        <p class="perf-metric-value">-</p>
+                    </div>
+                    <div class="perf-metric-card">
+                        <p class="perf-metric-label">API Calls (24h)</p>
+                        <p class="perf-metric-value">-</p>
+                    </div>
+                </div>
+                <button class="btn-submit" id="btnRefreshMetrics">Refresh Metrics</button>
+            </div>
+        </div>
+    </div>
+    
+        <!-- Timeout Configuration Tab (Section 7) -->
+        <div id="timeout-config-tab" class="tab-content">
+            <div class="toolbar">
+                <h2>⏱️ Payment Timeout Settings</h2>
+                <button class="btn-refresh" id="btnRefreshTimeoutMetrics">🔄 Refresh Metrics</button>
+            </div>
+
+            <div id="timeoutConfigAlert" class="alert" style="display: none;"></div>
+            <div id="timeoutConfigLoading" class="loading" style="display: none;">Loading configuration...</div>
+
+            <div class="timeout-config-grid">
+                <!-- Current Configuration Display -->
+                <div class="config-display-card">
+                    <h3>📋 Current Configuration</h3>
+                    <div class="config-item">
+                        <span class="config-label">Flow Type:</span>
+                        <span class="config-value" id="currentFlowType">kit_payment</span>
+                    </div>
+                    <div class="config-item">
+                        <span class="config-label">Timeout Duration:</span>
+                        <span class="config-value" id="currentTimeoutDuration">60s</span>
+                    </div>
+                    <div class="config-item">
+                        <span class="config-label">Max Retries:</span>
+                        <span class="config-value" id="currentMaxRetries">3</span>
+                    </div>
+                    <div class="config-item">
+                        <span class="config-label">Retry Interval:</span>
+                        <span class="config-value" id="currentRetryInterval">15s</span>
+                    </div>
+                </div>
+
+                <!-- Configuration Edit Form -->
+                <div class="config-edit-card">
+                    <h3>✏️ Edit Configuration</h3>
+                    <div class="config-form-group">
+                        <label for="timeoutDuration">Timeout Duration (seconds)</label>
+                        <input type="number" id="timeoutDuration" min="30" max="300" value="60">
+                        <div class="config-hint">Valid range: 30-300 seconds</div>
+                        <div id="timeoutDurationFeedback" class="config-feedback"></div>
+                    </div>
+                    <div class="config-form-group">
+                        <label for="maxRetries">Maximum Retries</label>
+                        <input type="number" id="maxRetries" min="1" max="5" value="3">
+                        <div class="config-hint">Valid range: 1-5 retries</div>
+                        <div id="maxRetriesFeedback" class="config-feedback"></div>
+                    </div>
+                    <div class="config-form-group">
+                        <label for="retryInterval">Retry Interval (seconds)</label>
+                        <input type="number" id="retryInterval" min="10" max="60" value="15">
+                        <div class="config-hint">Valid range: 10-60 seconds</div>
+                        <div id="retryIntervalFeedback" class="config-feedback"></div>
+                    </div>
+                    <button class="btn-submit" id="btnSaveTimeoutConfig">Save Configuration</button>
+                </div>
+            </div>
+
+            <!-- Timeout Metrics Dashboard -->
+            <div class="metrics-dashboard">
+                <div class="metrics-header">
+                    <h3>📊 Timeout Metrics</h3>
+                    <div class="metrics-period-selector">
+                        <button class="metrics-period-btn active" data-period="24h">24 Hours</button>
+                        <button class="metrics-period-btn" data-period="7d">7 Days</button>
+                        <button class="metrics-period-btn" data-period="30d">30 Days</button>
+                    </div>
+                </div>
+
+                <div id="timeoutMetricsLoading" class="loading" style="display: none;">Loading metrics...</div>
+
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">⏱️</div>
+                        <div class="metric-label">Timeout Rate</div>
+                        <div class="metric-value" id="metricTimeoutRate">0.0%</div>
+                        <div class="metric-detail" id="metricTimeoutCount">0 of 0 payments</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon">✅</div>
+                        <div class="metric-label">Auto Recovery Success</div>
+                        <div class="metric-value" id="metricRecoveryRate">0.0%</div>
+                        <div class="metric-detail" id="metricRecoveryCount">0 of 0 timeouts</div>
+                    </div>
+
+                    <div class="metric-card">
+                        <div class="metric-icon">✋</div>
+                        <div class="metric-label">Manual Fallback Rate</div>
+                        <div class="metric-value" id="metricFallbackRate">0.0%</div>
+                        <div class="metric-detail" id="metricFallbackCount">0 of 0 timeouts</div>
+                    </div>
+                </div>
+
+                <div class="metrics-footer">
+                    Last refreshed: <span id="metricsLastRefresh">--:--:--</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manual Payments Tab (Section 8) -->
+        <div id="manual-payments-tab" class="tab-content">
+            <div class="toolbar">
+                <h2>✋ Manual Payment Verification</h2>
+                <button class="btn-refresh" id="btnRefreshManualPayments">🔄 Refresh</button>
+            </div>
+
+            <div id="manualPaymentAlert" class="alert" style="display: none;"></div>
+
+            <!-- Search and Filters -->
+            <div class="manual-payment-filters">
+                <div class="filter-group">
+                    <label for="manualPaymentSearch">Search</label>
+                    <input type="text" id="manualPaymentSearch" placeholder="Application code, phone, receipt, transaction ID...">
+                </div>
+                <div class="filter-group">
+                    <label for="manualPaymentStatusFilter">Status Filter</label>
+                    <select id="manualPaymentStatusFilter">
+                        <option value="">All Manual Payments</option>
+                        <option value="manual_verification_pending">Awaiting Verification</option>
+                        <option value="timeout">Timeout</option>
+                        <option value="verified">Verified</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+                <div class="filter-buttons">
+                    <button class="btn-action btn-view" id="btnClearManualPaymentSearch">Clear Search</button>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div id="manualPaymentsLoading" class="loading" style="display: none;">Loading payments...</div>
+
+            <!-- Payments Table -->
+            <div id="manualPaymentsTable"></div>
+
+            <!-- Pagination -->
+            <div id="manualPaymentsPagination"></div>
+        </div>
+
+        <!-- Payment Detail Modal -->
+        <div id="paymentDetailModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Payment Details</h2>
+                    <span class="close">&times;</span>
+                </div>
+                <div class="payment-detail-content">
+                    <!-- Content will be dynamically populated -->
+                </div>
+            </div>
+        </div>
+            <div class="loading">Section 8 implementation coming soon...</div>
+        </div><div id="emailModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Send Bulk Email</h2><button type="button" class="close">&times;</button></div><div class="email-form"><div class="filter-group"><label for="emailSubject">Subject</label><input type="text" id="emailSubject" placeholder="Enter email subject" aria-label="Email subject"></div><div class="filter-group"><label>Message</label><textarea id="emailMessage" placeholder="Enter your message..."></textarea></div><div class="filter-group"><label for="emailRecipients">Recipients</label><select id="emailRecipients" title="Select email recipients"><option value="all">All Applicants</option><option value="pending">Pending Applications</option><option value="approved">Approved Agents</option><option value="rejected">Rejected Applications</option><option value="selected">Selected Only</option></select></div><button class="btn-submit" id="btnSendBulkEmail">Send Email</button></div></div></div>
+    <div id="singleEmailModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Send Email to <span id="singleEmailName"></span></h2><button type="button" class="close">&times;</button></div><div class="email-form"><div class="filter-group"><label for="singleEmailTo">To</label><input type="email" id="singleEmailTo" readonly aria-label="Recipient email address"></div><div class="filter-group"><label for="singleEmailSubject">Subject</label><input type="text" id="singleEmailSubject" placeholder="Enter email subject" aria-label="Email subject"></div><div class="filter-group"><label>Message</label><textarea id="singleEmailMessage" placeholder="Enter your message..."></textarea></div><button class="btn-submit" id="btnSendSingleEmail">Send Email</button></div></div></div>
+    <div id="manageSupervisorModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Manage Supervisor</h2><button type="button" class="close">&times;</button></div><form id="manageSupervisorForm" data-sanitize="true"><input type="hidden" id="manageSupervisorId"><input type="hidden" id="manageSupervisorApprovedAt"><input type="hidden" id="manageSupervisorInterviewDate"><div class="detail-section"><h3>Supervisor Information</h3><p><strong>Supervisor Number (Internal Only):</strong> <span id="manageSupervisorNumber" class="agent-number-private"></span></p><p><strong>Name:</strong> <span id="manageSupervisorName"></span></p><p class="warning-text">⚠️ Supervisor numbers are confidential and unique. Do not share.</p></div><div class="detail-section"><h3>Application Status</h3><div class="form-group"><label for="manageSupervisorApprovalStatus">Approval Status</label><select id="manageSupervisorApprovalStatus" name="approvalStatus" title="Select approval status"><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="suspended">Suspended</option></select></div><div class="form-group"><label for="manageSupervisorInterviewStatus">Interview Status</label><select id="manageSupervisorInterviewStatus" name="interviewStatus" title="Select interview status"><option value="not_interviewed">Not Interviewed</option><option value="awaiting_interview">Awaiting Interview</option><option value="interviewed">Interviewed</option></select></div><div class="form-group"><label for="manageSupervisorInterviewNotes">Interview Notes</label><textarea id="manageSupervisorInterviewNotes" name="interviewNotes" data-sanitize-type="string" rows="3" placeholder="Add interview notes..."></textarea></div><div class="form-group"><label for="manageSupervisorRejectionReason">Rejection Reason (if rejected)</label><textarea id="manageSupervisorRejectionReason" name="rejectionReason" data-sanitize-type="string" rows="3" placeholder="Reason for rejection..."></textarea></div><button type="submit" class="btn-submit">Save Changes</button></div></form></div></div>
+    <div id="manageAgentModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Manage Field Agent</h2><button type="button" class="close">&times;</button></div><form id="manageAgentForm" data-sanitize="true"><input type="hidden" id="manageAgentId"><input type="hidden" id="manageApprovedAt"><input type="hidden" id="manageInterviewDate"><div class="detail-section"><h3>Agent Information</h3><p><strong>Agent Number (Internal Only):</strong> <span id="manageAgentNumber" class="agent-number-private"></span></p><p><strong>Name:</strong> <span id="manageAgentName"></span></p><p class="warning-text">⚠️ Agent numbers are confidential and unique to each agent. Do not share.</p></div><div class="detail-section"><h3>Application Status</h3><div class="form-group"><label for="manageApprovalStatus">Approval Status</label><select id="manageApprovalStatus" name="approvalStatus" title="Select approval status"><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="suspended">Suspended</option></select></div><div class="form-group"><label for="manageInterviewStatus">Interview Status</label><select id="manageInterviewStatus" name="interviewStatus" title="Select interview status"><option value="not_interviewed">Not Interviewed</option><option value="awaiting_interview">Awaiting Interview</option><option value="interviewed">Interviewed</option></select></div><div class="form-group"><label for="manageInterviewNotes">Interview Notes</label><textarea id="manageInterviewNotes" name="interviewNotes" data-sanitize-type="string" rows="3" placeholder="Add interview notes..."></textarea></div><div class="form-group"><label for="manageRejectionReason">Rejection Reason (if rejected)</label><textarea id="manageRejectionReason" name="rejectionReason" data-sanitize-type="string" rows="3" placeholder="Reason for rejection..."></textarea></div><button type="submit" class="btn-submit">Save Changes</button></div></form></div></div>
+    <div id="createUserModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Create New User</h2><button type="button" class="close">&times;</button></div><form id="createUserForm" data-sanitize="true"><div class="detail-section"><h3>User Information</h3><div class="form-row"><div class="form-group"><label for="createUserName">Name</label><input type="text" id="createUserName" name="name" data-sanitize-type="string" placeholder="Enter full name" required></div><div class="form-group"><label for="createUserEmail">Email</label><input type="email" id="createUserEmail" name="email" data-sanitize-type="email" placeholder="Enter email address" required></div></div><div class="form-row"><div class="form-group"><label for="createUserPhone">Phone Number</label><input type="tel" id="createUserPhone" name="phone" data-sanitize-type="phone" required placeholder="e.g., +254712345678"></div><div class="form-group"><label for="createUserType">User Type</label><select id="createUserType" name="userType" required title="Select user type" data-field-toggler="true"><option value="">Select Type</option><option value="admin">Admin</option><option value="vendor">Vendor</option><option value="supplier">Supplier</option><option value="supervisor">Supervisor</option><option value="field_agent">Field Agent</option></select></div></div><div class="form-row"><div class="form-group"><label for="createUserPassword">Password</label><input type="password" id="createUserPassword" name="password" data-sanitize-type="string" minlength="8" required placeholder="Min 8 characters"></div></div></div><div class="detail-section" id="businessFields" class="hidden"><h3>Business Information</h3><div class="form-row"><div class="form-group"><label for="createBusinessName">Business Name</label><input type="text" id="createBusinessName" name="businessName" data-sanitize-type="string"></div><div class="form-group"><label for="createCounty">County</label><input type="text" id="createCounty" name="county" data-sanitize-type="string"></div></div><div class="form-row"><div class="form-group"><label for="createSubCounty">Sub-County</label><input type="text" id="createSubCounty" name="subCounty" data-sanitize-type="string"></div><div class="form-group"><label for="createTown">Town</label><input type="text" id="createTown" name="town" data-sanitize-type="string"></div></div><div class="form-row"><div class="form-group"><label for="createCenter">Center</label><input type="text" id="createCenter" name="center" data-sanitize-type="string"></div><div class="form-group"><label for="createBusinessReg">Business Reg Number (Optional)</label><input type="text" id="createBusinessReg" name="businessReg" data-sanitize-type="alphanumeric"></div></div><div class="form-row"><div class="form-group"><label for="createBusinessKRA">Business KRA PIN (Optional)</label><input type="text" id="createBusinessKRA" name="businessKRA" data-sanitize-type="alphanumeric"></div></div></div><div class="detail-section" id="locationFields" class="hidden"><h3>Location Information</h3><div class="form-row"><div class="form-group"><label for="createIdNumber">ID Number</label><input type="text" id="createIdNumber" name="idNumber" data-sanitize-type="alphanumeric"></div><div class="form-group"><label for="createLocationCounty">County</label><input type="text" id="createLocationCounty" name="locationCounty" data-sanitize-type="string"></div></div><div class="form-row"><div class="form-group"><label for="createLocationSubCounty">Sub-County</label><input type="text" id="createLocationSubCounty" name="locationSubCounty" data-sanitize-type="string"></div><div class="form-group"><label for="createLocationTown">Town</label><input type="text" id="createLocationTown" name="locationTown" data-sanitize-type="string"></div></div><div class="form-row"><div class="form-group"><label for="createLocationCenter">Center</label><input type="text" id="createLocationCenter" name="locationCenter" data-sanitize-type="string"></div><div class="form-group"><label for="createLocationKRA">KRA PIN (Optional)</label><input type="text" id="createLocationKRA" name="locationKRA" data-sanitize-type="alphanumeric"></div></div></div><button type="submit" class="btn-submit">Create User</button></form></div></div>
+    <div id="editUserModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Edit User Profile</h2><button type="button" class="close">&times;</button></div><form id="editUserForm" data-sanitize="true"><input type="hidden" id="editUserId" aria-label="User ID"><div class="detail-section"><h3>Profile Information</h3><div class="form-row"><div class="form-group"><label for="editUserName">Name</label><input type="text" id="editUserName" name="name" data-sanitize-type="string" placeholder="Enter full name" required></div><div class="form-group"><label for="editUserEmail">Email</label><input type="email" id="editUserEmail" name="email" data-sanitize-type="email" placeholder="Enter email address" required></div></div><div class="form-row"><div class="form-group"><label for="editUserRole">Role</label><select id="editUserRole" name="role" title="Select user role"><option value="user">User</option><option value="admin">Admin</option></select></div><div class="form-group"><label for="editUserType">User Type</label><select id="editUserType" name="userType" title="Select user type"><option value="">None</option><option value="admin">Admin</option><option value="field_agent">Field Agent</option><option value="supervisor">Supervisor</option><option value="vendor">Vendor</option><option value="supplier">Supplier</option></select></div></div><div class="form-row"><div class="form-group"><label for="editUserStatus">Account Status</label><select id="editUserStatus" name="status" title="Select account status"><option value="active">Approved</option><option value="pending">Pending</option><option value="suspended">Suspended</option><option value="inactive">Inactive</option></select></div></div><button type="submit" class="btn-submit">Save Profile</button></div></form><div class="detail-section"><h3>Change Password</h3><div class="form-group"><label for="newPassword">New Password</label><input type="password" id="newPassword" name="newPassword" data-sanitize-type="string" minlength="8" placeholder="Enter new password"></div><div class="form-group"><label for="confirmPassword">Confirm Password</label><input type="password" id="confirmPassword" name="confirmPassword" data-sanitize-type="string" minlength="8" placeholder="Confirm new password"></div><button class="btn-submit" id="btnChangePassword">Update Password</button></div></div></div>
+    <!-- CDN Scripts with SRI -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"
+            integrity="sha384-e6nUZLBkQ86NJ6TVVKAeSaK8jWa3NhkYWZFomE39AvDbQWeie9PlQqM3pmYW5d1g"
+            crossorigin="anonymous"></script>
+    
+    <!-- Application Scripts -->
+    <script src="js/core/config-loader.js"></script>
+    <script src="js/auth/rembrandts-auth-guard.js"></script>
+    <script src="js/pages/revenue-dashboard.page.js"></script>
+    <script src="js/features/comprehensive-onboarding.js"></script>
+    <script src="js/pages/rembrandts-settings.page.js"></script>
+    <script src="js/features/bulk-operations.js"></script>
+    <script src="js/features/delivery-tracking.js"></script>
+    <script src="js/features/product-catalog.js"></script>
+    <script src="js/features/loyalty-program.js"></script>
+    <script src="js/features/sms-notifications.js"></script>
+    <script src="js/features/in-app-messaging.js"></script>
+    <script src="js/pages/financial-dashboard.page.js"></script>
+    <script src="js/features/onboarding-management-ui.js"></script>
+    <script src="js/pages/mpesa-admin-dashboard.page.js"></script>
+    
+    <!-- Security Scripts (must load before page scripts) -->
+    <script src="js/security/xss-protection.js"></script>
+    <script src="js/security/secure-session.js"></script>
+    <script src="js/security/csrf-protection.js"></script>
+    <script src="js/security/input-sanitizer.js"></script>
+    
+    <!-- Page Scripts (load after security) -->
+    <script src="js/features/payment-timeout-config.js"></script>
+    <script src="js/features/manual-payment-verification.js"></script>
+    <script src="js/pages/rembrandts.page.js"></script>
+</body>
+</html>

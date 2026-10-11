@@ -1,0 +1,31 @@
+/* Import common styles */
+@import 'common/base.css';
+@import 'common/layout.css';
+@import 'common/components.css';
+@import 'common/navigation.css';
+
+/* Inventory Management specific styles */
+.sidebar { background: #065f46; }
+.btn-primary { background: #10b981; color: #fff; border: none; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: background 0.2s; }
+.btn-primary:hover { background: #f59e0b; }
+.filters { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
+.filters input, .filters select { padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 8px; flex: 1; }
+.stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+.stat-card h3 { color: #10b981; }
+.logo {
+    padding: 16px 20px;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.logo a { display: flex; align-items: center; justify-content: center; }
+.logo img { max-width: 130px; height: auto; display: block; }
+.badge.in-stock { background: #dcfce7; color: #166534; }
+.badge.low-stock { background: #fef3c7; color: #92400e; }
+.badge.out-of-stock { background: #fee2e2; color: #991b1b; }
+.btn-action { padding: 0.5rem 1rem; border: none; border-radius: 6px; cursor: pointer; font-size: 0.875rem; margin-right: 0.5rem; }
+.btn-edit { background: #dbeafe; color: #1e40af; }
+.btn-delete { background: #fee2e2; color: #991b1b; }
+.table-loading-cell { text-align: center; padding: 2rem; }

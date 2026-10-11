@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' https://cdn.jsdelivr.net; 
+                   style-src 'self' https://fonts.googleapis.com; 
+                   font-src 'self' https://fonts.gstatic.com; 
+                   connect-src 'self' https://*.supabase.co; 
+                   img-src 'self' data: https:; base-uri 'self'; 
+                   form-action 'self';">
+    <title>Analytics - Stokika</title>
+    <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/analytics.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo"><a href="https://www.stokika.com" target="_blank" rel="noopener noreferrer"><img src="assets/logos/logo.png.png" alt="Stokika"></a></div>
+            <nav class="sidebar-nav">
+                <a href="inventory.html" class="nav-item"><span>📊</span> Dashboard</a>
+                <a href="analytics.html" class="nav-item active"><span>📈</span> Analytics</a>
+                <a href="orders.html" class="nav-item"><span>🛒</span> Orders</a>
+                <a href="payments.html" class="nav-item"><span>💳</span> Payments</a>
+            </nav>
+            <button class="btn-logout" id="logoutBtn">Logout</button>
+        </aside>
+        <main class="main-content">
+            <header class="header">
+                <h1>Analytics Dashboard</h1>
+                <select id="periodFilter" title="Select time period">
+                    <option value="7">Last 7 Days</option>
+                    <option value="30" selected>Last 30 Days</option>
+                    <option value="90">Last 90 Days</option>
+                </select>
+            </header>
+            <div class="stats-grid">
+                <div class="stat-card"><h3 id="totalRevenue">KES 0</h3><p>Total Revenue</p></div>
+                <div class="stat-card"><h3 id="totalOrders">0</h3><p>Total Orders</p></div>
+                <div class="stat-card"><h3 id="avgOrderValue">KES 0</h3><p>Avg Order Value</p></div>
+                <div class="stat-card"><h3 id="growthRate">0%</h3><p>Growth Rate</p></div>
+            </div>
+            <div class="charts-grid">
+                <div class="card">
+                    <h2>Revenue Trend</h2>
+                    <canvas id="revenueChart"></canvas>
+                </div>
+                <div class="card">
+                    <h2>Orders by Status</h2>
+                    <canvas id="statusChart"></canvas>
+                </div>
+                <div class="card">
+                    <h2>Top Products</h2>
+                    <div id="topProducts">Loading...</div>
+                </div>
+                <div class="card">
+                    <h2>Payment Methods</h2>
+                    <canvas id="paymentChart"></canvas>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"
+            integrity="sha384-e6nUZLBkQ86NJ6TVVKAeSaK8jWa3NhkYWZFomE39AvDbQWeie9PlQqM3pmYW5d1g"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
+            crossorigin="anonymous"></script>
+    <!-- Security Scripts -->
+    <script src="js/core/config-loader.js"></script>
+    <script src="js/security/xss-protection.js"></script>
+    <script src="js/security/secure-session.js"></script>
+    <script src="js/security/csrf-protection.js"></script>
+    <script src="js/auth/auth-middleware.js"></script>
+    <script src="js/pages/analytics.page.js"></script>
+

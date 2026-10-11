@@ -1,0 +1,169 @@
+# Security Headers
+<IfModule mod_headers.c>
+    # Prevent XSS attacks
+    Header set X-XSS-Protection "1; mode=block"
+    
+    # Prevent clickjacking
+    Header set X-Frame-Options "DENY"
+    
+    # Prevent MIME type sniffing
+    Header set X-Content-Type-Options "nosniff"
+    
+    # Referrer Policy
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Content Security Policy (Enhanced XSS Protection)
+    # Note: 'unsafe-inline' is required for dynamic JavaScript that applies styles
+    # This is a balanced approach between security and functionality
+    Header set Content-Security-Policy "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net https://*.supabase.co 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://fonts.googleapis.com; img-src 'self' data: https: blob:; font-src 'self' https://fonts.gstatic.com https://cdn.jsdelivr.net; connect-src 'self' https://*.supabase.co https://api.safaricom.co.ke; frame-ancestors 'none'; base-uri 'self'; form-action 'self';"
+    
+    # Permissions Policy (formerly Feature Policy)
+    Header set Permissions-Policy "geolocation=(self), microphone=(), camera=(), payment=(self), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"
+    
+    # Remove server signature
+    Header unset Server
+    Header unset X-Powered-By
+    
+    # HSTS (HTTP Strict Transport Security) - 1 year as per task requirements
+    Header set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+    
+    # Cross-Origin Resource Policy
+    Header set Cross-Origin-Resource-Policy "same-origin"
+    
+    # Cross-Origin Embedder Policy
+    Header set Cross-Origin-Embedder-Policy "require-corp"
+    
+    # Cross-Origin Opener Policy
+    Header set Cross-Origin-Opener-Policy "same-origin"
+</IfModule>
+
+# Disable directory browsing
+Options -Indexes
+
+# Protect sensitive files
+<FilesMatch "^\.">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Protect .env file
+<Files ".env">
+    Order allow,deny
+    Deny from all
+</Files>
+
+# Protect config files (except config.json which contains only public Supabase URL)
+<FilesMatch "\.(yml|yaml|ini|log|sh|sql)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Block all JSON except config.json and manifest.json (public files)
+<FilesMatch "\.json$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+<Files "config.json">
+    Order allow,deny
+    Allow from all
+</Files>
+
+<Files "manifest.json">
+    Order allow,deny
+    Allow from all
+</Files>
+
+# EXCEPTION: Allow supabase-config.js (contains only public anon key)
+<Files "supabase-config.js">
+    Order allow,deny
+    Allow from all
+</Files>
+
+
+# Allow compiled JavaScript and source maps
+<FilesMatch "\.(js|js\.map|css|css\.map)$">
+    Order allow,deny
+    Allow from all
+</FilesMatch>
+
+
+# Enable GZIP compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
+
+# Browser caching
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType image/x-icon "access plus 1 year"
+</IfModule>
+
+# URL Rewriting and Security
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+    
+    # Force HTTPS redirect (security requirement)
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+    
+    # Remove .html extension
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME}\.html -f
+    RewriteRule ^(.*)$ $1.html [L]
+    
+    # Redirect .html URLs to clean URLs
+    RewriteCond %{THE_REQUEST} \.html
+    RewriteRule ^(.*)\.html$ /$1 [R=301,L]
+    
+    # Redirect index.html to root
+    RewriteCond %{THE_REQUEST} /index\.html
+    RewriteRule ^(.*)index\.html$ / [R=301,L]
+    
+    # Block SQL injection attempts
+    RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
+    RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2}) [OR]
+    RewriteCond %{QUERY_STRING} (\.|%2E)(\.|%2E)(%2F|/) [NC,OR]
+    RewriteCond %{QUERY_STRING} (union|select|insert|drop|update|delete|cast|create|char|convert|alter|declare|exec|script) [NC]
+    RewriteRule ^(.*)$ - [F,L]
+    
+    # Block file injection attempts
+    RewriteCond %{QUERY_STRING} [a-zA-Z0-9_]=http:// [OR]
+    RewriteCond %{QUERY_STRING} [a-zA-Z0-9_]=(\.\.//?)+ [OR]
+    RewriteCond %{QUERY_STRING} [a-zA-Z0-9_]=/([a-z0-9_.]//?)+ [NC]
+    RewriteRule ^(.*)$ - [F,L]
+    
+    # Block common exploits
+    RewriteCond %{REQUEST_URI} !^/[0-9]+\..+\.cpaneldcv$
+    RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
+    RewriteCond %{REQUEST_URI} (\.php|\.asp|\.aspx|\.jsp)$ [NC]
+    RewriteCond %{REQUEST_URI} !(index\.php|contact\.php)$ [NC]
+    RewriteRule ^(.*)$ - [F,L]
+</IfModule>
+
+# Limit file upload size (adjust as needed)
+php_value upload_max_filesize 10M
+php_value post_max_size 10M
+
+# Disable PHP execution in uploads directory (if you have one)
+<Directory "uploads">
+    php_flag engine off
+</Directory>
+
+# Block access to old admin paths (security by obscurity)
+<IfModule mod_rewrite.c>
+    # Redirect old admin URLs to 404
+    RewriteRule ^admin\.html$ - [R=404,L]
+    RewriteRule ^admin-login\.html$ - [R=404,L]
+    RewriteRule ^html/admin\.html$ - [R=404,L]
+    RewriteRule ^html/admin-login\.html$ - [R=404,L]
+</IfModule>

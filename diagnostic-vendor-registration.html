@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Registration Diagnostic</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .diagnostic-box {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .warning { background: #fff3cd; color: #856404; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        button {
+            padding: 10px 20px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover { background: #059669; }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        h2 { color: #333; margin-top: 0; }
+        .section { margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <div class="diagnostic-box">
+        <h1>🔧 Vendor Registration Diagnostic</h1>
+        <p>This page helps diagnose configuration issues with the vendor registration modal.</p>
+        <button onclick="runDiagnostics()">Run Full Diagnostic</button>
+        <button onclick="testSupabase()">Test Supabase Connection</button>
+        <button onclick="testLookups()">Test Lookup Service</button>
+        <button onclick="checkCSS()">Check CSS Loading</button>
+    </div>
+
+    <div class="diagnostic-box section">
+        <h2>1. Environment Configuration</h2>
+        <div id="envStatus">Click "Run Full Diagnostic" to check...</div>
+    </div>
+
+    <div class="diagnostic-box section">
+        <h2>2. Supabase Connection</h2>
+        <div id="supabaseStatus">Click "Test Supabase Connection" to check...</div>
+    </div>
+
+    <div class="diagnostic-box section">
+        <h2>3. Lookup Tables</h2>
+        <div id="lookupsStatus">Click "Test Lookup Service" to check...</div>
+    </div>
+
+    <div class="diagnostic-box section">
+        <h2>4. CSS & Modal Visibility</h2>
+        <div id="cssStatus">Click "Check CSS Loading" to check...</div>
+    </div>
+
+    <div class="diagnostic-box section">
+        <h2>5. Console Errors</h2>
+        <div id="consoleErrors"></div>
+    </div>
+
+    <script>
+        // Capture console errors
+        const errors = [];
+        const originalError = console.error;
+        console.error = function(...args) {
+            errors.push(args.join(' '));
+            originalError.apply(console, args);
+        };
+
+        async function runDiagnostics() {
+            document.getElementById('envStatus').innerHTML = '<div class="status info">Checking...</div>';
+            document.getElementById('supabaseStatus').innerHTML = '<div class="status info">Checking...</div>';
+            document.getElementById('lookupsStatus').innerHTML = '<div class="status info">Checking...</div>';
+            document.getElementById('cssStatus').innerHTML = '<div class="status info">Checking...</div>';
+
+            await checkEnvironment();
+            await testSupabase();
+            await testLookups();
+            checkCSS();
+            showConsoleErrors();
+        }
+
+        async function checkEnvironment() {
+            const status = document.getElementById('envStatus');
+            try {
+                // Try to fetch config
+                const response = await fetch('/api/config.php');
+                if (response.ok) {
+                    const config = await response.json();
+                    if (config.supabaseUrl && config.supabaseAnonKey) {
+                        status.innerHTML = `
+                            <div class="status success">✅ Config loaded successfully</div>
+                            <pre>Supabase URL: ${config.supabaseUrl}</pre>
+                        `;
+                    } else {
+                        status.innerHTML = '<div class="status error">❌ Config missing required fields</div>';
+                    }
+                } else {
+                    throw new Error('Failed to fetch config');
+                }
+            } catch (error) {
+                status.innerHTML = `
+                    <div class="status error">❌ Failed to load config</div>
+                    <pre>${error.message}</pre>
+                    <div class="status warning">⚠️ Make sure you have /api/config.php or /api/config.dev.php configured</div>
+                `;
+            }
+        }
+
+        async function testSupabase() {
+            const status = document.getElementById('supabaseStatus');
+            try {
+                // Check if Supabase client is available
+                if (typeof window.supabase === 'undefined') {
+                    status.innerHTML = '<div class="status error">❌ Supabase client not initialized</div>';
+                    return;
+                }
+
+                // Try a simple query
+                const { data, error } = await window.supabase
+                    .from('business_categories')
+                    .select('count')
+                    .limit(1);
+
+                if (error) {
+                    status.innerHTML = `
+                        <div class="status error">❌ Supabase query failed</div>
+                        <pre>${error.message}</pre>
+                    `;
+                } else {
+                    status.innerHTML = '<div class="status success">✅ Supabase connection working</div>';
+                }
+            } catch (error) {
+                status.innerHTML = `
+                    <div class="status error">❌ Supabase test failed</div>
+                    <pre>${error.message}</pre>
+                `;
+            }
+        }
+
+        async function testLookups() {
+            const status = document.getElementById('lookupsStatus');
+            const results = [];
+
+            const tables = [
+                'business_categories',
+                'business_statuses',
+                'business_sizes',
+                'business_models'
+            ];
+
+            for (const table of tables) {
+                try {
+                    if (typeof window.supabase === 'undefined') {
+                        results.push(`<div class="status error">❌ ${table}: Supabase not initialized</div>`);
+                        continue;
+                    }
+
+                    const { data, error } = await window.supabase
+                        .from(table)
+                        .select('*')
+                        .eq('is_active', true);
+
+                    if (error) {
+                        results.push(`<div class="status error">❌ ${table}: ${error.message}</div>`);
+                    } else if (data && data.length > 0) {
+                        results.push(`<div class="status success">✅ ${table}: ${data.length} records</div>`);
+                    } else {
+                        results.push(`<div class="status warning">⚠️ ${table}: No active records found</div>`);
+                    }
+                } catch (error) {
+                    results.push(`<div class="status error">❌ ${table}: ${error.message}</div>`);
+                }
+            }
+
+            status.innerHTML = results.join('');
+        }
+
+        function checkCSS() {
+            const status = document.getElementById('cssStatus');
+            const results = [];
+
+            // Check if CSS file is loaded
+            const cssFiles = Array.from(document.styleSheets);
+            const vendorCSS = cssFiles.find(sheet => 
+                sheet.href && sheet.href.includes('vendor-registration-modal.css')
+            );
+
+            if (vendorCSS) {
+                results.push('<div class="status success">✅ vendor-registration-modal.css loaded</div>');
+            } else {
+                results.push('<div class="status error">❌ vendor-registration-modal.css NOT loaded</div>');
+            }
+
+            // Check if modal exists in DOM
+            const modal = document.getElementById('vendorRegistrationModal');
+            if (modal) {
+                results.push('<div class="status success">✅ Modal element found in DOM</div>');
+                
+                // Check modal visibility classes
+                const hasOverlay = modal.classList.contains('modal-overlay');
+                const hasActive = modal.classList.contains('active');
+                
+                results.push(`<div class="status info">Modal classes: ${Array.from(modal.classList).join(', ')}</div>`);
+                results.push(`<div class="status info">Modal visible: ${hasActive ? 'Yes' : 'No'}</div>`);
+
+                // Check form steps
+                const formSteps = modal.querySelectorAll('.form-step');
+                results.push(`<div class="status info">Found ${formSteps.length} form steps</div>`);
+
+                const activeStep = modal.querySelector('.form-step.active');
+                if (activeStep) {
+                    results.push('<div class="status success">✅ Active form step found</div>');
+                } else {
+                    results.push('<div class="status error">❌ No active form step (form will be hidden)</div>');
+                }
+            } else {
+                results.push('<div class="status error">❌ Modal element NOT found in DOM</div>');
+            }
+
+            status.innerHTML = results.join('');
+        }
+
+        function showConsoleErrors() {
+            const status = document.getElementById('consoleErrors');
+            if (errors.length > 0) {
+                status.innerHTML = `
+                    <div class="status error">Found ${errors.length} console errors:</div>
+                    <pre>${errors.join('\n\n')}</pre>
+                `;
+            } else {
+                status.innerHTML = '<div class="status success">✅ No console errors captured</div>';
+            }
+        }
+
+        // Auto-run on load
+        window.addEventListener('load', () => {
+            setTimeout(runDiagnostics, 1000);
+        });
+    </script>
+</body>
+</html>

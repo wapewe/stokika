@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' https://cdn.jsdelivr.net; 
+                   style-src 'self' https://fonts.googleapis.com; 
+                   font-src 'self' https://fonts.gstatic.com; 
+                   connect-src 'self' https://*.supabase.co; 
+                   img-src 'self' data: https:; base-uri 'self'; 
+                   form-action 'self';">
+    <title>Suppliers - Stokika</title>
+    <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" 
+          rel="stylesheet"
+          integrity="sha384-NJswQMIotfMidJ5dLQGcIb5G+CqwnIUXM5Yq+9vXua6x46PEaxcClOASSvVFFXZX"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="css/inventory.css">
+    <link rel="stylesheet" href="css/suppliers.css">
+    <script src="js/features/theme-manager.js"></script>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <a href="https://www.stokika.com" target="_blank" rel="noopener noreferrer">
+                    <img src="assets/logos/logo.png.png" alt="Stokika" class="logo-img" id="dashboardLogo">
+                </a>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="inventory.html" class="nav-item"><span>Dashboard</span></a>
+                <a href="inventory-page.html" class="nav-item"><span>Inventory</span></a>
+                <a href="suppliers.html" class="nav-item active"><span>Suppliers</span></a>
+                <a href="orders.html" class="nav-item"><span>Orders</span></a>
+                <a href="payments.html" class="nav-item"><span>Payments</span></a>
+                <a href="analytics.html" class="nav-item"><span>Analytics</span></a>
+                <a href="settings.html" class="nav-item"><span>Settings</span></a>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn-logout" id="logoutBtn">🚪 Logout</button>
+            </div>
+        </aside>
+        <main class="main-content">
+            <header class="dashboard-header">
+                <h1>Suppliers</h1>
+                <div class="search-container">
+                    <input type="text" id="searchInput" placeholder="Search by company name..." class="search-input">
+                </div>
+            </header>
+            <section class="card">
+                <h2>Available Suppliers</h2>
+                <div id="suppliersList"></div>
+                <div id="paginationContainer" class="pagination-container"></div>
+            </section>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
+            crossorigin="anonymous"></script>
+    <script src="js/auth/auth-middleware.js"></script>
+    <script src="js/core/db-integration.js"></script>
+    <script src="js/core/dashboard-loader.js"></script>
+    <script src="js/pages/suppliers.page.js"></script>
+    <!-- Security Scripts -->
+    <script src="js/core/config-loader.js"></script>
+    <script src="js/security/xss-protection.js"></script>
+    <script src="js/security/secure-session.js"></script>
+    <script src="js/security/csrf-protection.js"></script>
+</body>
+</html>

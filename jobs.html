@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Static Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' https://cdn.jsdelivr.net; 
+                   style-src 'self' https://fonts.googleapis.com; 
+                   font-src 'self' https://fonts.gstatic.com; 
+                   connect-src 'self' https://*.supabase.co; 
+                   img-src 'self' data: https:; base-uri 'self'; 
+                   form-action 'self';">
+    
+    <!-- Security Headers -->
+    <meta http-equiv="X-Frame-Options" content="DENY">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+    <meta http-equiv="X-XSS-Protection" content="1; mode=block">
+    
+    <title>Careers - stokika</title>
+    <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
+    
+    <!-- Google Fonts (Note: SRI not applied to Google Fonts due to browser-specific content variation) -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" 
+          rel="stylesheet"
+          crossorigin="anonymous">
+    
+    <!-- Page Styles -->
+    <link rel="stylesheet" href="css/jobs.css">
+</head>
+<body>
+    <div class="back-to-home">
+        <a href="/C:/Users/HP/Documents/Reinherts/stokika/dalana.html" class="btn-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back to Home
+        </a>
+    </div>
+    
+    <div class="container">
+        <header class="page-header">
+            <div class="logo-header">
+                <a href="https://www.stokika.com" target="_blank" rel="noopener noreferrer">
+                    <img src="assets/logos/logo.png.png" alt="stokika" class="header-logo">
+                </a>
+            </div>
+            <h1>Join Our Team</h1>
+            <p>Build your career with stokika</p>
+        </header>
+
+        <!-- Field Agent Position -->
+        <section class="job-card">
+            <div class="job-header">
+                <h2>Field Agent</h2>
+                <span class="job-badge">Multiple Positions</span>
+            </div>
+            <div class="job-details">
+                <p><strong>Location:</strong> Various counties in Kenya</p>
+                <p><strong>Reports To:</strong> Supervisor</p>
+            </div>
+            <div class="job-description">
+                <h3>Role Summary</h3>
+                <p>A Field Agent is responsible for acquiring, onboarding and supporting micro, small and medium businesses that requires stock advances  and or suppliers, manufacturers and distributors. They collect accurate business data, verify vendors, support deliveries, track repayments, and act as stokika's representative in the field.</p>
+                
+                <h3>Key Responsibilities</h3>
+                <ul>
+                    <li>Identify and recruit vendors</li>
+                    <li>Publicizing and creating awareness</ii>
+                    <li>Verify vendor businesses (photos, GPS, documents)</li>
+                    <li>Collect and submit accurate data</li>
+                    <li>Coordinate stock deliveries, stock evaluation & supervision</li>
+                    <li>Support repayment follow-up</li>
+                    <li>Report fraud signs</li>
+                    <li>Maintain accounts and logistics</li>
+                </ul>
+                
+                <h3>Minimum Requirements</h3>
+                <ul>
+                    <li>Basic smartphone & web navigation skills</li>
+                    <li>Fluent in local languages</li>
+                    <li>Experience in sales, fieldwork, marketing, businness management, community outreach or any other related field is an added advantage</li>
+                </ul>
+            </div>
+            <div class="job-actions">
+                <a href="field-agent.html" class="btn-apply">Apply Now</a>
+            </div>
+        </section>
+
+        <!-- Supervisor Position -->
+        <section class="job-card">
+            <div class="job-header">
+                <h2>Supervisor (Field Operations)</h2>
+                <span class="job-badge">Regional</span>
+            </div>
+            <div class="job-details">
+                <p><strong>Location:</strong> Regional</p>
+                <p><strong>Reports To:</strong> Field Operations Manager</p>
+            </div>
+            <div class="job-description">
+                <h3>Role Summary</h3>
+                <p>A Supervisor manages a team of Field Agents, verifies vendor applications, approves stock requests, prevents fraud, and ensures operational success in their region.</p>
+                
+                <h3>Key Responsibilities</h3>
+                <ul>
+                    <li>Manage and train field agents</li>
+                    <li>Verrify & approve vendors</li>
+                    <li>Approve stock advances</li>
+                    <li>Conduct field audits</li>
+                    <li>Investigate fraud signals</li>
+                    <li>Oversee deliveries & repayments</li>
+                    <li>Prepare weekly regional reports</li>
+                </ul>
+                
+                <h3>Minimum Requirements</h3>
+                <ul>
+                    <li>Relevant Degree</li>
+                    <li>2+ years in sales, microfinance, or field team management</li>
+                    <li>Strong digital reporting skills</li>
+                    <li>Strong leadership & communication</li>
+                </ul>
+            </div>
+            <div class="job-actions">
+                <a href="supervisor-onboarding.html" class="btn-apply">Apply Now</a>
+            </div>
+        </section>
+    </div>
+    
+    <!-- Supabase JS with SRI -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
+            crossorigin="anonymous"></script>
+    
+    <!-- Core Security Scripts -->
+    <script src="js/core/config-loader.js"></script>
+    <script src="js/security/xss-protection.js"></script>
+    <script src="js/security/secure-session.js"></script>
+    <script src="js/security/csrf-protection.js"></script>
+    
+    <!-- Page Module -->
+    <script src="js/pages/jobs.page.js" type="module"></script>
+</body>
+</html>

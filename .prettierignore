@@ -1,0 +1,26 @@
+# Build output
+dist/
+build/
+
+# Dependencies
+node_modules/
+
+# Backups
+backups/
+
+# Assets
+assets/
+
+# API files
+api/
+
+# Package files
+package.json
+package-lock.json
+
+# Config files
+tsconfig.json
+.eslintrc.json
+
+# Documentation
+*.md

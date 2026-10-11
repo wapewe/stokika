@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Registration Modal - CSS Test</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/vendor-registration-modal.css">
+    <style>
+        body {
+            padding: 20px;
+            background: #f8fafc;
+        }
+        .test-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10001;
+        }
+        .test-controls button {
+            display: block;
+            width: 200px;
+            margin: 10px 0;
+            padding: 10px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        .test-controls button:hover {
+            background: #059669;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Test Controls -->
+<div class="test-controls">
+    <h3>Test Controls</h3>
+    <button onclick="openModal()">Open Modal</button>
+    <button onclick="goToStep(1)">Go to Step 1</button>
+    <button onclick="goToStep(2)">Go to Step 2</button>
+    <button onclick="goToStep(3)">Go to Step 3</button>
+    <button onclick="goToStep(4)">Go to Step 4</button>
+    <button onclick="toggleError()">Toggle Validation</button>
+    <button onclick="updateBMCProgress()">Update BMC Progress</button>
+</div>
+
+<!-- Vendor Registration Modal -->
+<div class="modal-overlay vendor-registration-overlay" id="vendorRegistrationModal">
+    <div class="modal-content vendor-registration">
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        
+        <!-- Header -->
+        <div class="registration-header">
+            <h2>Vendor Registration</h2>
+            <p class="registration-tagline">Join stokika and grow your business</p>
+        </div>
+        
+        <!-- Progress Indicator -->
+        <div class="registration-progress">
+            <div class="progress-step active" data-step="1">
+                <span class="step-number">1</span>
+                <span class="step-label">Basic Information</span>
+            </div>
+            <div class="progress-step" data-step="2">
+                <span class="step-number">2</span>
+                <span class="step-label">Business Profile</span>
+            </div>
+            <div class="progress-step" data-step="3">
+                <span class="step-number">3</span>
+                <span class="step-label">Business Plan</span>
+            </div>
+            <div class="progress-step" data-step="4">
+                <span class="step-number">4</span>
+                <span class="step-label">Stock Needs</span>
+            </div>
+        </div>
+        
+        <!-- Form -->
+        <form id="vendorRegistrationForm" class="vendor-form">
+            
+            <!-- Step 1: Basic Information -->
+            <div class="form-step active" data-step="1">
+                <h3>Basic Information</h3>
+                <p class="step-description">Let's start with your basic details and business information.</p>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Full Name <span class="required-asterisk">*</span></label>
+                        <input type="text" name="fullName" placeholder="John Doe" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Business Name <span class="required-asterisk">*</span></label>
+                        <input type="text" name="businessName" placeholder="Doe's Retail Shop" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Business Category <span class="required-asterisk">*</span></label>
+                        <select name="businessCategory" required>
+                            <option value="">Select category</option>
+                            <option value="retail">Retail & Shop</option>
+                            <option value="food">Food & Beverage</option>
+                            <option value="agriculture">Fresh Produce & Agriculture</option>
+                            <option value="fashion">Fashion & Apparel</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>County <span class="required-asterisk">*</span></label>
+                        <select name="county" required>
+                            <option value="">Select county</option>
+                            <option value="nairobi">Nairobi</option>
+                            <option value="mombasa">Mombasa</option>
+                            <option value="kisumu">Kisumu</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Town <span class="required-asterisk">*</span></label>
+                        <input type="text" name="town" placeholder="Nairobi" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Business Center/Area <span class="required-asterisk">*</span></label>
+                        <input type="text" name="center" placeholder="Westlands" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Phone Number <span class="required-asterisk">*</span></label>
+                        <input type="tel" name="phone" placeholder="0712 345 678" required>
+                        <span class="field-hint">Format: 07XX XXX XXX</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address <span class="required-asterisk">*</span></label>
+                        <input type="email" name="email" placeholder="john@example.com" required id="testEmail">
+                    </div>
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="button" class="btn-next" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+            
+            <!-- Step 2: Business Profile -->
+            <div class="form-step" data-step="2">
+                <h3>Business Profile</h3>
+                <p class="step-description">Help us understand your business across three key dimensions.</p>
+                
+                <div class="dimension-cards">
+                    <div class="dimension-card">
+                        <div class="dimension-label">WHERE you are</div>
+                        <p class="dimension-explanation">Your business's developmental stage</p>
+                        <div class="form-group">
+                            <label>Business Status <span class="required-asterisk">*</span></label>
+                            <select name="businessStatus" required>
+                                <option value="">Select status</option>
+                                <option value="planning">Planning to Start</option>
+                                <option value="newly-started">Newly Started</option>
+                                <option value="operating">Operating</option>
+                                <option value="growing">Growing</option>
+                                <option value="expanding">Expanding</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="dimension-card">
+                        <div class="dimension-label">HOW BIG you are</div>
+                        <p class="dimension-explanation">The scale of your operations</p>
+                        <div class="form-group">
+                            <label>Business Size <span class="required-asterisk">*</span></label>
+                            <select name="businessSize" required>
+                                <option value="">Select size</option>
+                                <option value="starting">Starting (Not yet operating)</option>
+                                <option value="micro">Micro (Owner-operated)</option>
+                                <option value="small">Small (Established business)</option>
+                                <option value="growing">Growing (Expanding operations)</option>
+                                <option value="medium">Medium (Larger established)</option>
+                                <option value="large">Large (Multiple branches)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="dimension-card">
+                        <div class="dimension-label">HOW you operate</div>
+                        <p class="dimension-explanation">Your operational business model</p>
+                        <div class="form-group">
+                            <label>Business Model <span class="required-asterisk">*</span></label>
+                            <select name="businessModel" required>
+                                <option value="">Select model</option>
+                                <option value="retail">Retail (Sell to consumers)</option>
+                                <option value="wholesale">Wholesale (Bulk to businesses)</option>
+                                <option value="distribution">Distribution</option>
+                                <option value="manufacturing">Manufacturing</option>
+                                <option value="service">Service</option>
+                                <option value="agriculture">Agriculture</option>
+                                <option value="mixed">Mixed</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="button" class="btn-previous" onclick="previousStep()">Previous</button>
+                    <button type="button" class="btn-next" onclick="nextStep()">Next</button>
+                </div>
+            </div>
+            
+            <!-- Step 3: Business Model Canvas -->
+            <div class="form-step" data-step="3">
+                <h3>Business Model Canvas</h3>
+                <p class="step-description">Plan your business systematically with the Business Model Canvas.</p>
+                
+                <div class="bmc-header">
+                    <h4>Complete Your Business Plan</h4>
+                    <span class="bmc-requirement-indicator required">Required for planning-stage businesses</span>
+                </div>
+                
+                <div class="bmc-progress-info">
+                    <span class="bmc-section-counter" id="bmcCounter">Section 1 of 9</span>
+                    <span class="bmc-completion-badge" style="display:none;">BMC Completed</span>
+                </div>
+                
+                <div class="bmc-progress">
+                    <div class="bmc-progress-bar" id="bmcProgressBar" style="width: 11%;"></div>
+                </div>
+                
+                <div class="bmc-content">
+                    <h5 class="bmc-section-title">Value Proposition</h5>
+                    <p class="bmc-question">What value do you deliver to your customers? What problems are you solving?</p>
+                    
+                    <div class="bmc-example">
+                        <span class="bmc-example-label">Example:</span>
+                        We provide affordable, high-quality groceries with convenient delivery to busy families in urban areas. Our value is saving time and money while ensuring fresh products.
+                    </div>
+                    
+                    <div class="form-group">
+                        <textarea name="bmc_value_proposition" class="bmc-textarea" placeholder="Describe your value proposition..." required></textarea>
+                        <div class="char-counter"><span class="char-count">0</span>/30 characters minimum</div>
+                    </div>
+                </div>
+                
+                <!-- Optional: BMC Grid Visual -->
+                <div class="bmc-grid">
+                    <div class="bmc-card active">Value Proposition</div>
+                    <div class="bmc-card">Customer Segments</div>
+                    <div class="bmc-card">Channels</div>
+                    <div class="bmc-card">Customer Relationships</div>
+                    <div class="bmc-card">Revenue Streams</div>
+                    <div class="bmc-card">Key Resources</div>
+                    <div class="bmc-card">Key Activities</div>
+                    <div class="bmc-card">Key Partnerships</div>
+                    <div class="bmc-card">Cost Structure</div>
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="button" class="btn-previous" onclick="previousStep()">Previous</button>
+                    <button type="button" class="btn-skip">Skip (Optional)</button>
+                    <button type="button" class="btn-next" onclick="nextStep()">Next Section</button>
+                </div>
+            </div>
+            
+            <!-- Step 4: Stock Needs -->
+            <div class="form-step" data-step="4">
+                <h3>Stock Needs</h3>
+                <p class="step-description">Tell us about your inventory requirements so we can support your business growth.</p>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Stock Cycle <span class="required-asterisk">*</span></label>
+                        <select name="stockCycle" required>
+                            <option value="">Select cycle</option>
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="fortnightly">Fortnightly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Estimated Stock Requirement per Cycle (KES) <span class="required-asterisk">*</span></label>
+                        <input type="number" name="stockRequirement" placeholder="e.g., 50000" min="1" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Why do you need this stock cycle and amount? <span class="required-asterisk">*</span></label>
+                    <textarea name="stockJustification" placeholder="Explain your stock needs, customer demand, and business operations..." rows="5" minlength="20" required></textarea>
+                    <div class="char-counter"><span class="char-count">0</span>/20 characters minimum</div>
+                </div>
+                
+                <div class="success-message" style="display:none;">
+                    Your registration has been submitted successfully! Redirecting to dashboard...
+                </div>
+                
+                <div class="form-buttons">
+                    <button type="button" class="btn-previous" onclick="previousStep()">Previous</button>
+                    <button type="submit" class="btn-submit" onclick="event.preventDefault(); submitForm()">Complete Registration</button>
+                </div>
+            </div>
+            
+        </form>
+    </div>
+</div>
+
+<script>
+    // Test Functions
+    let currentStep = 1;
+    let validationEnabled = false;
+    
+    function openModal() {
+        document.getElementById('vendorRegistrationModal').classList.add('active');
+    }
+    
+    function closeModal() {
+        document.getElementById('vendorRegistrationModal').classList.remove('active');
+    }
+    
+    function goToStep(stepNumber) {
+        // Hide all steps
+        document.querySelectorAll('.form-step').forEach(step => {
+            step.classList.remove('active');
+        });
+        
+        // Show target step
+        document.querySelector('.form-step[data-step="' + stepNumber + '"]').classList.add('active');
+        
+        // Update progress indicator
+        document.querySelectorAll('.progress-step').forEach(step => {
+            step.classList.remove('active');
+            const stepNum = parseInt(step.getAttribute('data-step'));
+            if (stepNum < stepNumber) {
+                step.classList.add('completed');
+            } else if (stepNum === stepNumber) {
+                step.classList.add('active');
+            } else {
+                step.classList.remove('completed');
+            }
+        });
+        
+        currentStep = stepNumber;
+    }
+    
+    function nextStep() {
+        if (currentStep < 4) {
+            goToStep(currentStep + 1);
+        }
+    }
+    
+    function previousStep() {
+        if (currentStep > 1) {
+            goToStep(currentStep - 1);
+        }
+    }
+    
+    function toggleError() {
+        const emailInput = document.getElementById('testEmail');
+        const existingError = document.querySelector('.field-error');
+        
+        if (validationEnabled) {
+            emailInput.classList.remove('invalid');
+            if (existingError) existingError.remove();
+            validationEnabled = false;
+        } else {
+            emailInput.classList.add('invalid');
+            if (!existingError) {
+                emailInput.insertAdjacentHTML('afterend', '<span class="field-error">Please enter a valid email address</span>');
+            }
+            validationEnabled = true;
+        }
+    }
+    
+    let bmcProgress = 1;
+    function updateBMCProgress() {
+        bmcProgress++;
+        if (bmcProgress > 9) bmcProgress = 1;
+        
+        const percentage = (bmcProgress / 9) * 100;
+        document.getElementById('bmcProgressBar').style.width = percentage + '%';
+        document.getElementById('bmcCounter').textContent = `Section ${bmcProgress} of 9`;
+        
+        // Update BMC grid
+        document.querySelectorAll('.bmc-card').forEach((card, index) => {
+            if (index < bmcProgress - 1) {
+                card.classList.add('completed');
+                card.classList.remove('active');
+            } else if (index === bmcProgress - 1) {
+                card.classList.add('active');
+                card.classList.remove('completed');
+            } else {
+                card.classList.remove('active', 'completed');
+            }
+        });
+    }
+    
+    function submitForm() {
+        const submitBtn = document.querySelector('.btn-submit');
+        submitBtn.classList.add('loading');
+        submitBtn.disabled = true;
+        
+        setTimeout(() => {
+            submitBtn.classList.remove('loading');
+            submitBtn.disabled = false;
+            document.querySelector('.success-message').style.display = 'flex';
+        }, 2000);
+    }
+    
+    // Character counter demo
+    document.addEventListener('input', function(e) {
+        if (e.target.tagName === 'TEXTAREA') {
+            const counter = e.target.parentElement.querySelector('.char-count');
+            if (counter) {
+                counter.textContent = e.target.value.length;
+                
+                const counterParent = e.target.parentElement.querySelector('.char-counter');
+                const minLength = parseInt(e.target.getAttribute('minlength')) || 30;
+                
+                if (e.target.value.length < minLength) {
+                    counterParent.className = 'char-counter error';
+                } else {
+                    counterParent.className = 'char-counter success';
+                }
+            }
+        }
+    });
+    
+    // Auto-open modal on page load for testing
+    setTimeout(openModal, 500);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' https://cdn.jsdelivr.net; 
+                   style-src 'self' https://fonts.googleapis.com; 
+                   font-src 'self' https://fonts.gstatic.com; 
+                   connect-src 'self' https://*.supabase.co; 
+                   img-src 'self' data: https:; base-uri 'self'; 
+                   form-action 'self';">
+    <title>Supervisor Dashboard - Stokika</title>
+    <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" 
+          rel="stylesheet"
+          integrity="sha384-zM7qmLDXsv7G43sbK2VNrYGye2a5RuU56GHc3OZBpSLeQ4MVC+kkxdOzkOEjKo48"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="css/supervisor-dashboard.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo"><a href="https://www.stokika.com" target="_blank" rel="noopener noreferrer"><img src="assets/logos/logo.png.png" alt="Stokika"></a></div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="overview"><span>📊</span> Overview</a>
+                <a href="#" class="nav-item" data-page="agents"><span>👥</span> My Agents</a>
+                <a href="#" class="nav-item" data-page="vendors"><span>🏪</span> Vendors</a>
+                <a href="#" class="nav-item" data-page="reports"><span>📈</span> Reports</a>
+                <a href="#" class="nav-item" data-page="territory"><span>🗺️</span> Territory</a>
+                <a href="#" class="nav-item" data-page="orders"><span>✅</span> Approve Orders</a>
+                <a href="#" id="settingsBtn" class="nav-item"><span>⚙️</span> Settings</a>
+            </nav>
+            <button class="btn-logout" id="logoutBtn">Logout</button>
+        </aside>
+        <main class="main-content">
+            <header class="header">
+                <h1 id="pageTitle">Overview</h1>
+                <div class="user-info"><span id="supervisorName">Supervisor</span></div>
+            </header>
+            <div id="overview-page" class="page active">
+                <div class="stats-grid">
+                    <div class="stat-card"><h3 id="totalAgents">0</h3><p>Assigned Agents</p></div>
+                    <div class="stat-card"><h3 id="activeAgents">0</h3><p>Active Agents</p></div>
+                    <div class="stat-card"><h3 id="totalVendors">0</h3><p>Total Vendors</p></div>
+                    <div class="stat-card"><h3 id="pendingTasks">0</h3><p>Pending Tasks</p></div>
+                </div>
+                <div class="card"><h2>Recent Activity</h2><div id="recentActivity">Loading...</div></div>
+            </div>
+            <div id="agents-page" class="page">
+                <button class="btn-primary" id="assignAgentBtn">Assign Agent</button>
+                <div id="agentsList">Loading...</div>
+            </div>
+            <div id="vendors-page" class="page">
+                <div id="vendorsList">Loading...</div>
+            </div>
+            <div id="reports-page" class="page">
+                <button class="btn-primary" id="submitReportBtn">Submit Report</button>
+                <div id="reportsList">Loading...</div>
+            </div>
+            <div id="territory-page" class="page">
+                <div class="card"><h2>Territory: <span id="territoryName">Loading...</span></h2><div id="territoryMap">Map visualization coming soon</div></div>
+            </div>
+            <div id="orders-page" class="page">
+                <div class="card">
+                    <h2>Pending Orders for Approval</h2>
+                    <div id="pendingOrdersAlert" class="alert-warning">You need admin activation to approve orders</div>
+                    <div id="pendingOrdersList">Loading...</div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
+            crossorigin="anonymous"></script>
+    <script src="dist/supervisor.js"></script>

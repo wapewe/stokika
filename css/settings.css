@@ -1,0 +1,148 @@
+/* Import common styles */
+@import 'common/base.css';
+@import 'common/layout.css';
+@import 'common/components.css';
+
+/* Settings Page specific styles */
+.settings-section {
+    margin-bottom: 1.5rem;
+}
+
+.settings-form {
+    max-width: 600px;
+}
+
+.notification-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.notification-title {
+    font-weight: 600;
+    color: #111827;
+}
+
+.notification-desc {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #ccc;
+    border-radius: 24px;
+    transition: 0.4s;
+}
+
+.toggle-slider.active {
+    background: #10b981;
+}
+
+.appearance-controls {
+    max-width: 600px;
+}
+
+.appearance-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+.appearance-title {
+    font-weight: 600;
+    color: #111827;
+}
+
+.appearance-desc {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.btn-theme {
+    padding: 0.5rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-theme:hover {
+    background: #f9fafb;
+}
+
+.danger-zone {
+    color: #dc2626;
+}
+
+.danger-box {
+    max-width: 600px;
+    padding: 1rem;
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+}
+
+.danger-title {
+    font-weight: 600;
+    color: #991b1b;
+    margin-bottom: 0.5rem;
+}
+
+.danger-desc {
+    font-size: 0.875rem;
+    color: #991b1b;
+    margin-bottom: 1rem;
+}
+
+.btn-danger {
+    padding: 0.75rem 1.5rem;
+    background: #dc2626;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-danger:hover {
+    background: #b91c1c;
+}
+
+/* Dark mode overrides */
+body.dark-mode .notification-title,
+body.dark-mode .appearance-title {
+    color: #f3f4f6;
+}
+
+body.dark-mode .btn-theme {
+    background: #374151;
+    border-color: #4b5563;
+    color: #f3f4f6;
+}
+
+body.dark-mode .btn-theme:hover {
+    background: #4b5563;
+}

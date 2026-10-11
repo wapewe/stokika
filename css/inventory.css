@@ -1,0 +1,209 @@
+/* Import common styles */
+@import 'common/base.css';
+@import 'common/layout.css';
+@import 'common/components.css';
+@import 'common/navigation.css';
+
+/* Inventory Dashboard specific styles */
+body {
+    background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+}
+
+/* Logo white background — shared by inventory, orders, payments, settings, suppliers, analytics */
+.logo {
+    padding: 16px 20px;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo img,
+.logo .logo-img {
+    max-width: 130px;
+    height: auto;
+    display: block;
+}
+
+.bg-gradient {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 20% 50%, rgba(16, 185, 129, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(5, 150, 105, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(245, 158, 11, 0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+    transition: background 0.3s;
+}
+
+/* Dark Mode */
+body.dark-mode {
+    background: #0f172a;
+    color: #e2e8f0;
+}
+
+body.dark-mode .bg-gradient {
+    background: radial-gradient(circle at 20% 50%, rgba(58, 194, 127, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(30, 64, 175, 0.05) 0%, transparent 50%);
+}
+
+body.dark-mode .sidebar,
+body.dark-mode .card,
+body.dark-mode .stat-card,
+body.dark-mode .action-btn,
+body.dark-mode .alert-item,
+body.dark-mode .search-box,
+body.dark-mode .btn-icon {
+    background: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+
+body.dark-mode .nav-item {
+    color: #94a3b8;
+}
+
+body.dark-mode .nav-item:hover,
+body.dark-mode .nav-item.active {
+    color: #e2e8f0;
+}
+
+body.dark-mode .stat-value,
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode h4 {
+    color: #f1f5f9;
+}
+
+body.dark-mode .data-table th,
+body.dark-mode .data-table td {
+    border-color: #334155;
+    color: #e2e8f0;
+}
+
+body.dark-mode .data-table tr:hover {
+    background: #334155;
+}
+
+body.dark-mode input,
+body.dark-mode select,
+body.dark-mode textarea {
+    background: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+
+body.dark-mode input::placeholder {
+    color: #64748b;
+}
+
+body.dark-mode .btn-icon svg {
+    color: #e2e8f0;
+}
+
+body.dark-mode .search-box svg {
+    color: #94a3b8;
+}
+
+body.dark-mode .notification-badge {
+    background: #ef4444;
+    border-color: #0f172a;
+}
+
+/* Shop status display */
+.shop-status-display {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.shop-info {
+    flex: 1;
+}
+
+.shop-name {
+    margin: 0 0 10px 0;
+    font-size: 1.5rem;
+    color: #1a202c;
+}
+
+.shop-detail {
+    margin: 0 0 5px 0;
+    color: #4a5568;
+}
+
+.shop-detail:last-child {
+    margin-bottom: 0;
+}
+
+.shop-link {
+    color: #3b82f6;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.shop-link:hover {
+    color: #2563eb;
+    text-decoration: underline;
+}
+
+.btn-toggle-shop {
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-toggle-shop.activate {
+    background: #10b981;
+}
+
+.btn-toggle-shop.activate:hover {
+    background: #059669;
+}
+
+.btn-toggle-shop.deactivate {
+    background: #ef4444;
+}
+
+.btn-toggle-shop.deactivate:hover {
+    background: #dc2626;
+}
+
+.shop-no-profile {
+    text-align: center;
+    padding: 20px;
+}
+
+.shop-no-profile p {
+    margin-bottom: 15px;
+    color: #6b7280;
+}
+
+.btn-create-shop {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-create-shop:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+}

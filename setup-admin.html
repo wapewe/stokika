@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Setup - Stokika</title>
+    <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/setup-admin.css">
+</head>
+<body>
+    <div class="setup-container">
+        <div class="logo">
+            <a href="https://www.stokika.com" target="_blank" rel="noopener noreferrer">
+                <img src="assets/logos/logo.png.png" alt="Stokika Logo">
+            </a>
+        </div>
+        <h1>Admin Setup</h1>
+        <p>Create initial admin account</p>
+        
+        <div id="statusMessage" class="status-message"></div>
+        
+        <div id="setupForm">
+            <div class="info-box">
+                <p><strong>Default Admin Credentials:</strong></p>
+                <p>Email: stokikakenya@gmail.com</p>
+                <p>Password: @123456789Rb!</p>
+            </div>
+            <button type="button" class="btn-setup" id="setupBtn">Create Admin User</button>
+        </div>
+        
+        <div class="back-link">
+            <a href="rembrandts-donji.html">← Go to Admin Login</a>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/setup-rembrandts.js"></script>
+    <!-- Security Scripts -->
+    <script src="js/core/config-loader.js"></script>
+    <script src="js/security/xss-protection.js"></script>
+    <script src="js/security/secure-session.js"></script>
+    <script src="js/security/csrf-protection.js"></script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+/* Import common styles */
+@import 'common/base.css';
+@import 'common/layout.css';
+@import 'common/components.css';
+@import 'common/navigation.css';
+
+/* Page-specific Onboarding Dashboard Styles */
+body {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    min-height: 100vh;
+    margin: 0;
+    padding: 20px;
+}
+
+.onboarding-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.onboarding-header {
+    background: linear-gradient(135deg, #059669 0%, #10b981 60%, #f59e0b 100%);
+    color: white;
+    padding: 30px;
+    text-align: center;
+}
+
+.onboarding-header-logo {
+    display: inline-block;
+    background: white;
+    border-radius: 10px;
+    padding: 8px 20px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.onboarding-header-logo img {
+    height: 36px;
+    width: auto;
+    display: block;
+}
+
+.onboarding-header h1 {
+    margin: 0 0 10px 0;
+    font-size: 28px;
+    font-weight: 700;
+}
+
+.onboarding-header p {
+    margin: 0;
+    opacity: 0.9;
+    font-size: 16px;
+    color: #fef9c3;
+}
+
+.auth-section {
+    padding: 30px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.auth-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.auth-btn.login {
+    background: #10b981;
+    color: white;
+}
+
+.auth-btn.login:hover {
+    background: #059669;
+}
+
+.auth-btn.register {
+    background: #10b981;
+    color: white;
+}
+
+.auth-btn.register:hover {
+    background: #059669;
+}
+
+.user-info {
+    background: #f8f9fa;
+    padding: 20px 30px;
+    border-bottom: 1px solid #eee;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.user-badge {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.user-badge.field_agent {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.user-badge.supervisor {
+    background: #fef9c3;
+    color: #d97706;
+}
+
+.logout-btn {
+    float: right;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.logout-btn:hover {
+    background: #c0392b;
+}
+
+#onboarding-dashboard {
+    padding: 30px;
+    min-height: 400px;
+}
+
+.loading {
+    text-align: center;
+    padding: 50px;
+    color: #666;
+}
+
+.loading i {
+    font-size: 24px;
+    margin-bottom: 10px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.error-message {
+    background: #f8d7da;
+    color: #721c24;
+    padding: 15px;
+    border-radius: 6px;
+    margin: 20px 0;
+    border: 1px solid #f5c6cb;
+}
+
+.success-message {
+    background: #d4edda;
+    color: #155724;
+    padding: 15px;
+    border-radius: 6px;
+    margin: 20px 0;
+    border: 1px solid #c3e6cb;
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+    }
+
+    .onboarding-wrapper {
+        margin: 0;
+    }
+
+    .onboarding-header {
+        padding: 20px;
+    }
+
+    .onboarding-header h1 {
+        font-size: 24px;
+    }
+
+    .auth-section,
+    #onboarding-dashboard {
+        padding: 20px;
+    }
+
+    .auth-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .auth-btn {
+        width: 200px;
+    }
+}

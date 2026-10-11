@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Menu Test - Stokika</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            z-index: 100;
+        }
+        
+        .mobile-menu-toggle {
+            display: none;
+        }
+        
+        .test-info {
+            padding: 100px 20px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .test-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Mobile styles */
+        @media (max-width: 768px) {
+            .mobile-menu-toggle {
+                display: flex;
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                border: 2px solid rgba(255, 255, 255, 0.3);
+                border-radius: 12px;
+                z-index: 1001;
+                cursor: pointer;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                transition: all 0.3s ease;
+            }
+            
+            .mobile-menu-toggle span {
+                display: block;
+                width: 25px;
+                height: 3px;
+                background: white;
+                border-radius: 3px;
+                transition: all 0.3s ease;
+            }
+            
+            .mobile-menu-toggle.active span:nth-child(1) {
+                transform: translateY(9px) rotate(45deg);
+            }
+            
+            .mobile-menu-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+            
+            .mobile-menu-toggle.active span:nth-child(3) {
+                transform: translateY(-9px) rotate(-45deg);
+            }
+            
+            .header-nav {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 85%;
+                max-width: 320px;
+                height: 100vh;
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%);
+                backdrop-filter: blur(20px);
+                display: flex;
+                flex-direction: column;
+                padding: 5rem 2rem 2rem;
+                gap: 1.5rem;
+                box-shadow: -5px 0 25px rgba(0, 0, 0, 0.2);
+                transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                z-index: 1000;
+                overflow-y: auto;
+            }
+            
+            .header-nav.active {
+                right: 0;
+            }
+            
+            .header-nav a {
+                color: #1e293b;
+                text-decoration: none;
+                font-size: 1.125rem;
+                padding: 0.75rem 1rem;
+                border-radius: 8px;
+                transition: all 0.3s ease;
+            }
+            
+            .header-nav a:hover {
+                background: rgba(16, 185, 129, 0.1);
+                color: #10b981;
+                transform: translateX(5px);
+            }
+        }
+        
+        .status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        
+        .status.success { background: #10b981; color: white; }
+        .status.pending { background: #f59e0b; color: white; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <button class="mobile-menu-toggle" id="mobileMenuToggle">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <nav class="header-nav" id="headerNav">
+            <a href="#about">About</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#services">Services</a>
+            <a href="#pricing">Pricing</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+    
+    <div class="test-info">
+        <h1 style="margin-bottom: 2rem;">📱 Mobile Menu Test</h1>
+        
+        <div class="test-card">
+            <h2>🎯 Test Instructions</h2>
+            <ol style="margin-left: 1.5rem; line-height: 1.8;">
+                <li>Resize browser window to mobile size (&lt;768px)</li>
+                <li>Look for hamburger menu icon (☰) in top-right corner</li>
+                <li>Click the icon - menu should slide in from right</li>
+                <li>Hamburger should transform to X</li>
+                <li>Click menu items - menu should close</li>
+                <li>Click X or outside menu - menu should close</li>
+            </ol>
+        </div>
+        
+        <div class="test-card">
+            <h2>✅ Expected Behavior</h2>
+            <ul style="margin-left: 1.5rem; line-height: 1.8;">
+                <li><span class="status success">✓</span> Hamburger icon visible on mobile</li>
+                <li><span class="status success">✓</span> Menu slides in smoothly from right</li>
+                <li><span class="status success">✓</span> Hamburger animates to X when open</li>
+                <li><span class="status success">✓</span> Menu items are clickable</li>
+                <li><span class="status success">✓</span> Clicking item closes menu</li>
+                <li><span class="status success">✓</span> Clicking outside closes menu</li>
+                <li><span class="status success">✓</span> Body scroll locked when menu open</li>
+            </ul>
+        </div>
+        
+        <div class="test-card">
+            <h2>🔍 Debug Console</h2>
+            <div id="console" style="background: rgba(0,0,0,0.3); padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.875rem; margin-top: 1rem; min-height: 150px;">
+                <div style="color: #10b981;">Waiting for interaction...</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        const consoleEl = document.getElementById('console');
+        
+        function log(message, type = 'info') {
+            const color = type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#60a5fa';
+            const timestamp = new Date().toLocaleTimeString();
+            consoleEl.innerHTML += `<div style="color: ${color};">[${timestamp}] ${message}</div>`;
+            console.log(message);
+        }
+        
+        // Mobile menu functionality
+        const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+        const headerNav = document.getElementById('headerNav');
+        
+        if (!mobileMenuToggle) {
+            log('❌ ERROR: mobileMenuToggle not found!', 'error');
+        } else {
+            log('✅ Mobile menu toggle found', 'success');
+        }
+        
+        if (!headerNav) {
+            log('❌ ERROR: headerNav not found!', 'error');
+        } else {
+            log('✅ Header nav found', 'success');
+        }
+        
+        mobileMenuToggle?.addEventListener('click', (e) => {
+            e.stopPropagation();
+            headerNav?.classList.toggle('active');
+            mobileMenuToggle?.classList.toggle('active');
+            document.body.style.overflow = headerNav?.classList.contains('active') ? 'hidden' : '';
+            
+            const isOpen = headerNav?.classList.contains('active');
+            log(isOpen ? '📂 Menu OPENED' : '📁 Menu CLOSED', 'success');
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768 && 
+                headerNav?.classList.contains('active') && 
+                !headerNav.contains(e.target) && 
+                e.target !== mobileMenuToggle &&
+                !mobileMenuToggle?.contains(e.target)) {
+                headerNav?.classList.remove('active');
+                mobileMenuToggle?.classList.remove('active');
+                document.body.style.overflow = '';
+                log('📁 Menu closed (clicked outside)', 'info');
+            }
+        });
+        
+        // Close mobile menu on link click
+        document.querySelectorAll('.header-nav a').forEach((link, index) => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (window.innerWidth <= 768) {
+                    headerNav?.classList.remove('active');
+                    mobileMenuToggle?.classList.remove('active');
+                    document.body.style.overflow = '';
+                    log(`📁 Menu closed (clicked link: ${link.textContent})`, 'info');
+                }
+            });
+        });
+        
+        // Window resize detection
+        window.addEventListener('resize', () => {
+            const width = window.innerWidth;
+            if (width <= 768) {
+                log(`📱 Mobile mode (${width}px)`, 'info');
+            } else {
+                log(`🖥️ Desktop mode (${width}px)`, 'info');
+                if (headerNav?.classList.contains('active')) {
+                    headerNav.classList.remove('active');
+                    mobileMenuToggle?.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            }
+        });
+        
+        // Initial check
+        setTimeout(() => {
+            const width = window.innerWidth;
+            if (width <= 768) {
+                log(`✅ Mobile mode active (${width}px) - Menu should be visible`, 'success');
+            } else {
+                log(`ℹ️ Desktop mode (${width}px) - Resize to <768px to see mobile menu`, 'info');
+            }
+        }, 100);
+    </script>
+</body>
+</html>

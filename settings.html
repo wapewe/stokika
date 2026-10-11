@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Static CSP Meta Tag - Security Feature Integration -->
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' https://cdn.jsdelivr.net; 
+                   style-src 'self' https://fonts.googleapis.com; 
+                   font-src 'self' https://fonts.gstatic.com; 
+                   connect-src 'self' https://*.supabase.co; 
+                   img-src 'self' data: https:; base-uri 'self'; 
+                   form-action 'self';">
+    
+    <title>Settings - Stokika</title>
+    <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
+    
+    <!-- Google Fonts with SRI -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Sora:wght@600;700;800&display=swap" 
+          rel="stylesheet"
+          integrity="sha384-NJswQMIotfMidJ5dLQGcIb5G+CqwnIUXM5Yq+9vXua6x46PEaxcClOASSvVFFXZX"
+          crossorigin="anonymous">
+    
+    <link rel="stylesheet" href="css/inventory.css">
+    <link rel="stylesheet" href="css/settings.css">
+    <script src="js/features/theme-manager.js"></script>
+</head>
+<body>
+    <div class="bg-gradient"></div>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo">
+                <a href="https://www.stokika.com" target="_blank" rel="noopener noreferrer">
+                    <img src="assets/logos/logo.png.png" alt="Stokika" class="logo-img" id="dashboardLogo">
+                </a>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="inventory.html" class="nav-item"><span>Dashboard</span></a>
+                <a href="inventory-page.html" class="nav-item"><span>Inventory</span></a>
+                <a href="suppliers.html" class="nav-item"><span>Suppliers</span></a>
+                <a href="orders.html" class="nav-item"><span>Orders</span></a>
+                <a href="payments.html" class="nav-item"><span>Payments</span></a>
+                <a href="analytics.html" class="nav-item"><span>Analytics</span></a>
+                <a href="settings.html" class="nav-item active"><span>Settings</span></a>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <header class="dashboard-header">
+                <h1>Settings</h1>
+            </header>
+            
+            <section class="card settings-section">
+                <h2>Profile Information</h2>
+                <form id="profileForm" data-sanitize="true" class="settings-form">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" 
+                               id="fullName" 
+                               name="fullName"
+                               placeholder="Enter your name" 
+                               data-sanitize-type="string"
+                               maxlength="100"
+                               required
+                               class="form-input">
+                        <div class="error-message" style="display:none;"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" 
+                               id="email" 
+                               name="email"
+                               placeholder="your@email.com" 
+                               data-sanitize-type="email"
+                               maxlength="254"
+                               required
+                               class="form-input">
+                        <div class="error-message" style="display:none;"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Phone Number</label>
+                        <input type="tel" 
+                               id="phone" 
+                               name="phone"
+                               placeholder="254712345678" 
+                               data-sanitize-type="phone"
+                               pattern="^254[17]\d{8}$"
+                               required
+                               class="form-input">
+                        <div class="error-message" style="display:none;"></div>
+                    </div>
+                    <button type="submit" class="btn-primary">Save Profile</button>
+                </form>
+            </section>
+
+            <section class="card settings-section">
+                <h2>Business Details</h2>
+                <form id="businessForm" data-sanitize="true" class="settings-form">
+                    <div class="form-group">
+                        <label class="form-label">Business Name</label>
+                        <input type="text" 
+                               id="businessName" 
+                               name="businessName"
+                               placeholder="Your business name" 
+                               data-sanitize-type="string"
+                               maxlength="100"
+                               required
+                               class="form-input">
+                        <div class="error-message" style="display:none;"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Business Category</label>
+                        <select id="businessCategory" 
+                                name="businessCategory"
+                                data-sanitize-type="string"
+                                required
+                                class="form-input" 
+                                title="Select business category">
+                            <option value="">Select category</option>
+                            <option value="retail">Retail Shop</option>
+                            <option value="wholesale">Wholesale</option>
+                            <option value="restaurant">Restaurant/Hotel</option>
+                            <option value="supermarket">Supermarket</option>
+                            <option value="other">Other</option>
+                        </select>
+                        <div class="error-message" style="display:none;"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Location</label>
+                        <input type="text" 
+                               id="location" 
+                               name="location"
+                               placeholder="City, County" 
+                               data-sanitize-type="string"
+                               maxlength="100"
+                               required
+                               class="form-input">
+                        <div class="error-message" style="display:none;"></div>
+                    </div>
+                    <button type="submit" class="btn-primary">Save Business Details</button>
+                </form>
+            </section>
+
+            <section class="card settings-section">
+                <h2>Notification Preferences</h2>
+                <div class="settings-form">
+                    <div class="notification-item">
+                        <div>
+                            <div class="notification-title">Email Notifications</div>
+                            <div class="notification-desc">Receive order and payment updates via email</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="emailNotif" aria-label="Enable email notifications" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="notification-item">
+                        <div>
+                            <div class="notification-title">SMS Alerts</div>
+                            <div class="notification-desc">Get SMS for urgent updates</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="smsNotif" aria-label="Enable SMS alerts">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card settings-section">
+                <h2>Appearance</h2>
+                <div class="appearance-controls">
+                    <div class="appearance-item">
+                        <div>
+                            <div class="appearance-title">Dark Mode</div>
+                            <div class="appearance-desc">Toggle dark theme</div>
+                        </div>
+                        <button id="themeToggleBtn" class="btn-theme">Toggle Theme</button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card settings-section">
+                <h2>Change Password</h2>
+                <form id="passwordForm" data-sanitize="true" class="settings-form">
+                    <div class="form-group">
+                        <label class="form-label">New Password</label>
+                        <input type="password" 
+                               id="newPassword" 
+                               name="newPassword"
+                               placeholder="Enter new password (min 12 characters)" 
+                               data-sanitize-type="string"
+                               minlength="12"
+                               required
+                               class="form-input">
+                        <div class="error-message" style="display:none;"></div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Confirm New Password</label>
+                        <input type="password" 
+                               id="confirmPassword" 
+                               name="confirmPassword"
+                               placeholder="Confirm new password" 
+                               data-sanitize-type="string"
+                               minlength="12"
+                               required
+                               class="form-input">
+                        <div class="error-message" style="display:none;"></div>
+                    </div>
+                    <button type="submit" class="btn-primary">Update Password</button>
+                </form>
+            </section>
+
+            <section class="card settings-section">
+                <h2 class="danger-zone">Danger Zone</h2>
+                <div class="danger-box">
+                    <div class="danger-title">Delete Account</div>
+                    <div class="danger-desc">Once you delete your account, there is no going back. Please be certain.</div>
+                    <button id="deleteAccountBtn" class="btn-danger">Delete My Account</button>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <!-- CDN Scripts with SRI -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
+            crossorigin="anonymous"></script>
+    
+    <!-- Page Module - ALL logic in external file -->
+    <script src="js/pages/settings.page.js" type="module"></script>
+</body>
+</html>

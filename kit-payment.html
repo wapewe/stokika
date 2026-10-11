@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' https://cdn.jsdelivr.net; 
+                   style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com; 
+                   font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; 
+                   connect-src 'self' https://*.supabase.co; 
+                   img-src 'self' data: https:; base-uri 'self'; 
+                   form-action 'self';">
+    <title>Kit Payment - Stokika</title>
+    <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&display=swap" 
+          rel="stylesheet" 
+          crossorigin="anonymous">
+    <link rel="stylesheet" 
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" 
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="css/kit-payment.css">
+</head>
+<body>
+    <div class="brand-header">
+        <a href="https://www.stokika.com" target="_blank" rel="noopener noreferrer">
+            <img src="assets/logos/logo.png.png" alt="Stokika" class="brand-logo">
+        </a>
+    </div>
+
+    <div class="payment-container">
+        <div class="page-intro">
+            <h1>Stokika Kit Payment</h1>
+            <p>You're one step away from joining the Stokika team! Complete your kit payment below to activate your account and receive your starter kit.</p>
+        </div>
+        
+        <div id="code-entry-section" class="code-entry-hidden">
+            <div class="kit-details">
+                <h3>Enter Your Application Code</h3>
+                <p>Please enter the application code you received when you submitted your application.</p>
+                <div class="form-group form-group-spaced">
+                    <label for="applicationCodeInput">Application Code *</label>
+                    <input type="text" 
+                           id="applicationCodeInput" 
+                           name="applicationCodeInput"
+                           placeholder="e.g., SFA012345678" 
+                           class="code-input" 
+                           data-sanitize-type="string"
+                           maxlength="50"
+                           required />
+                </div>
+                <button id="verifyCodeBtn" class="btn btn-verify">
+                    <i class="fas fa-check-circle"></i> Continue to Payment
+                </button>
+            </div>
+        </div>
+        
+        <div id="payment-dashboard">
+            <div class="loading-state">
+                <div class="spinner"></div>
+                <p>Loading payment information...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
+            crossorigin="anonymous"></script>
+    
+        <!-- Payment Notification System -->
+    <script src="js/features/payment-notification-handler.js"></script>
+    <script src="js/features/payment-notification-integration.js"></script>
+    
+    <!-- Compiled TypeScript -->
+        <script src="dist/kit-payment.js"></script>
+</body>
+</html>

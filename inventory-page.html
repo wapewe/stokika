@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' https://cdn.jsdelivr.net; 
+                   style-src 'self' https://fonts.googleapis.com; 
+                   font-src 'self' https://fonts.gstatic.com; 
+                   connect-src 'self' https://*.supabase.co; 
+                   img-src 'self' data: https:; base-uri 'self'; 
+                   form-action 'self';">
+    <title>Inventory Management - Stokika</title>
+    <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" 
+          rel="stylesheet"
+          integrity="sha384-zM7qmLDXsv7G43sbK2VNrYGye2a5RuU56GHc3OZBpSLeQ4MVC+kkxdOzkOEjKo48"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="css/pages/inventory-page.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="logo"><a href="https://www.stokika.com" target="_blank" rel="noopener noreferrer"><img src="assets/logos/logo.png.png" alt="Stokika"></a></div>
+            <nav class="sidebar-nav">
+                <a href="inventory.html" class="nav-item"><span>📊</span> Dashboard</a>
+                <a href="inventory-page.html" class="nav-item active"><span>📦</span> Inventory</a>
+                <a href="orders.html" class="nav-item"><span>🛒</span> Orders</a>
+                <a href="payments.html" class="nav-item"><span>💳</span> Payments</a>
+            </nav>
+            <button class="btn-logout" id="logoutBtn">Logout</button>
+        </aside>
+        <main class="main-content">
+            <header class="header">
+                <h1>Inventory Management</h1>
+                <button class="btn-primary" id="addItemBtn">Add Item</button>
+            </header>
+            <div class="filters">
+                <input type="text" id="searchInput" placeholder="Search products...">
+                <select id="categoryFilter" title="Filter by category">
+                    <option value="">All Categories</option>
+                    <option value="food">Food</option>
+                    <option value="beverages">Beverages</option>
+                    <option value="household">Household</option>
+                </select>
+                <select id="stockFilter" title="Filter by stock level">
+                    <option value="">All Stock</option>
+                    <option value="low">Low Stock</option>
+                    <option value="out">Out of Stock</option>
+                </select>
+            </div>
+            <div class="stats-row">
+                <div class="stat-card"><h3 id="totalItems">0</h3><p>Total Items</p></div>
+                <div class="stat-card"><h3 id="totalValue">KES 0</h3><p>Total Value</p></div>
+                <div class="stat-card"><h3 id="lowStockItems">0</h3><p>Low Stock</p></div>
+            </div>
+            <div class="card">
+                <table class="table" id="inventoryTable">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Total Value</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryBody">
+                        <tr><td colspan="6" class="table-loading-cell">Loading...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
+            crossorigin="anonymous"></script>
+    <!-- Security Scripts -->
+    <script src="js/core/config-loader.js"></script>
+    <script src="js/security/xss-protection.js"></script>
+    <script src="js/security/secure-session.js"></script>
+    <script src="js/security/csrf-protection.js"></script>
+    <script src="js/auth/auth-middleware.js"></script>
+    <script src="js/pages/inventory-page.page.js"></script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+/* Import common styles */
+@import 'common/base.css';
+@import 'common/layout.css';
+@import 'common/components.css';
+@import 'common/navigation.css';
+
+/* Agent Dashboard specific styles */
+.page { display: none; }
+.page.active { display: block; }
+
+/* Logo white background */
+.logo {
+    padding: 16px 20px;
+    background: white;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo img {
+    max-width: 130px;
+    height: auto;
+}
+
+/* Active nav yellow accent */
+.nav-item.active {
+    background: #f0fdf4;
+    color: #059669;
+    border-left: 3px solid #f59e0b;
+    font-weight: 700;
+}
+
+/* Header yellow accent */
+.header h1 {
+    border-left: 3px solid #f59e0b;
+    padding-left: 10px;
+    color: #065f46;
+}
+
+/* Stat cards alternate gold */
+.stat-card:nth-child(even) {
+    border-top: 3px solid #f59e0b;
+}
+
+.stat-card:nth-child(odd) {
+    border-top: 3px solid #10b981;
+}
+
+/* Commission card highlight */
+#commission {
+    color: #d97706;
+}

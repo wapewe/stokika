@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self';
+                   script-src 'self' https://cdn.jsdelivr.net;
+                   style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+                   font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
+                   connect-src 'self' https://*.supabase.co;
+                   img-src 'self' data: https:;base-uri 'self';
+                   form-action 'self';">
+    <title>Vendor Dashboard - Stokika</title>
+    <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/vendor-dashboard.css">
+</head>
+<body>
+    <div class="vendor-layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <a href="https://www.stokika.com" target="_blank" rel="noopener noreferrer">
+                    <img src="assets/logos/logo.png.png" alt="Stokika">
+                </a>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-tab="overview">
+                    <i class="fas fa-chart-pie"></i> Overview
+                </a>
+                <a href="#" class="nav-item" data-tab="products">
+                    <i class="fas fa-box"></i> Products
+                </a>
+                <a href="#" class="nav-item" data-tab="orders">
+                    <i class="fas fa-shopping-bag"></i> Orders
+                </a>
+                <a href="#" class="nav-item" data-tab="shop">
+                    <i class="fas fa-store"></i> Shop Setup
+                </a>
+                <a href="vendor-shops-directory.html" class="nav-item">
+                    <i class="fas fa-th-large"></i> All Shops
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div style="font-size:0.8rem;color:rgba(255,255,255,0.6);margin-bottom:8px;" id="vendorEmail"></div>
+                <button class="btn-logout" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <div class="main-content">
+            <div class="top-bar">
+                <h1 id="pageTitle">Overview</h1>
+                <div class="top-bar-actions">
+                    <span id="shopStatus" class="badge badge-yellow">Not Set Up</span>
+                    <a href="#" id="viewShopBtn" class="btn-secondary" target="_blank">
+                        <i class="fas fa-external-link-alt"></i> View Shop
+                    </a>
+                </div>
+            </div>
+
+            <div class="page-content">
+                <div id="dashboardAlert" class="alert" style="display:none;"></div>
+
+                <!-- Overview Tab -->
+                <div id="tab-overview" class="tab-panel active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-coins"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="statRevenue">KES 0</div>
+                                <div class="stat-label">Total Revenue</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-shopping-bag"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="statOrders">0</div>
+                                <div class="stat-label">Total Orders</div>
+                            </div>
+                        </div>
+                        <div class="stat-card gold">
+                            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="statPending">0</div>
+                                <div class="stat-label">Pending Orders</div>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"><i class="fas fa-box-open"></i></div>
+                            <div class="stat-info">
+                                <div class="stat-value" id="statProducts">0</div>
+                                <div class="stat-label">Active Products</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Recent Orders</h2>
+                            <button class="btn-secondary" data-tab-link="orders">View All</button>
+                        </div>
+                        <div id="ordersContainer">
+                            <div class="loading"><i class="fas fa-spinner fa-spin"></i><p>Loading orders...</p></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Products Tab -->
+                <div id="tab-products" class="tab-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Your Products</h2>
+                            <button class="btn-primary" id="addProductBtn">
+                                <i class="fas fa-plus"></i> Add Product
+                            </button>
+                        </div>
+                        <div class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Product</th>
+                                        <th>Price</th>
+                                        <th>Stock</th>
+                                        <th>Category</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productsTableBody">
+                                    <tr><td colspan="5" class="loading"><i class="fas fa-spinner fa-spin"></i></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Orders Tab -->
+                <div id="tab-orders" class="tab-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">All Orders</h2>
+                            <span class="stat-label"><span id="statCompleted">0</span> completed</span>
+                        </div>
+                        <div id="ordersContainerFull">
+                            <div class="loading"><i class="fas fa-spinner fa-spin"></i><p>Loading...</p></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shop Setup Tab -->
+                <div id="tab-shop" class="tab-panel">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">Shop Profile</h2>
+                        </div>
+                        <form id="shopSetupForm">
+                            <div class="setup-grid">
+                                <div class="form-group">
+                                    <label for="field_shop_name">Shop Name *</label>
+                                    <input type="text" id="field_shop_name" name="shop_name" required placeholder="My Awesome Shop">
+                                </div>
+                                <div class="form-group">
+                                    <label for="field_shop_slug">Shop URL Slug *</label>
+                                    <input type="text" id="field_shop_slug" name="shop_slug" required placeholder="my-awesome-shop">
+                                </div>
+                                <div class="form-group form-full">
+                                    <label for="field_tagline">Tagline</label>
+                                    <input type="text" id="field_tagline" name="tagline" placeholder="Quality products at great prices">
+                                </div>
+                                <div class="form-group form-full">
+                                    <label for="field_description">Description</label>
+                                    <textarea id="field_description" name="description" rows="3" placeholder="Tell customers about your shop..."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label for="field_whatsapp_number">WhatsApp Number</label>
+                                    <input type="tel" id="field_whatsapp_number" name="whatsapp_number" placeholder="+254700000000">
+                                </div>
+                                <div class="form-group">
+                                    <label for="field_email">Contact Email</label>
+                                    <input type="email" id="field_email" name="email" placeholder="shop@example.com">
+                                </div>
+                                <div class="form-group form-full">
+                                    <label for="field_website_url">Website URL</label>
+                                    <input type="url" id="field_website_url" name="website_url" placeholder="https://yourwebsite.com">
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-save"></i> Save Shop Profile
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+            </div><!-- /page-content -->
+        </div><!-- /main-content -->
+    </div><!-- /vendor-layout -->
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
+            crossorigin="anonymous"></script>
+    <script src="js/core/config-loader.js"></script>
+    <script src="js/security/xss-protection.js"></script>
+    <script src="js/security/secure-session.js"></script>
+    <script src="js/security/csrf-protection.js"></script>
+    <script src="js/pages/vendor-dashboard.page.js"></script>
+</body>
+</html>

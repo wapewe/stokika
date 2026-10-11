@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; 
+                   style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com; 
+                   font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; 
+                   connect-src 'self' https://*.supabase.co; 
+                   img-src 'self' data: https:; base-uri 'self'; 
+                   form-action 'self';">
+    <title>Onboarding - Stokika</title>
+    <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" 
+          rel="stylesheet" 
+          crossorigin="anonymous">
+    <link rel="stylesheet" 
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" 
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/onboarding-dashboard.css">
+</head>
+<body>
+    <div class="onboarding-wrapper">
+        <div class="onboarding-header">
+            <div class="onboarding-header-logo">
+                <a href="https://www.stokika.com" target="_blank" rel="noopener noreferrer">
+                    <img src="assets/logos/logo.png.png" alt="Stokika">
+                </a>
+            </div>
+            <h1><i class="fas fa-rocket"></i> Welcome to Stokika Onboarding</h1>
+            <p>Complete your onboarding process to get started with the platform</p>
+        </div>
+
+        <!-- Authentication Section (shown when not logged in) -->
+        <div id="auth-section" class="auth-section">
+            <h3>Please log in to continue with your onboarding</h3>
+            <p>You need to be logged in to access your onboarding dashboard.</p>
+            <div class="auth-buttons">
+                <a href="../html/login.html" class="auth-btn login">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+                <a href="../html/field-agent.html" class="auth-btn register">
+                    <i class="fas fa-user-plus"></i> Apply as Field Agent
+                </a>
+                <a href="../html/supervisor-onboarding.html" class="auth-btn register">
+                    <i class="fas fa-user-tie"></i> Apply as Supervisor
+                </a>
+            </div>
+        </div>
+
+        <!-- User Info Section (shown when logged in) -->
+        <div id="user-info" class="user-info hidden">
+            <div class="user-badge" id="user-role-badge"></div>
+            <button class="logout-btn" id="logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+            <div>
+                <strong id="user-name"></strong> - <span id="user-email"></span>
+            </div>
+        </div>
+
+        <!-- Onboarding Dashboard -->
+        <div id="onboarding-dashboard">
+            <div class="loading">
+                <i class="fas fa-spinner"></i>
+                <p>Loading your onboarding dashboard...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" 
+            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF" 
+            crossorigin="anonymous"></script>
+    <script src="js/features/enhanced-onboarding-system.js"></script>
+    <script src="js/features/token-based-onboarding.js"></script>
+    <script src="js/pages/onboarding-dashboard.page.js"></script>
+    <!-- Security Scripts -->
+    <script src="js/core/config-loader.js"></script>
+    <script src="js/security/input-sanitizer.js"></script>
+    <script src="js/security/xss-protection.js"></script>
+    <script src="js/security/secure-session.js"></script>
+    <script src="js/security/csrf-protection.js"></script>
+</body>
+</html>

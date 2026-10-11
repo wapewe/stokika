@@ -1,0 +1,340 @@
+/* ========================================
+   Layout Styles - Grid, Flexbox, Containers
+   ======================================== */
+
+/* Container */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.container-sm {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.container-md {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.container-lg {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Dashboard Layout */
+.dashboard-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.main-content {
+    margin-left: 260px;
+    flex: 1;
+    padding: 2rem;
+}
+
+/* Responsive Adjustments for Main Content */
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 1rem;
+    }
+}
+
+/* Grid Systems */
+.grid {
+    display: grid;
+    gap: var(--spacing-lg);
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-lg);
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--spacing-lg);
+}
+
+.grid-4 {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--spacing-lg);
+}
+
+/* Auto-fit Grids */
+.stats-grid,
+.grid-auto-fit {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Responsive Grid Breakpoints */
+@media (max-width: 768px) {
+    .grid-2,
+    .grid-3,
+    .grid-4 {
+        grid-template-columns: 1fr;
+    }
+    
+    .stats-grid,
+    .charts-grid,
+    .grid-auto-fit {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .grid-3,
+    .grid-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Flexbox Layouts */
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+/* Header Layout */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.header h1 {
+    font-size: 2rem;
+    color: var(--text-heading);
+}
+
+/* Page Header with Fixed Positioning */
+.page-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: transparent;
+    z-index: 1000;
+    transition: all var(--transition-base) ease;
+}
+
+.page-header.scrolled {
+    background: var(--glass-98);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+}
+
+.page-header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+/* Section Spacing */
+.section {
+    margin-bottom: 2rem;
+}
+
+.section-large {
+    margin-bottom: 3rem;
+}
+
+/* Centered Layout (For Login/Auth Pages) */
+.centered-layout {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+/* Onboarding Container */
+.onboarding-container {
+    max-width: 800px;
+    margin: 1rem auto;
+    padding: 1.5rem;
+    background: var(--glass-98);
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--card-shadow-lg);
+}
+
+/* Login Container */
+.login-container {
+    background: white;
+    padding: 3rem;
+    border-radius: var(--radius-2xl);
+    box-shadow: var(--card-shadow-xl);
+    width: 100%;
+    max-width: 450px;
+}
+
+/* Two Column Layout */
+.two-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+@media (max-width: 768px) {
+    .two-column {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Sticky Footer */
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.page-content {
+    flex: 1;
+}
+
+.page-footer {
+    margin-top: auto;
+}
+
+/* Spacing Helpers */
+.space-y-1 > * + * {
+    margin-top: var(--spacing-sm);
+}
+
+.space-y-2 > * + * {
+    margin-top: var(--spacing-md);
+}
+
+.space-y-3 > * + * {
+    margin-top: var(--spacing-lg);
+}
+
+.space-y-4 > * + * {
+    margin-top: var(--spacing-xl);
+}
+
+.space-x-1 > * + * {
+    margin-left: var(--spacing-sm);
+}
+
+.space-x-2 > * + * {
+    margin-left: var(--spacing-md);
+}
+
+.space-x-3 > * + * {
+    margin-left: var(--spacing-lg);
+}
+
+/* Dividers */
+.divider {
+    height: 1px;
+    background: var(--border);
+    margin: var(--spacing-lg) 0;
+}
+
+.divider-vertical {
+    width: 1px;
+    background: var(--border);
+    margin: 0 var(--spacing-lg);
+}
+
+/* Back to Home Link (Onboarding) */
+.back-to-home {
+    max-width: 800px;
+    margin: 0 auto 1rem;
+    padding: 0 1.5rem;
+}
+
+/* Responsive Utilities */
+@media (max-width: 640px) {
+    .hide-mobile {
+        display: none !important;
+    }
+}
+
+@media (min-width: 641px) {
+    .show-mobile-only {
+        display: none !important;
+    }
+}
+
+@media (max-width: 1024px) {
+    .hide-tablet {
+        display: none !important;
+    }
+}
+
+/* Position Utilities */
+.relative {
+    position: relative;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.fixed {
+    position: fixed;
+}
+
+.sticky {
+    position: sticky;
+}
+
+/* Z-Index Layers */
+.z-10 {
+    z-index: 10;
+}
+
+.z-20 {
+    z-index: 20;
+}
+
+.z-30 {
+    z-index: 30;
+}
+
+.z-40 {
+    z-index: 40;
+}
+
+.z-50 {
+    z-index: 50;
+}
+
+.z-max {
+    z-index: 1000;
+}

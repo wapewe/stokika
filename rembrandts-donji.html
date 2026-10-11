@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Static CSP Meta Tag -->
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' https://cdn.jsdelivr.net; 
+                   style-src 'self' https://fonts.googleapis.com; 
+                   font-src 'self' https://fonts.gstatic.com; 
+                   connect-src 'self' https://*.supabase.co; 
+                   img-src 'self' data: https:; base-uri 'self'; 
+                   form-action 'self';">
+    
+    <title>Admin Login - Stokika</title>
+    <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" 
+          rel="stylesheet"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="css/rembrandts-donji.css">
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <a href="https://www.stokika.com" target="_blank" rel="noopener noreferrer">
+                <img src="assets/logos/logo.png.png" alt="Stokika Logo">
+            </a>
+        </div>
+        <h1>Admin Login</h1>
+        <p>Access admin dashboard</p>
+        
+        <div id="errorMessage" class="error-message"></div>
+        
+        <form id="adminLoginForm" data-sanitize="true">
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" data-sanitize-type="email" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" data-sanitize-type="string" minlength="12" required>
+            </div>
+            <button type="submit" class="btn-login" id="loginBtn">Login</button>
+        </form>
+        
+        <div class="back-link">
+            <a href="/dalana.html">← Back to Website</a>
+        </div>
+    </div>
+
+    <!-- CDN Scripts with SRI -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
+            crossorigin="anonymous"></script>
+    
+    <!-- Application Scripts -->
+    <script src="js/core/config-loader.js"></script>
+    <script src="js/core/setup.js"></script>
+    
+    <!-- Security Scripts -->
+    <script src="js/security/xss-protection.js"></script>
+    <script src="js/security/secure-session.js"></script>
+    <script src="js/security/csrf-protection.js"></script>
+    <script src="js/security/input-sanitizer.js"></script>
+    
+    <!-- Page Scripts (load after security) -->
+    <script src="js/pages/rembrandts-donji.page.js"></script>
+</body>
+</html>

@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Static CSP Meta Tag - Strict Security -->
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self'; 
+                   script-src 'self' https://cdn.jsdelivr.net; 
+                   style-src 'self' https://fonts.googleapis.com; 
+                   font-src 'self' https://fonts.gstatic.com; 
+                   connect-src 'self' https://*.supabase.co; 
+                   img-src 'self' data: https:; 
+                   base-uri 'self'; 
+                   form-action 'self';">
+    
+    <title>Supervisor Onboarding - stokika</title>
+    <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
+    
+    <!-- Google Fonts with SRI - Combined Manrope, Sora, and Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" 
+          rel="stylesheet"
+          crossorigin="anonymous">
+    
+    <!-- Local Stylesheets -->
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/onboarding.css">
+</head>
+<body>
+    <div class="back-to-home">
+        <a href="jobs.html" class="btn-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Back to Jobs
+        </a>
+    </div>
+    <div class="onboarding-container">
+        <div class="onboarding-header">
+            <h1>📋 stokika SUPERVISOR ONBOARDING FORM</h1>
+            <p>Confidential – For Internal Recruitment Use Only</p>
+        </div>
+
+        <form id="supervisorForm" data-sanitize="true" data-on-valid-submit="handleFormSubmit">
+            <!-- Section 1: Personal Information -->
+            <div class="form-section">
+                <h2 class="section-title">1. PERSONAL INFORMATION</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fullName">Full Name *</label>
+                        <input type="text" name="fullName" id="fullName" placeholder="Enter your full name" data-sanitize-type="string" maxlength="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone Number *</label>
+                        <input type="tel" name="phone" id="phone" placeholder="07XX, 01XX or 254X format" data-sanitize-type="phone" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="email">Email Address *</label>
+                        <input type="email" name="email" id="email" placeholder="your@email.com" data-sanitize-type="email" maxlength="254" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="idNumber">National ID Number *</label>
+                        <input type="text" name="idNumber" id="idNumber" placeholder="e.g. 12345678 (8 digits)" pattern="[0-9]{8}" maxlength="8" title="Enter exactly 8 digits" data-sanitize-type="numeric" required>
+                        <span id="idNumberError" class="error-message"></span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Date of Birth *</label>
+                        <input type="date" name="dateOfBirth" id="dateOfBirth" title="Date of Birth" data-sanitize-type="string" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="county">County / Sub-County *</label>
+                        <input type="text" name="county" id="county" placeholder="e.g. Nairobi" data-sanitize-type="string" maxlength="100" required>
+                    </div>
+                </div>
+
+
+
+
+            <div class="role-summary">
+                <h2 class="section-title">ROLE SUMMARY</h2>
+                <p>A stokika Supervisor oversees a team of Field Agents and ensures the accuracy, integrity, and success of all field operations in their assigned region. This includes <span class="highlight">vendor verification, stock approvals, fraud prevention, team management, training, and operational quality control</span>.</p>
+            </div>
+
+            <!-- Key Responsibilities -->
+            <div class="form-section">
+                <h2 class="section-title">KEY RESPONSIBILITIES</h2>
+                
+                <h4>A. Team Leadership & Training</h4>
+                <ul class="deliverables-list">
+                    <li>Recruit, onboard, and train Field Agents</li>
+                    <li>Conduct weekly coaching sessions</li>
+                    <li>Monitor daily agent activity and performance</li>
+                    <li>Guide agents on correct procedures and fraud awareness</li>
+                </ul>
+                
+                <h4>B. Vendor Data & Application Verification</h4>
+                <ul class="deliverables-list">
+                    <li>Review and validate all vendor applications submitted by agents</li>
+                    <li>Ensure accuracy, completeness, and authenticity of data</li>
+                    <li>Confirm vendor legitimacy and business activity</li>
+                </ul>
+                
+                <h4>C. Stock Management & Oversight</h4>
+                <ul class="deliverables-list">
+                    <li>Approve or reject stock advance requests for vendors in the region</li>
+                    <li>Oversee stock allocation, delivery confirmations, and reconciliations</li>
+                    <li>Verify that stock delivered matches approved quantities</li>
+                    <li>Identify and report stale, unused, or suspicious stock</li>
+                </ul>
+                
+                <h4>D. Fraud Prevention</h4>
+                <ul class="deliverables-list">
+                    <li>Identify fake businesses, staged shops, inflated sales, or collusion</li>
+                    <li>Conduct random field audits for suspicious vendor profiles</li>
+                    <li>Escalate any fraud attempts or anomalies to HQ</li>
+                </ul>
+                
+                <h4>E. Operational Coordination</h4>
+                <ul class="deliverables-list">
+                    <li>Ensure smooth coordination between agents, suppliers, and delivery partners</li>
+                    <li>Resolve operational disputes between vendors and agents</li>
+                    <li>Submit weekly reports on vendor performance, risks, and field activity</li>
+                </ul>
+            </div>
+
+            <!-- Scope of Authority -->
+            <div class="form-section">
+                <h2 class="section-title">SCOPE OF AUTHORITY</h2>
+                <p>The Supervisor has the authority to:</p>
+                <ul class="deliverables-list">
+                    <li>Approve stock advances within their assigned region</li>
+                    <li>Reject vendor applications that do not meet criteria</li>
+                    <li>Recommend blacklisting of fraudulent vendors</li>
+                    <li>Initiate field audits and escalations</li>
+                    <li>Train, discipline, or recommend termination of underperforming agents</li>
+                    <li>Make operational decisions affecting vendors in their region</li>
+                </ul>
+                <p><strong>Supervisors are accountable for all vendor and stock activity under their territory.</strong></p>
+            </div>
+
+            <!-- Section 2: Education -->
+            <div class="form-section">
+                <h2 class="section-title">2. EDUCATION BACKGROUND</h2>
+                <p><strong>Minimum requirement: Diploma or Degree</strong></p>
+                <div class="form-group">
+                    <label>Highest Level of Education *</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" name="education" value="diploma" id="edu-diploma" required>
+                            <label for="edu-diploma">Diploma</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="education" value="degree" id="edu-degree">
+                            <label for="edu-degree">Bachelor's Degree</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="education" value="hnd" id="edu-hnd">
+                            <label for="edu-hnd">Higher National Diploma</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="education" value="other" id="edu-other">
+                            <label for="edu-other">Other</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="institution">Institution Attended *</label>
+                        <input type="text" name="institution" id="institution" placeholder="e.g. University of Nairobi" data-sanitize-type="string" maxlength="200" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="course">Course / Field of Study *</label>
+                        <input type="text" name="course" id="course" placeholder="e.g. Business Administration" data-sanitize-type="string" maxlength="200" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Work Experience -->
+            <div class="form-section">
+                <h2 class="section-title">3. WORK EXPERIENCE</h2>
+                <div class="form-group">
+                    <label>Relevant Experience (select all that apply):</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="experience" value="team-management" id="exp-team">
+                            <label for="exp-team">Field Team Management</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="experience" value="sales" id="exp-sales">
+                            <label for="exp-sales">Sales / Vendor Acquisition</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="experience" value="microfinance" id="exp-micro">
+                            <label for="exp-micro">Microfinance / Lending / Collections</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="experience" value="supply-chain" id="exp-supply">
+                            <label for="exp-supply">Supply Chain / Logistics</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="experience" value="fmcg" id="exp-fmcg">
+                            <label for="exp-fmcg">FMCG Industry</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="experience" value="fraud" id="exp-fraud">
+                            <label for="exp-fraud">Data Verification / Fraud Detection</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Years of Relevant Experience *</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" name="yearsExperience" value="<1" id="exp-less-1" required>
+                            <label for="exp-less-1">&lt;1 year</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="yearsExperience" value="1-2" id="exp-1-2">
+                            <label for="exp-1-2">1–2 years</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="yearsExperience" value="2-3" id="exp-2-3">
+                            <label for="exp-2-3">2–3 years</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="yearsExperience" value="3-5" id="exp-3-5">
+                            <label for="exp-3-5">3–5 years</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="yearsExperience" value="5+" id="exp-5plus">
+                            <label for="exp-5plus">5+ years</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Provide a summary of your experience *</label>
+                    <textarea name="experienceSummary" id="experienceSummary" rows="4" placeholder="Briefly describe your relevant work experience" data-sanitize-type="string" maxlength="1000" required></textarea>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h2 class="section-title">4. TECHNOLOGY SKILLS</h2>
+                <div class="form-group">
+                    <label>Are you comfortable using the following tools?</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="techSkills" value="smartphones" id="tech-phone">
+                            <label for="tech-phone">Smartphones & apps</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="techSkills" value="dashboards" id="tech-dash">
+                            <label for="tech-dash">Web dashboards / portals</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="techSkills" value="data-entry" id="tech-data">
+                            <label for="tech-data">Data entry tools (Google Forms, Sheets, Excel)</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="techSkills" value="gps" id="tech-gps">
+                            <label for="tech-gps">GPS location tools</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="techSkills" value="reporting" id="tech-report">
+                            <label for="tech-report">Reporting tools</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Rate your tech confidence *</label>
+                    <div class="radio-group">
+                        <div class="radio-item">
+                            <input type="radio" name="techConfidence" value="beginner" id="tech-beg" required>
+                            <label for="tech-beg">Beginner</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="techConfidence" value="intermediate" id="tech-int">
+                            <label for="tech-int">Intermediate</label>
+                        </div>
+                        <div class="radio-item">
+                            <input type="radio" name="techConfidence" value="advanced" id="tech-adv">
+                            <label for="tech-adv">Advanced</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Document Submission -->
+            <div class="form-section">
+                <h2 class="section-title">5. DOCUMENT SUBMISSION *</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="passportPhoto">Passport Photo *</label>
+                        <input type="file" name="passportPhoto" id="passportPhoto" accept=".png,.jpg,.jpeg" title="Upload passport photo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="nationalIdFront">National ID Front *</label>
+                        <input type="file" name="nationalIdFront" id="nationalIdFront" accept=".pdf,.png,.jpg,.jpeg" title="Upload National ID front" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nationalIdBack">National ID Back *</label>
+                        <input type="file" name="nationalIdBack" id="nationalIdBack" accept=".pdf,.png,.jpg,.jpeg" title="Upload National ID back" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cv">Updated CV *</label>
+                        <input type="file" name="cv" id="cv" accept=".pdf,.doc,.docx" title="Upload your CV" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="goodConduct">Certificate of Good Conduct</label>
+                        <input type="file" name="goodConduct" id="goodConduct" accept=".pdf" title="Upload Certificate of Good Conduct">
+                    </div>
+                    <div class="form-group">
+                        <label for="kraPin">KRA PIN Number *</label>
+                        <input type="text" name="kraPin" id="kraPin" placeholder="e.g. A000000000Z" data-sanitize-type="alphanumeric" maxlength="11" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Declaration -->
+            <div class="declaration-box">
+                <h2 class="section-title">DECLARATION & AGREEMENT</h2>
+                <p>I confirm that the information provided is true and that I understand the responsibilities and expectations of the stokika Supervisor role. I agree to uphold all policies, procedures, and standards of the company.</p>
+                <div class="form-group">
+                    <div class="checkbox-item checkbox-agreement">
+                        <input type="checkbox" name="agreement" id="agreement" required>
+                        <label for="agreement">I agree to all the above terms and conditions *</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Section -->
+            <div class="submit-section">
+                <button type="submit" class="btn-submit-onboarding">Submit Application</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Supabase CDN with SRI -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
+            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
+            crossorigin="anonymous"></script>
+    
+    <!-- Core Setup Scripts -->
+    <script src="js/core/config-loader.js"></script>
+    <script src="js/core/setup.js"></script>
+    <script src="js/core/supabase-config.js"></script>
+    
+    <!-- Security Scripts -->
+    <script src="js/security/input-sanitizer.js"></script>
+    <script src="js/security/xss-protection.js"></script>
+    <script src="js/security/secure-session.js"></script>
+    <script src="js/security/csrf-protection.js"></script>
+    
+    <!-- Page-Specific Script -->
+    <script src="js/pages/supervisor-form.page.js"></script>
+</body>
+</html>
