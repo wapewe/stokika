@@ -243,9 +243,11 @@ function validateRequest(request: STKPushRequest): { valid: boolean; error?: str
     };
   }
   
-  // Validate amount matches expected price
+  // Validate amount matches expected price (skip for registration flows)
   const expectedAmount = KIT_PRICES[request.userType];
-  if (request.amount !== expectedAmount) {
+  const isRegistrationFlow = request.flowType === 'vendor_registration';
+  
+  if (!isRegistrationFlow && request.amount !== expectedAmount) {
     return {
       valid: false,
       error: `Invalid amount. ${request.userType} payment is KES ${expectedAmount}`

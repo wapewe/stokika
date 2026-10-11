@@ -415,7 +415,7 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEmailValidation();
     
     // Attach to pricing buttons
-    const pricingButtons = document.querySelectorAll('.btn-pricing, .get-started-btn');
+    const pricingButtons = document.querySelectorAll('.btn-pricing, .get-started-btn, .btn-cta.vendor');
     console.log(`🔍 Found ${pricingButtons.length} pricing buttons`);
     
     pricingButtons.forEach((button, index) => {

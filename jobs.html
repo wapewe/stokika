@@ -15,7 +15,6 @@
                    form-action 'self';">
     
     <!-- Security Headers -->
-    <meta http-equiv="X-Frame-Options" content="DENY">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
     <meta http-equiv="X-XSS-Protection" content="1; mode=block">
@@ -33,7 +32,7 @@
 </head>
 <body>
     <div class="back-to-home">
-        <a href="/C:/Users/HP/Documents/Reinherts/stokika/dalana.html" class="btn-back">
+        <a href="dalana.html" class="btn-back">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
@@ -130,9 +129,7 @@
     </div>
     
     <!-- Supabase JS with SRI -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
-            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
     
     <!-- Core Security Scripts -->
     <script src="js/core/config-loader.js"></script>
@@ -144,3 +141,5 @@
     <script src="js/pages/jobs.page.js" type="module"></script>
 </body>
 </html>
+
+

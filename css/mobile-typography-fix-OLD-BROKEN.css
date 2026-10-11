@@ -1,0 +1,124 @@
+/* =====================================================
+   MOBILE TYPOGRAPHY & READABILITY FIX - SAFE VERSION
+   Only affects text content, NOT navigation or buttons
+   ===================================================== */
+
+/* =====================================================
+   ABOUT SECTION - MOBILE FIXES
+   ===================================================== */
+
+@media (max-width: 768px) {
+    /* About section text */
+    .about-section .section-tagline {
+        font-size: 0.75rem !important;
+        letter-spacing: 0.1em !important;
+        margin-bottom: 0.5rem !important;
+    }
+    
+    .about-section .section-title {
+        font-size: 1.75rem !important;
+        line-height: 1.2 !important;
+        margin-bottom: 0.75rem !important;
+    }
+    
+    .about-section .section-subtitle {
+        font-size: 0.9375rem !important;
+        line-height: 1.6 !important;
+        padding: 0 0.5rem !important;
+        margin-bottom: 2rem !important;
+    }
+    
+    .about-story h3,
+    .about-promise h3,
+    .about-card h3 {
+        font-size: 1.25rem !important;
+        line-height: 1.3 !important;
+    }
+    
+    .about-story p,
+    .about-promise p,
+    .about-card p {
+        font-size: 0.9375rem !important;
+        line-height: 1.6 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .about-section .section-title {
+        font-size: 1.5rem !important;
+    }
+    
+    .about-section .section-subtitle {
+        font-size: 0.875rem !important;
+    }
+}
+
+/* =====================================================
+   TESTIMONIAL TEXT CUTOFF FIX - ALL DEVICES
+   ===================================================== */
+
+.testimonial-card {
+    overflow: visible !important;
+    height: auto !important;
+}
+
+.testimonial-content,
+.testimonial-metrics {
+    overflow: visible !important;
+    height: auto !important;
+}
+
+.testimonial-text {
+    white-space: normal !important;
+    overflow: visible !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+}
+
+@media (max-width: 768px) {
+    .testimonial-card {
+        display: flex !important;
+        flex-direction: column !important;
+    }
+    
+    .testimonial-content {
+        padding: 1.5rem !important;
+    }
+    
+    .testimonial-metrics {
+        padding: 1.5rem !important;
+    }
+    
+    .testimonial-text {
+        font-size: 0.9375rem !important;
+        line-height: 1.65 !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .testimonial-text {
+        font-size: 0.875rem !important;
+    }
+}
+
+/* =====================================================
+   TEXT CONTENT WRAPPING - SAFE SELECTORS ONLY
+   Only applies to content areas, NOT navigation/buttons
+   ===================================================== */
+
+@media (max-width: 768px) {
+    /* Text content areas only */
+    .about-section p,
+    .about-section h1,
+    .about-section h2,
+    .about-section h3,
+    .section-subtitle,
+    .hero-description,
+    .testimonial-text,
+    .pricing-card p,
+    .step-card p {
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        hyphens: auto !important;
+    }
+}

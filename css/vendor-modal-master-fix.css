@@ -390,3 +390,45 @@ button#vendorModalClose {
 .progress-step:not(.active) .step-label {
     transform: none !important;
 }
+
+
+/* =====================================================
+   CRITICAL FIX 3: ENSURE FORM STEPS ARE VISIBLE
+   ===================================================== */
+
+/* Force all form steps to be hidden by default */
+#vendorRegistrationModal .form-step,
+.modal-content.vendor-registration .form-step {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+/* Force active form step to be visible */
+#vendorRegistrationModal .form-step.active,
+.modal-content.vendor-registration .form-step.active {
+    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    animation: fadeIn 0.3s ease-in !important;
+}
+
+/* Ensure form content is visible */
+#vendorRegistrationModal .vendor-form,
+.modal-content.vendor-registration .vendor-form {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

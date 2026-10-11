@@ -4883,6 +4883,13 @@ section {
     font-weight: 700;
     font-size: 1.125rem;
     flex-shrink: 0;
+    width: 20px;
+    min-width: 20px;
+    max-width: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 .btn-supplier {
@@ -5107,6 +5114,13 @@ section {
     font-weight: 700;
     font-size: 1.125rem;
     flex-shrink: 0;
+    width: 20px;
+    min-width: 20px;
+    max-width: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
 @media (max-width: 768px) {

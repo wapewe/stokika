@@ -23,10 +23,10 @@ class ActivityLogger {
     async logActivity(action, entityType = null, entityId = null, oldValues = null, newValues = null, details = {}) {
         try {
             const activityData = {
-                user_id: this.currentUser?.userId || this.currentUser?.id,
+                user_id: this.currentUser?.userId || this.currentUser?.id || null,
                 action,
                 entity_type: entityType,
-                entity_id: entityId,
+                entity_id: entityId || null,
                 old_values: oldValues,
                 new_values: newValues,
                 ip_address: await this.getClientIP(),

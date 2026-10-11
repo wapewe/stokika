@@ -34,14 +34,14 @@ class PaymentNotificationHandler {
      */
     subscribeToNotifications(paymentId) {
         this.realtimeChannel = this.supabase
-            .channel(payment-notifications-)
+            .channel(`payment-notifications-${paymentId}`)
             .on(
                 'postgres_changes',
                 {
                     event: 'INSERT',
                     schema: 'public',
                     table: 'payment_notifications',
-                    filter: payment_id=eq.
+                    filter: `payment_id=eq.${paymentId}`
                 },
                 (payload) => {
                     console.log('New notification received:', payload.new);
@@ -150,9 +150,9 @@ class PaymentNotificationHandler {
 
         // Fallback: create simple toast
         const toast = document.createElement('div');
-        toast.className = payment-notification payment-notification-;
+        toast.className = `payment-notification payment-notification-${type}`;
         toast.textContent = message;
-        toast.style.cssText = 
+        toast.style.cssText = `
             position: fixed;
             top: 20px;
             right: 20px;
@@ -164,9 +164,9 @@ class PaymentNotificationHandler {
             line-height: 1.5;
             z-index: 10000;
             animation: slideInRight 0.3s ease-out;
-            background: ;
+            background: ${this.getToastColor(type)};
             color: white;
-        ;
+        `;
 
         document.body.appendChild(toast);
 
@@ -195,12 +195,12 @@ class PaymentNotificationHandler {
     async sendNotification(notificationType, additionalData = {}) {
         try {
             const response = await fetch(
-                ${this.supabase.supabaseUrl}/functions/v1/send-payment-notification,
+                `${this.supabase.supabaseUrl}/functions/v1/send-payment-notification`,
                 {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': Bearer 
+                        'Authorization': `Bearer ${this.supabase.supabaseKey}`
                     },
                     body: JSON.stringify({
                         payment_id: this.paymentId,
@@ -232,7 +232,7 @@ class PaymentNotificationHandler {
 
 // Add CSS for notification animations
 const notificationStyles = document.createElement('style');
-notificationStyles.textContent = 
+notificationStyles.textContent = `
     @keyframes slideInRight {
         from {
             transform: translateX(400px);
@@ -273,7 +273,7 @@ notificationStyles.textContent =
             max-width: none !important;
         }
     }
-;
+`;
 document.head.appendChild(notificationStyles);
 
 // Export for use in other modules

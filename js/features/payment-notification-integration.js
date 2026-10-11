@@ -55,11 +55,11 @@
         // Listen for status query retries
         document.addEventListener('statusQueryRetry', async (event) => {
             const { paymentId, attempt, maxAttempts } = event.detail;
-            console.log([Notifications] Status query retry /);
+            console.log(`[Notifications] Status query retry ${attempt}/${maxAttempts}`);
             
             // Show UI message for retry
             if (typeof showToast === 'function') {
-                showToast(Checking payment status... (Attempt /), 'info');
+                showToast(`Checking payment status... (Attempt ${attempt}/${maxAttempts})`, 'info');
             }
         });
 

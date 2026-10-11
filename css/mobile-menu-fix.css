@@ -1,0 +1,37 @@
+/* =====================================================
+   MOBILE MENU CLICKABILITY FIX
+   Ensures all menu items are clickable in mobile view
+   ===================================================== */
+
+@media (max-width: 768px) {
+    /* Ensure mobile menu has proper z-index */
+    .header-nav {
+        z-index: 9998;
+    }
+    
+    .header-nav.active {
+        z-index: 9998;
+    }
+    
+    /* Ensure mobile toggle button is always on top */
+    .mobile-menu-toggle {
+        z-index: 9999;
+        position: fixed;
+    }
+    
+    /* Ensure all menu items are clickable */
+    .header-nav a,
+    .header-nav .btn-get-started {
+        display: block;
+        position: relative;
+        cursor: pointer;
+        -webkit-tap-highlight-color: rgba(16, 185, 129, 0.1);
+    }
+    
+    /* Visual feedback on tap */
+    .header-nav a:active,
+    .header-nav .btn-get-started:active {
+        opacity: 0.7;
+        background: rgba(16, 185, 129, 0.15);
+    }
+}

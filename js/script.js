@@ -518,8 +518,8 @@ contactForm?.addEventListener('submit', async (e) => {
     submitBtn.disabled = true;
     
     try {
-        // Initialize Supabase client
-        const client = initSupabase();
+        // Use existing Supabase client
+        const client = window._supabaseClient || window.supabase;
         if (!client) {
             throw new Error('Supabase not initialized. Please check your configuration.');
         }
@@ -563,8 +563,8 @@ newsletterForm?.addEventListener('submit', async (e) => {
     submitBtn.disabled = true;
     
     try {
-        // Initialize Supabase client
-        const client = initSupabase();
+        // Use existing Supabase client
+        const client = window._supabaseClient || window.supabase;
         if (!client) {
             throw new Error('Supabase not initialized. Please check your configuration.');
         }
@@ -1072,44 +1072,19 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // I'm a Vendor button in pricing CTA section
-    const btnVendorCTA = document.querySelector('.btn-cta.vendor');
-    if (btnVendorCTA) {
-        btnVendorCTA.addEventListener('click', function(e) {
-            e.preventDefault();
-            const modal = document.getElementById('vendorRegistrationModal');
-            if (modal) {
-                modal.classList.add('active');
-            }
-        });
-    }
-
     // I'm a Supplier button in pricing CTA section
     const btnSupplierCTA = document.querySelector('.btn-cta.supplier');
     if (btnSupplierCTA) {
         btnSupplierCTA.addEventListener('click', function(e) {
             e.preventDefault();
+            console.log('📦 Supplier CTA button clicked');
             const modal = document.getElementById('supplierRegistrationModal');
             if (modal) {
                 modal.classList.add('active');
+                document.body.classList.add('modal-open');
             }
         });
     }
-
-    // All "Get Started" buttons in pricing cards - Open vendor modal directly
-    const btnPricing = document.querySelectorAll('.btn-pricing');
-    btnPricing.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            console.log('💰 Pricing button clicked - opening vendor registration');
-            
-            // Open vendor registration modal directly
-            const vendorModal = document.getElementById('vendorRegistrationModal');
-            if (vendorModal) {
-                vendorModal.classList.add('active');
-            }
-        });
-    });
 
     console.log('✅ Button event listeners initialized');
 });
