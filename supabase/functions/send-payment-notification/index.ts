@@ -72,7 +72,7 @@ serve(async (req) => {
 
     if (dbError) {
       console.error('Database insert error:', dbError);
-      notifications.errors.push(Database: );
+      notifications.errors.push(`Database: ${dbError.message}`);
     } else {
       notifications.ui_sent = true;
     }
@@ -83,10 +83,10 @@ serve(async (req) => {
         const emailResult = await sendEmail(user_email, content.email_subject, content.email_body);
         notifications.email_sent = emailResult.success;
         if (!emailResult.success) {
-          notifications.errors.push(Email: );
+          notifications.errors.push(`Email: ${emailResult.error || 'Failed to send'}`);
         }
       } catch (error) {
-        notifications.errors.push(Email: );
+        notifications.errors.push(`Email: ${error.message}`);
       }
     }
 
@@ -96,10 +96,10 @@ serve(async (req) => {
         const smsResult = await sendSMS(user_phone, content.sms_message);
         notifications.sms_sent = smsResult.success;
         if (!smsResult.success) {
-          notifications.errors.push(SMS: );
+          notifications.errors.push(`SMS: ${smsResult.error || 'Failed to send'}`);
         }
       } catch (error) {
-        notifications.errors.push(SMS: );
+        notifications.errors.push(`SMS: ${error.message}`);
       }
     }
 
@@ -161,40 +161,40 @@ function generateNotificationContent(type: string, data: any) {
       return {
         ui_message: 'Payment timeout detected. Checking payment status...',
         email_subject: 'Stokika Payment - Status Update',
-        email_body: Dear Customer,\n\nWe noticed your payment (Transaction ID: ) is taking longer than expected. We are automatically checking the status with M-Pesa.\n\nPlease wait a moment while we verify your payment.\n\nThank you,\nStokika Support Team,
-        sms_message: Stokika: Your payment is being verified. Transaction ID: . Please wait.
+        email_body: `Dear Customer,\n\nWe noticed your payment (Transaction ID: ${data.transaction_id || 'N/A'}) is taking longer than expected. We are automatically checking the status with M-Pesa.\n\nPlease wait a moment while we verify your payment.\n\nThank you,\nStokika Support Team`,
+        sms_message: `Stokika: Your payment is being verified. Transaction ID: ${data.transaction_id || 'N/A'}. Please wait.`
       };
 
     case 'payment_completed':
       return {
         ui_message: 'Payment successful! Your transaction has been completed.',
         email_subject: 'Stokika Payment Confirmation',
-        email_body: Dear Customer,\n\nYour payment has been successfully completed!\n\nTransaction ID: \nAmount: KES \n\nThank you for your payment.\n\nStokika Support Team,
-        sms_message: Stokika: Payment successful! Amount: KES . Transaction ID: .
+        email_body: `Dear Customer,\n\nYour payment has been successfully completed!\n\nTransaction ID: ${data.transaction_id || 'N/A'}\nAmount: KES ${data.amount || '0'}\n\nThank you for your payment.\n\nStokika Support Team`,
+        sms_message: `Stokika: Payment successful! Amount: KES ${data.amount || '0'}. Transaction ID: ${data.transaction_id || 'N/A'}.`
       };
 
     case 'manual_payment_instructions':
       return {
-        ui_message: Please complete your payment manually using M-Pesa Paybill.\n\nPaybill: \nAccount: \nAmount: KES ,
+        ui_message: `Please complete your payment manually using M-Pesa Paybill.\n\nPaybill: ${paybillNumber}\nAccount: ${data.account_number || 'N/A'}\nAmount: KES ${data.amount || '0'}`,
         email_subject: 'Stokika - Manual Payment Instructions',
-        email_body: Dear Customer,\n\nPlease complete your payment using the following details:\n\nPaybill Number: \nAccount Number: \nAmount: KES \n\nTransaction ID: \n\nAfter completing payment, click "I've Completed Payment" on the payment page. Your payment will be verified within 30 minutes.\n\nKeep your M-Pesa confirmation message for reference.\n\nStokika Support Team,
-        sms_message: Stokika: Pay via M-Pesa Paybill , Account , Amount KES . Trans ID: 
+        email_body: `Dear Customer,\n\nPlease complete your payment using the following details:\n\nPaybill Number: ${paybillNumber}\nAccount Number: ${data.account_number || 'N/A'}\nAmount: KES ${data.amount || '0'}\n\nTransaction ID: ${data.transaction_id || 'N/A'}\n\nAfter completing payment, click "I've Completed Payment" on the payment page. Your payment will be verified within 30 minutes.\n\nKeep your M-Pesa confirmation message for reference.\n\nStokika Support Team`,
+        sms_message: `Stokika: Pay via M-Pesa Paybill ${paybillNumber}, Account ${data.account_number || 'N/A'}, Amount KES ${data.amount || '0'}. Trans ID: ${data.transaction_id || 'N/A'}`
       };
 
     case 'manual_payment_approved':
       return {
         ui_message: 'Your manual payment has been verified and approved!',
         email_subject: 'Stokika Payment Approved',
-        email_body: Dear Customer,\n\nGreat news! Your manual payment has been verified and approved.\n\nTransaction ID: \nAmount: KES \n\nYour account has been activated. You can now access all Stokika features.\n\nThank you,\nStokika Support Team,
-        sms_message: Stokika: Your payment of KES  has been approved! Transaction ID: . Welcome to Stokika!
+        email_body: `Dear Customer,\n\nGreat news! Your manual payment has been verified and approved.\n\nTransaction ID: ${data.transaction_id || 'N/A'}\nAmount: KES ${data.amount || '0'}\n\nYour account has been activated. You can now access all Stokika features.\n\nThank you,\nStokika Support Team`,
+        sms_message: `Stokika: Your payment of KES ${data.amount || '0'} has been approved! Transaction ID: ${data.transaction_id || 'N/A'}. Welcome to Stokika!`
       };
 
     case 'manual_payment_rejected':
       return {
-        ui_message: Your payment verification was unsuccessful. ,
+        ui_message: `Your payment verification was unsuccessful. ${data.rejection_reason || 'Please try again or contact support.'}`,
         email_subject: 'Stokika Payment - Action Required',
-        email_body: Dear Customer,\n\nWe were unable to verify your payment.\n\nTransaction ID: \nReason: \n\nPlease contact our support team at support@stokika.com or try again.\n\nStokika Support Team,
-        sms_message: Stokika: Payment verification unsuccessful. Transaction ID: . Please contact support.
+        email_body: `Dear Customer,\n\nWe were unable to verify your payment.\n\nTransaction ID: ${data.transaction_id || 'N/A'}\nReason: ${data.rejection_reason || 'Not specified'}\n\nPlease contact our support team at support@stokika.com or try again.\n\nStokika Support Team`,
+        sms_message: `Stokika: Payment verification unsuccessful. Transaction ID: ${data.transaction_id || 'N/A'}. Please contact support.`
       };
 
     default:
