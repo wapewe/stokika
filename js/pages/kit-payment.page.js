@@ -24,25 +24,37 @@ function showUserMessage(message, type = 'error') {
     const icons = { error: 'fas fa-exclamation-triangle', success: 'fas fa-check-circle', info: 'fas fa-info-circle' };
     const colors = { error: '#ef4444', success: '#10b981', info: '#3b82f6' };
     
-    container.innerHTML = XSSProtection.sanitize(`
+    container.innerHTML = `
         <div class="error-container">
             <i class="${XSSProtection.escapeHtml(icons[type])}" style="color: ${XSSProtection.escapeHtml(colors[type])}"></i>
             <h3>${XSSProtection.escapeHtml(type === 'error' ? 'Payment Error' : 'Information')}</h3>
             <p>${XSSProtection.escapeHtml(sanitizeHTML(message))}</p>
             <a href="../dalana.html" class="btn btn-primary">Return to Home</a>
         </div>
-    `);
+    `;
 }
 
-// Initialize the page
-document.addEventListener('DOMContentLoaded', async () => {
-    try {
-        // Initialize M-Pesa client (Task 10.1)
+// Get or initialize M-Pesa client
+function getMpesaClient() {
+    if (!mpesaClient) {
         const supabase = initSupabase();
         if (supabase) {
             mpesaClient = new MpesaIntegrationClient(supabase);
             console.log('M-Pesa integration client initialized');
         }
+    }
+    return mpesaClient;
+}
+
+window.addEventListener('supabase-config-loaded', () => {
+    getMpesaClient();
+});
+
+// Initialize the page
+document.addEventListener('DOMContentLoaded', async () => {
+    try {
+        // Initialize M-Pesa client
+        getMpesaClient();
         
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get('code');
@@ -102,47 +114,117 @@ async function verifyAndLoadPayment(code) {
         const supabase = initSupabase();
         if (!supabase) throw new Error('Failed to initialize database connection');
         
-        // Check field agents table
-        let { data: application, error: agentError } = await supabase
-            .from('field_agents')
-            .select('*')
-            .eq('application_code', code)
-            .single();
-        
-        let userType = 'field_agent';
-        
-        // If not found in field agents, check supervisors
-        if (agentError || !application) {
-            const { data: supData, error: supError } = await supabase
-                .from('supervisors')
-                .select('*')
-                .eq('application_code', code)
-                .single();
-            
-            if (supError || !supData) {
-                throw new Error('Invalid application code. Please check and try again.');
+        // Verify application code: try Edge Function first, fallback to direct Supabase query
+        let application = null;
+        const normalizedCode = code.trim().toUpperCase();
+
+        try {
+            const { data: verifyResult, error: verifyError } = await supabase.functions.invoke('verify-application-code', {
+                body: { application_code: normalizedCode }
+            });
+
+            if (!verifyError && verifyResult?.success && verifyResult?.data) {
+                application = verifyResult.data;
             }
-            
-            application = supData;
-            userType = 'supervisor';
+        } catch (efErr) {
+            console.warn('[kit-payment] Edge function invoke failed, falling back to direct query:', efErr);
         }
-        
-        if (!application) throw new Error('Application not found');
-        
-        currentApplicationData = { ...application, user_type: userType };
+
+        // Direct database query fallback if edge function was unavailable or errored
+        if (!application) {
+            console.log('[kit-payment] Checking application code in database directly...');
+            
+            // Check supervisors table
+            const { data: supervisorData, error: supErr } = await supabase
+                .from('supervisors')
+                .select('application_code, first_name, last_name, phone, status, approval_status, created_at')
+                .eq('application_code', normalizedCode)
+                .maybeSingle();
+
+            if (supervisorData) {
+                application = {
+                    application_code: supervisorData.application_code,
+                    full_name: [supervisorData.first_name, supervisorData.last_name].filter(Boolean).join(' ') || 'Supervisor',
+                    phone: supervisorData.phone,
+                    user_type: 'supervisor',
+                    approval_status: supervisorData.approval_status || supervisorData.status || 'pending',
+                    created_at: supervisorData.created_at
+                };
+            } else {
+                // Check field_agents table
+                const { data: agentData, error: agentErr } = await supabase
+                    .from('field_agents')
+                    .select('application_code, first_name, last_name, phone, status, approval_status, created_at')
+                    .eq('application_code', normalizedCode)
+                    .maybeSingle();
+
+                if (agentData) {
+                    application = {
+                        application_code: agentData.application_code,
+                        full_name: [agentData.first_name, agentData.last_name].filter(Boolean).join(' ') || 'Field Agent',
+                        phone: agentData.phone,
+                        user_type: 'field_agent',
+                        approval_status: agentData.approval_status || agentData.status || 'pending',
+                        created_at: agentData.created_at
+                    };
+                } else {
+                    // Check vendors table
+                    const { data: vendorData } = await supabase
+                        .from('vendors')
+                        .select('id, business_name, location, registration_number, tax_pin, is_verified, created_at')
+                        .or(`registration_number.eq.${normalizedCode},tax_pin.eq.${normalizedCode}`)
+                        .maybeSingle();
+
+                    if (vendorData) {
+                        application = {
+                            application_code: normalizedCode,
+                            full_name: vendorData.business_name || 'Vendor',
+                            phone: '',
+                            user_type: 'vendor',
+                            approval_status: vendorData.is_verified ? 'approved' : 'pending',
+                            created_at: vendorData.created_at
+                        };
+                    }
+                }
+            }
+        }
+
+        if (!application) {
+            throw new Error('Invalid application code. Please check and try again.');
+        }
+
+        currentApplicationData = application;
         
         const onboarding = new ComprehensiveOnboarding();
-        const kitConfig = await onboarding.getKitConfig(userType);
+        const kitConfig = await onboarding.getKitConfig(application.user_type);
         if (!kitConfig) throw new Error('Kit configuration not found for user type');
         
-        // Check existing payment by application code
-        const { data: existingPayment } = await supabase
-            .from('stokika_kit_payments')
-            .select('*')
-            .eq('application_code', code)
-            .order('created_at', { ascending: false })
-            .limit(1)
-            .single();
+        // Get existing payment status: try Edge Function first, fallback to direct query
+        let existingPayment = null;
+        try {
+            const { data: paymentResult } = await supabase.functions.invoke('get-kit-payment-status', {
+                body: { application_code: normalizedCode }
+            });
+            if (paymentResult?.success && paymentResult?.data) {
+                existingPayment = paymentResult.data;
+            }
+        } catch (_) {
+            // Edge function error ignored for fallback
+        }
+
+        if (!existingPayment) {
+            const { data: directPayment } = await supabase
+                .from('stokika_kit_payments')
+                .select('*')
+                .eq('application_code', normalizedCode)
+                .order('created_at', { ascending: false })
+                .limit(1)
+                .maybeSingle();
+
+            if (directPayment) {
+                existingPayment = directPayment;
+            }
+        }
         
         renderKitPaymentDashboard(currentApplicationData, kitConfig, existingPayment);
     } catch (error) {
@@ -167,15 +249,15 @@ function renderKitPaymentDashboard(application, kitConfig, existingPayment) {
     }
     
     try {
-        if (existingPayment?.payment_status === 'verified') {
+        if (existingPayment?.payment_status === 'verified' || existingPayment?.payment_status === 'completed') {
             renderVerifiedPayment(container, existingPayment);
         } else if (existingPayment?.payment_status === 'pending') {
             renderPendingPayment(container, existingPayment);
         } else if (existingPayment?.payment_status === 'rejected') {
-            renderRejectedPayment(container, existingPayment, user, kitConfig);
+            renderRejectedPayment(container, existingPayment, application, kitConfig);
         } else {
             const formHTML = renderPaymentForm(application, kitConfig);
-            container.innerHTML = XSSProtection.sanitize(formHTML);
+            container.innerHTML = formHTML;
             attachEventListeners();
         }
     } catch (error) {
@@ -186,67 +268,81 @@ function renderKitPaymentDashboard(application, kitConfig, existingPayment) {
 
 function renderVerifiedPayment(container, payment) {
     const amount = parseFloat(payment.kit_amount) || 0;
-    const method = sanitizeHTML(payment.payment_method || 'N/A');
+    const method = sanitizeHTML(payment.payment_method || 'N/A').replace(/_/g, ' ');
+    const receipt = payment.mpesa_receipt_number ? sanitizeHTML(payment.mpesa_receipt_number) : 'N/A';
     const verifiedDate = payment.verified_at ? new Date(payment.verified_at).toLocaleString() : 'N/A';
     
-    container.innerHTML = XSSProtection.sanitize(`
-        <div class="payment-success">
-            <i class="fas fa-check-circle" style="font-size: 64px; color: #00897b;"></i>
-            <h2>Payment Verified!</h2>
-            <p>Your Stokika Kit payment has been verified.</p>
-            <p>Your account is now active. You will receive login credentials via email shortly.</p>
-            <div>
-                <p><strong>Payment Amount:</strong> KES ${XSSProtection.escapeHtml(amount.toLocaleString())}</p>
-                <p><strong>Payment Method:</strong> ${XSSProtection.escapeHtml(method.toUpperCase())}</p>
-                <p><strong>Verified On:</strong> ${XSSProtection.escapeHtml(verifiedDate)}</p>
+    container.innerHTML = `
+        <div class="success-fullpage">
+            <div class="success-confetti-banner">
+                <div class="checkmark-ring"><i class="fas fa-check"></i></div>
+                <h2>Payment Verified!</h2>
+                <p>Your Stokika Kit payment has been confirmed and your account is now active.</p>
+            </div>
+            <div class="success-receipt">
+                <h3><i class="fas fa-receipt"></i> Payment Receipt</h3>
+                <div class="receipt-row"><span class="receipt-label">Amount Paid</span><span class="receipt-value green">KES ${XSSProtection.escapeHtml(amount.toLocaleString())}</span></div>
+                <div class="receipt-row"><span class="receipt-label">M-Pesa Receipt</span><span class="receipt-value">${XSSProtection.escapeHtml(receipt)}</span></div>
+                <div class="receipt-row"><span class="receipt-label">Payment Method</span><span class="receipt-value">${XSSProtection.escapeHtml(method.toUpperCase())}</span></div>
+                <div class="receipt-row"><span class="receipt-label">Verified On</span><span class="receipt-value">${XSSProtection.escapeHtml(verifiedDate)}</span></div>
+                <div class="receipt-row"><span class="receipt-label">Status</span><span class="receipt-value badge-pill">Verified</span></div>
+            </div>
+            <div class="success-nextsteps">
+                <h3><i class="fas fa-list-check"></i> What Happens Next</h3>
+                <ol>
+                    <li>You will receive your <strong>login credentials via email</strong> within 24 hours.</li>
+                    <li>Your <strong>Stokika Kit</strong> will be dispatched to you shortly.</li>
+                    <li>You can start using the Stokika platform once you receive your credentials.</li>
+                </ol>
+            </div>
+            <div class="success-actions">
+                <a href="dalana.html" class="btn btn-primary"><i class="fas fa-home"></i> Return to Home</a>
             </div>
         </div>
-    `);
+    `;
 }
 
 function renderPendingPayment(container, payment) {
     const amount = parseFloat(payment.kit_amount) || 0;
-    const method = sanitizeHTML(payment.payment_method || 'N/A');
-    const mpesaCode = payment.mpesa_code ? sanitizeHTML(payment.mpesa_code) : null;
+    const method = sanitizeHTML(payment.payment_method || 'N/A').replace(/_/g, ' ');
+    const mpesaCode = payment.mpesa_receipt_number ? sanitizeHTML(payment.mpesa_receipt_number) : null;
     const submittedDate = payment.created_at ? new Date(payment.created_at).toLocaleString() : 'N/A';
     
-    container.innerHTML = XSSProtection.sanitize(`
-        <div class="payment-pending">
-            <i class="fas fa-clock" style="font-size: 64px; color: #ffc107;"></i>
+    container.innerHTML = `
+        <div class="payment-pending-full">
+            <div class="status-icon-ring amber"><i class="fas fa-clock"></i></div>
             <h2>Payment Pending Verification</h2>
-            <p>Your payment has been submitted and is awaiting admin verification.</p>
-            <div>
-                <p><strong>Payment Amount:</strong> KES ${XSSProtection.escapeHtml(amount.toLocaleString())}</p>
-                <p><strong>Payment Method:</strong> ${XSSProtection.escapeHtml(method.toUpperCase())}</p>
-                ${mpesaCode ? `<p><strong>M-Pesa Code:</strong> ${XSSProtection.escapeHtml(mpesaCode)}</p>` : ''}
-                <p><strong>Submitted On:</strong> ${XSSProtection.escapeHtml(submittedDate)}</p>
+            <p>Your payment has been submitted and is awaiting admin verification. You will be notified once confirmed.</p>
+            <div class="pending-detail-box">
+                <div class="receipt-row"><span class="receipt-label">Amount</span><span class="receipt-value">KES ${XSSProtection.escapeHtml(amount.toLocaleString())}</span></div>
+                <div class="receipt-row"><span class="receipt-label">Method</span><span class="receipt-value">${XSSProtection.escapeHtml(method.toUpperCase())}</span></div>
+                ${mpesaCode ? `<div class="receipt-row"><span class="receipt-label">M-Pesa Code</span><span class="receipt-value">${XSSProtection.escapeHtml(mpesaCode)}</span></div>` : ''}
+                <div class="receipt-row" style="border-bottom:none;"><span class="receipt-label">Submitted On</span><span class="receipt-value">${XSSProtection.escapeHtml(submittedDate)}</span></div>
             </div>
-            <p style="margin-top: 20px; color: #666;">You will be notified once your payment is verified.</p>
+            <p style="font-size:13px;color:#6b7280;">This usually takes a few hours during business hours.</p>
         </div>
-    `);
+    `;
 }
 
 function renderRejectedPayment(container, payment, application, kitConfig) {
-    const reason = sanitizeHTML(payment.rejection_reason || 'Not specified');
-    
+    const reason = sanitizeHTML(payment.rejection_reason || 'Please contact support for details.');
     const formHTML = renderPaymentForm(application, kitConfig);
-    container.innerHTML = XSSProtection.sanitize(`
-        <div class="payment-rejected">
-            <i class="fas fa-times-circle" style="font-size: 64px; color: #ef4444;"></i>
+    container.innerHTML = `
+        <div class="payment-pending-full">
+            <div class="status-icon-ring red"><i class="fas fa-times"></i></div>
             <h2>Payment Rejected</h2>
-            <p>Your payment was rejected by the admin.</p>
-            <div>
-                <p><strong>Rejection Reason:</strong> ${XSSProtection.escapeHtml(reason)}</p>
-            </div>
-            <p style="margin-top: 20px;">Please submit a new payment below:</p>
+            <p>Your previous payment submission was rejected by the admin.</p>
+            <div class="failure-reason-box"><i class="fas fa-exclamation-circle"></i><p><strong>Reason:</strong> ${XSSProtection.escapeHtml(reason)}</p></div>
+            <p style="margin-top:24px;font-size:14px;color:#4b5563;">Please submit a new payment below:</p>
         </div>
         ${formHTML}
-    `);
+    `;
     attachEventListeners();
 }
 
 function renderPaymentForm(application, kitConfig) {
     const userType = sanitizeHTML(application.user_type || 'user');
+    const userTypeLabel = userType.replace(/_/g, ' ').toUpperCase();
     const amount = parseFloat(kitConfig.kit_amount) || 0;
     const description = sanitizeHTML(kitConfig.description || '');
     const phone = sanitizeHTML(application.phone || '');
@@ -255,42 +351,44 @@ function renderPaymentForm(application, kitConfig) {
     let kitItemsHTML = '';
     if (Array.isArray(kitConfig.kit_items)) {
         kitItemsHTML = kitConfig.kit_items
-            .map(item => `<li><i class="fas fa-check"></i> ${sanitizeHTML(item)}</li>`)
+            .map(item => `<li><i class="fas fa-check"></i>${sanitizeHTML(item)}</li>`)
             .join('');
     }
     
     return `
         <div class="kit-details">
             <h3>Welcome, ${applicantName}!</h3>
-            <p style="color: #6b7280; margin-bottom: 1rem;">Application Code: <strong>${sanitizeHTML(currentApplicationCode)}</strong></p>
-            <h3>Your ${userType.replace('_', ' ').toUpperCase()} Kit</h3>
+            <p style="color:#6b7280;font-size:13px;margin:0 0 16px;">Application Code: <strong style="color:#007A3D;">${sanitizeHTML(currentApplicationCode)}</strong></p>
+            <p style="display:inline-flex;align-items:center;gap:7px;background:#E8F8EF;color:#007A3D;font-size:12px;font-weight:700;padding:5px 14px;border-radius:999px;letter-spacing:.04em;text-transform:uppercase;margin-bottom:16px;">
+                <i class="fas fa-box"></i> ${userTypeLabel} KIT
+            </p>
             <div class="kit-amount">
-                <h2>KES ${amount.toLocaleString()}</h2>
+                <span style="font-size:18px;font-weight:700;color:#007A3D;align-self:flex-start;margin-top:10px;">KES</span>
+                <h2>${amount.toLocaleString()}</h2>
             </div>
             <div class="kit-items">
-                <h4>What's Included:</h4>
+                <h4><i class="fas fa-gift" style="color:#00A651;margin-right:6px;"></i>What's Included</h4>
                 <ul>${kitItemsHTML}</ul>
             </div>
-            <p class="kit-description">${description}</p>
+            ${description ? `<p class="kit-description">${description}</p>` : ''}
         </div>
         
         <div class="payment-form">
-            <h3>Choose Payment Method</h3>
-            
+            <h3>Choose Your Payment Method</h3>
             <div class="payment-method-selector">
-                <div class="method-option" data-method="mpesa-stk">
+                <div class="method-option" data-method="mpesa-stk" tabindex="0" role="button" aria-label="Pay with M-Pesa STK Push">
                     <div class="method-icon"><i class="fas fa-bolt"></i></div>
-                    <h4>Pay with M-Pesa STK Push</h4>
-                    <p>Receive a prompt on your phone to authorize payment instantly</p>
+                    <h4>M-Pesa STK Push</h4>
+                    <p>Get a payment prompt on your phone &mdash; instant &amp; secure</p>
                 </div>
-                <div class="method-option" data-method="manual">
+                <div class="method-option" data-method="manual" tabindex="0" role="button" aria-label="Manual M-Pesa Paybill">
                     <div class="method-icon"><i class="fas fa-mobile-alt"></i></div>
-                    <h4>Manual M-Pesa Paybill</h4>
-                    <p>Pay via M-Pesa Paybill and enter transaction code</p>
+                    <h4>M-Pesa Paybill</h4>
+                    <p>Pay via Paybill then enter your transaction code here</p>
                 </div>
             </div>
             
-            <form id="kitPaymentForm" data-sanitize="true" style="display: none;">
+            <form id="kitPaymentForm" style="display: none;">
                 <input type="hidden" id="paymentMethod" value="">
                 
                 <div id="stkPushSection" style="display: none;">
@@ -309,10 +407,8 @@ function renderPaymentForm(application, kitConfig) {
                                id="stkPhoneNumber" 
                                name="stkPhoneNumber"
                                value="${phone}" 
-                                placeholder="07XX, 01XX or 254X format" data-sanitize-type="phone" 
-                               maxlength="15" 
-                               data-sanitize-type="phone"
-                               required />
+                               placeholder="07XX, 01XX or 254X format"
+                               maxlength="15" />
                         <small style="color: #6b7280;">Enter in format: 0712345678 or 254712345678</small>
                     </div>
                     
@@ -343,9 +439,11 @@ function renderPaymentForm(application, kitConfig) {
                                id="mpesaCode" 
                                name="mpesaCode"
                                placeholder="e.g., QA12BC3456" 
-                               maxlength="20" 
-                               data-sanitize-type="alphanumeric"
-                               required />
+                               maxlength="20"
+                               autocomplete="off"
+                               autocapitalize="characters"
+                               spellcheck="false"
+                               style="text-transform: uppercase; font-family: monospace; font-size: 16px; font-weight: 700; letter-spacing: 0.05em;" />
                         <small style="color: #6b7280;">The 10-character code from your M-Pesa confirmation SMS</small>
                     </div>
                     <div class="form-group">
@@ -354,10 +452,8 @@ function renderPaymentForm(application, kitConfig) {
                                id="phoneNumber" 
                                name="phoneNumber"
                                value="${phone}" 
-                                placeholder="07XX, 01XX or 254X format" data-sanitize-type="phone" 
-                               maxlength="15" 
-                               data-sanitize-type="phone"
-                               required />
+                               placeholder="07XX, 01XX or 254X format"
+                               maxlength="15" />
                         <small style="color: #6b7280;">Enter in format: 0712345678 or 254712345678</small>
                     </div>
                 </div>
@@ -385,28 +481,51 @@ function renderPaymentForm(application, kitConfig) {
 
 function attachEventListeners() {
     document.querySelectorAll('.method-option').forEach(option => {
+        // Mark as selectable on click
         option.addEventListener('click', () => {
             const method = option.dataset.method;
-            if (method) selectPaymentMethod(method);
+            if (method) {
+                // Visually mark selected
+                document.querySelectorAll('.method-option').forEach(o => o.classList.remove('selected'));
+                option.classList.add('selected');
+                selectPaymentMethod(method);
+            }
+        });
+        // Keyboard accessibility
+        option.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                option.click();
+            }
         });
     });
     
+    const mpesaCodeInput = document.getElementById('mpesaCode');
+    if (mpesaCodeInput) {
+        mpesaCodeInput.addEventListener('input', (e) => {
+            const start = e.target.selectionStart;
+            const end = e.target.selectionEnd;
+            e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+            if (start !== null && end !== null) {
+                e.target.setSelectionRange(start, end);
+            }
+        });
+    }
+
     const backBtn = document.getElementById('backButton');
     if (backBtn) backBtn.addEventListener('click', resetPaymentMethod);
     
     const form = document.getElementById('kitPaymentForm');
     if (form) {
         form.addEventListener('submit', submitKitPayment);
-        
-        // Initialize input sanitizer for the payment form
-        if (window.InputSanitizer) {
-            try {
-                window.InputSanitizer.initForm('#kitPaymentForm');
-                console.log('Input sanitizer initialized for kit payment form');
-            } catch (error) {
-                console.error('Error initializing input sanitizer:', error);
-            }
-        }
+    }
+
+    const submitBtn = document.getElementById('submitPaymentBtn');
+    if (submitBtn) {
+        submitBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            submitKitPayment(e);
+        });
     }
 }
 
@@ -427,18 +546,53 @@ function selectPaymentMethod(method) {
         selector.style.display = 'none';
         form.style.display = 'block';
         
+        const mpesaCodeInput = document.getElementById('mpesaCode');
+        const phoneInput = document.getElementById('phoneNumber');
+        const stkPhoneInput = document.getElementById('stkPhoneNumber');
+
         if (method === 'manual') {
             manualSection.style.display = 'block';
             stkSection.style.display = 'none';
-            document.getElementById('mpesaCode').required = true;
-            document.getElementById('phoneNumber').required = true;
-            document.getElementById('stkPhoneNumber').required = false;
+            if (mpesaCodeInput) { 
+                mpesaCodeInput.required = true; 
+                mpesaCodeInput.disabled = false;
+                mpesaCodeInput.removeAttribute('disabled');
+            }
+            if (phoneInput) { 
+                phoneInput.required = true; 
+                phoneInput.disabled = false;
+                phoneInput.removeAttribute('disabled');
+            }
+            if (stkPhoneInput) { 
+                stkPhoneInput.required = false; 
+                stkPhoneInput.disabled = true; 
+            }
+            setTimeout(() => {
+                if (mpesaCodeInput) {
+                    mpesaCodeInput.focus();
+                }
+            }, 100);
         } else if (method === 'mpesa-stk') {
             manualSection.style.display = 'none';
             stkSection.style.display = 'block';
-            document.getElementById('stkPhoneNumber').required = true;
-            document.getElementById('mpesaCode').required = false;
-            document.getElementById('phoneNumber').required = false;
+            if (stkPhoneInput) { 
+                stkPhoneInput.required = true; 
+                stkPhoneInput.disabled = false;
+                stkPhoneInput.removeAttribute('disabled');
+            }
+            if (mpesaCodeInput) { 
+                mpesaCodeInput.required = false; 
+                mpesaCodeInput.disabled = true; 
+            }
+            if (phoneInput) { 
+                phoneInput.required = false; 
+                phoneInput.disabled = true; 
+            }
+            setTimeout(() => {
+                if (stkPhoneInput) {
+                    stkPhoneInput.focus();
+                }
+            }, 100);
         }
     } catch (error) {
         console.error('Error selecting payment method:', error);
@@ -508,8 +662,9 @@ async function initiateSTKPushPayment() {
         }
         
         // Check if M-Pesa client is initialized
-        if (!mpesaClient) {
-            throw new Error('M-Pesa integration not available. Please try manual payment.');
+        const client = getMpesaClient();
+        if (!client) {
+            throw new Error('Payment service is connecting, please try again in a few seconds.');
         }
         
         // Get kit configuration
@@ -528,16 +683,16 @@ async function initiateSTKPushPayment() {
         // Show status container
         const statusContainer = document.getElementById('paymentStatusContainer');
         statusContainer.style.display = 'block';
-        statusContainer.innerHTML = XSSProtection.sanitize(`
+        statusContainer.innerHTML = `
             <div class="payment-status-loading">
                 <div class="spinner"></div>
                 <p><strong>Initiating payment...</strong></p>
                 <p style="color: #6b7280; font-size: 0.9rem;">Please wait while we send the payment request to M-Pesa</p>
             </div>
-        `);
+        `;
         
         // Initiate STK Push
-        const result = await mpesaClient.initiateSTKPush({
+        const result = await client.initiateSTKPush({
             phoneNumber: phoneNumber,
             amount: amount,
             applicationCode: currentApplicationCode,
@@ -568,14 +723,14 @@ async function initiateSTKPushPayment() {
         currentCheckoutRequestId = result.checkoutRequestId;
         
         // Show success message - check phone for prompt
-        statusContainer.innerHTML = XSSProtection.sanitize(`
+        statusContainer.innerHTML = `
             <div class="payment-status-sent">
                 <i class="fas fa-check-circle" style="color: #10b981; font-size: 48px;"></i>
                 <p><strong>Payment request sent!</strong></p>
                 <p style="color: #6b7280;">Check your phone (${XSSProtection.escapeHtml(maskPhoneNumber(phoneNumber))}) for the M-Pesa prompt</p>
                 <p style="color: #6b7280; font-size: 0.9rem;">Enter your M-Pesa PIN to complete the payment</p>
             </div>
-        `);
+        `;
         
         // Hide submit button during polling
         submitBtn.style.display = 'none';
@@ -607,7 +762,7 @@ async function startPaymentStatusPolling(checkoutRequestId) {
         const maxPolls = 20; // 60 seconds total
         
         // Show polling status
-        statusContainer.innerHTML = XSSProtection.sanitize(`
+        statusContainer.innerHTML = `
             <div class="payment-status-polling">
                 <div class="spinner"></div>
                 <p><strong>Waiting for payment confirmation...</strong></p>
@@ -618,7 +773,7 @@ async function startPaymentStatusPolling(checkoutRequestId) {
                     </div>
                 </div>
             </div>
-        `);
+        `;
         
         // Update progress bar
         const updateProgressBar = () => {
@@ -670,22 +825,44 @@ async function startPaymentStatusPolling(checkoutRequestId) {
 
 // Helper function to show payment success
 function showPaymentSuccess(paymentData) {
-    const statusContainer = document.getElementById('paymentStatusContainer');
-    const receiptNumber = paymentData?.mpesaReceiptNumber || 'N/A';
-    const amount = paymentData?.amount || 0;
+    // Replace the entire payment dashboard with a full success page
+    const container = document.getElementById('payment-dashboard');
+    if (!container) return;
     
-    statusContainer.innerHTML = XSSProtection.sanitize(`
-        <div class="payment-status-success">
-            <i class="fas fa-check-circle" style="color: #10b981; font-size: 64px;"></i>
-            <h3 style="color: #10b981; margin: 15px 0;">Payment Successful!</h3>
-            <div style="background: #f0fdf4; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                <p><strong>M-Pesa Receipt:</strong> ${XSSProtection.escapeHtml(sanitizeHTML(receiptNumber))}</p>
-                <p><strong>Amount Paid:</strong> KES ${XSSProtection.escapeHtml(amount.toLocaleString())}</p>
+    const receiptNumber = XSSProtection.escapeHtml(sanitizeHTML(paymentData?.mpesaReceiptNumber || paymentData?.receipt || 'N/A'));
+    const amount = paymentData?.amount || 0;
+    const method = XSSProtection.escapeHtml(sanitizeHTML(paymentData?.method || 'M-Pesa'));
+    const now = new Date().toLocaleString();
+    
+    container.innerHTML = `
+        <div class="success-fullpage">
+            <div class="success-confetti-banner">
+                <div class="checkmark-ring"><i class="fas fa-check"></i></div>
+                <h2>Payment Successful!</h2>
+                <p>Your Stokika Kit payment has been received and verified. Welcome to the team!</p>
             </div>
-            <p style="color: #6b7280;">Your kit payment has been confirmed. You will receive account activation details via email shortly.</p>
-            <p style="color: #6b7280; font-size: 0.9rem; margin-top: 15px;">You can close this page now.</p>
+            <div class="success-receipt">
+                <h3><i class="fas fa-receipt"></i> Payment Confirmation</h3>
+                <div class="receipt-row"><span class="receipt-label">Amount Paid</span><span class="receipt-value green">KES ${XSSProtection.escapeHtml(amount.toLocaleString())}</span></div>
+                <div class="receipt-row"><span class="receipt-label">M-Pesa Receipt</span><span class="receipt-value">${receiptNumber}</span></div>
+                <div class="receipt-row"><span class="receipt-label">Application Code</span><span class="receipt-value">${XSSProtection.escapeHtml(currentApplicationCode || '')}</span></div>
+                <div class="receipt-row"><span class="receipt-label">Payment Date</span><span class="receipt-value">${XSSProtection.escapeHtml(now)}</span></div>
+                <div class="receipt-row"><span class="receipt-label">Status</span><span class="receipt-value badge-pill">Confirmed</span></div>
+            </div>
+            <div class="success-nextsteps">
+                <h3><i class="fas fa-list-check"></i> What Happens Next</h3>
+                <ol>
+                    <li>You will receive your <strong>login credentials via email</strong> within 24 hours.</li>
+                    <li>Your <strong>Stokika Starter Kit</strong> will be dispatched to your registered address.</li>
+                    <li>Check your email (including spam folder) for onboarding instructions.</li>
+                    <li>You can start using the Stokika platform once you receive your credentials.</li>
+                </ol>
+            </div>
+            <div class="success-actions">
+                <a href="dalana.html" class="btn btn-primary"><i class="fas fa-home"></i> Return to Home</a>
+            </div>
         </div>
-    `);
+    `;
     
     // Reset attempts counter
     paymentAttempts = 0;
@@ -704,14 +881,14 @@ function showPaymentFailed(message, paymentData) {
         <p style="color: #f59e0b; margin-top: 15px;"><strong>Maximum retry attempts reached.</strong> Please try manual payment below.</p>
     `;
     
-    statusContainer.innerHTML = XSSProtection.sanitize(`
+    statusContainer.innerHTML = `
         <div class="payment-status-failed">
             <i class="fas fa-times-circle" style="color: #ef4444; font-size: 48px;"></i>
             <h4 style="color: #ef4444; margin: 15px 0;">Payment Failed</h4>
             <p style="color: #6b7280;">${XSSProtection.escapeHtml(sanitizeHTML(message))}</p>
             ${retryButtonHTML}
         </div>
-    `);
+    `;
     
     // Task 10.4: Attach retry handler
     if (paymentAttempts < 3) {
@@ -738,14 +915,14 @@ function showPaymentTimeout() {
         <p style="color: #f59e0b; margin-top: 15px;"><strong>Maximum retry attempts reached.</strong> Please try manual payment below.</p>
     `;
     
-    statusContainer.innerHTML = XSSProtection.sanitize(`
+    statusContainer.innerHTML = `
         <div class="payment-status-timeout">
             <i class="fas fa-clock" style="color: #f59e0b; font-size: 48px;"></i>
             <h4 style="color: #f59e0b; margin: 15px 0;">Payment Request Timed Out</h4>
             <p style="color: #6b7280;">You did not enter your M-Pesa PIN in time.</p>
             ${retryButtonHTML}
         </div>
-    `);
+    `;
     
     // Task 10.4: Attach retry handler
     if (paymentAttempts < 3) {
@@ -763,7 +940,7 @@ function showPaymentTimeout() {
 function showPaymentUnknownStatus(checkoutRequestId) {
     const statusContainer = document.getElementById('paymentStatusContainer');
     
-    statusContainer.innerHTML = XSSProtection.sanitize(`
+    statusContainer.innerHTML = `
         <div class="payment-status-unknown">
             <i class="fas fa-question-circle" style="color: #6b7280; font-size: 48px;"></i>
             <h4 style="color: #6b7280; margin: 15px 0;">Unable to Confirm Payment</h4>
@@ -774,7 +951,7 @@ function showPaymentUnknownStatus(checkoutRequestId) {
                 <i class="fas fa-sync"></i> Check Status Again
             </button>
         </div>
-    `);
+    `;
     
     const checkBtn = document.getElementById('checkStatusBtn');
     if (checkBtn) {
@@ -790,14 +967,14 @@ function showPaymentError(message, checkoutRequestId) {
         `<p style="background: #f3f4f6; padding: 10px; border-radius: 4px; font-family: monospace; margin: 10px 0; font-size: 0.9rem;">Reference: ${XSSProtection.escapeHtml(sanitizeHTML(checkoutRequestId))}</p>` 
         : '';
     
-    statusContainer.innerHTML = XSSProtection.sanitize(`
+    statusContainer.innerHTML = `
         <div class="payment-status-error">
             <i class="fas fa-exclamation-triangle" style="color: #ef4444; font-size: 48px;"></i>
             <h4 style="color: #ef4444; margin: 15px 0;">Error</h4>
             <p style="color: #6b7280;">${XSSProtection.escapeHtml(sanitizeHTML(message))}</p>
             ${referenceHTML}
         </div>
-    `);
+    `;
 }
 
 // Helper function to show STK Push error with retry option
@@ -809,14 +986,14 @@ function showSTKPushError(message, showRetry = false) {
         `<p style="color: #6b7280; margin-top: 10px;">Attempts: ${paymentAttempts}/3</p>` 
         : '';
     
-    statusContainer.innerHTML = XSSProtection.sanitize(`
+    statusContainer.innerHTML = `
         <div class="payment-status-error">
             <i class="fas fa-exclamation-triangle" style="color: #ef4444; font-size: 48px;"></i>
             <h4 style="color: #ef4444; margin: 15px 0;">Payment Initiation Failed</h4>
             <p style="color: #6b7280;">${XSSProtection.escapeHtml(sanitizeHTML(message))}</p>
             ${retryInfoHTML}
         </div>
-    `);
+    `;
 }
 
 // Helper function to show STK failure with manual option
@@ -824,7 +1001,7 @@ function showSTKPushFailureWithManualOption(message) {
     const statusContainer = document.getElementById('paymentStatusContainer');
     statusContainer.style.display = 'block';
     
-    statusContainer.innerHTML = XSSProtection.sanitize(`
+    statusContainer.innerHTML = `
         <div class="payment-status-error">
             <i class="fas fa-exclamation-triangle" style="color: #ef4444; font-size: 48px;"></i>
             <h4 style="color: #ef4444; margin: 15px 0;">STK Push Unavailable</h4>
@@ -835,7 +1012,7 @@ function showSTKPushFailureWithManualOption(message) {
                 <i class="fas fa-hand-holding-usd"></i> Use Manual Payment
             </button>
         </div>
-    `);
+    `;
     const switchBtn = document.getElementById('switchToManualBtn');
     if (switchBtn) {
         switchBtn.addEventListener('click', showManualPaymentFallback);
@@ -849,7 +1026,7 @@ function showRateLimitError(message, retryAfter) {
     
     const retryMinutes = Math.ceil(retryAfter / 60);
     
-    statusContainer.innerHTML = XSSProtection.sanitize(`
+    statusContainer.innerHTML = `
         <div class="payment-status-error">
             <i class="fas fa-clock" style="color: #f59e0b; font-size: 48px;"></i>
             <h4 style="color: #f59e0b; margin: 15px 0;">Too Many Payment Attempts</h4>
@@ -862,7 +1039,7 @@ function showRateLimitError(message, retryAfter) {
                 <i class="fas fa-hand-holding-usd"></i> Use Manual Payment Instead
             </button>
         </div>
-    `);
+    `;
     
     const switchBtn = document.getElementById('switchToManualBtn');
     if (switchBtn) {
@@ -905,12 +1082,12 @@ async function retrySTKPushPayment() {
 async function recheckPaymentStatus(checkoutRequestId) {
     try {
         const statusContainer = document.getElementById('paymentStatusContainer');
-        statusContainer.innerHTML = XSSProtection.sanitize(`
+        statusContainer.innerHTML = `
             <div class="payment-status-loading">
                 <div class="spinner"></div>
                 <p><strong>Checking payment status...</strong></p>
             </div>
-        `);
+        `;
         
         const result = await mpesaClient.checkPaymentStatus(checkoutRequestId);
         
@@ -939,40 +1116,62 @@ function showManualPaymentFallback() {
     const paymentMethodInput = document.getElementById('paymentMethod');
     const submitBtn = document.getElementById('submitPaymentBtn');
     const submitBtnText = document.getElementById('submitBtnText');
+    const mpesaCodeInput = document.getElementById('mpesaCode');
+    const phoneInput = document.getElementById('phoneNumber');
+    const stkPhoneInput = document.getElementById('stkPhoneNumber');
     
     if (manualSection && stkSection) {
         stkSection.style.display = 'none';
         manualSection.style.display = 'block';
-        paymentMethodInput.value = 'manual';
-        submitBtn.style.display = 'inline-flex';
-        submitBtn.disabled = false;
-        submitBtnText.textContent = 'Submit Payment';
+        if (paymentMethodInput) paymentMethodInput.value = 'manual';
+        if (submitBtn) {
+            submitBtn.style.display = 'inline-flex';
+            submitBtn.disabled = false;
+        }
+        if (submitBtnText) submitBtnText.textContent = 'Submit Payment';
         
-        // Set required fields
-        document.getElementById('mpesaCode').required = true;
-        document.getElementById('phoneNumber').required = true;
-        document.getElementById('stkPhoneNumber').required = false;
+        // Ensure manual fields are completely enabled and required
+        if (mpesaCodeInput) {
+            mpesaCodeInput.required = true;
+            mpesaCodeInput.disabled = false;
+            mpesaCodeInput.removeAttribute('disabled');
+        }
+        if (phoneInput) {
+            phoneInput.required = true;
+            phoneInput.disabled = false;
+            phoneInput.removeAttribute('disabled');
+        }
+        if (stkPhoneInput) {
+            stkPhoneInput.required = false;
+            stkPhoneInput.disabled = true;
+        }
         
-        // Scroll to manual section
+        // Scroll to manual section and focus code input
         manualSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => {
+            if (mpesaCodeInput) {
+                mpesaCodeInput.focus();
+            }
+        }, 150);
     }
 }
 
 // Task 10.5: Submit manual payment verification
 async function submitManualPaymentVerification() {
+    let submitBtn, submitBtnText, originalText;
     try {
-        const submitBtn = document.getElementById('submitPaymentBtn');
-        const submitBtnText = document.getElementById('submitBtnText');
-        const originalText = submitBtnText.textContent;
-        submitBtn.disabled = true;
-        submitBtnText.textContent = 'Submitting...';
+        submitBtn = document.getElementById('submitPaymentBtn');
+        submitBtnText = document.getElementById('submitBtnText');
+        originalText = submitBtnText ? submitBtnText.textContent : 'Submit Payment';
+        if (submitBtn) submitBtn.disabled = true;
+        if (submitBtnText) submitBtnText.textContent = 'Verifying...';
         
         const mpesaCode = document.getElementById('mpesaCode').value.trim();
         let phoneNumber = document.getElementById('phoneNumber').value.trim();
-        const paymentReference = document.getElementById('paymentReference').value.trim() || null;
+        const paymentReference = document.getElementById('paymentReference')?.value?.trim() || null;
         
         if (!mpesaCode || !phoneNumber) {
-            throw new Error('Please enter M-Pesa transaction code and phone number');
+            throw new Error('Please enter your M-Pesa transaction code and phone number');
         }
         
         // Validate receipt code format (10 alphanumeric characters)
@@ -994,61 +1193,82 @@ async function submitManualPaymentVerification() {
         
         const amount = parseFloat(kitConfig.kit_amount);
         
-        // Use mpesaClient if available, otherwise fallback to database
-        if (mpesaClient) {
-            const result = await mpesaClient.submitManualPayment({
+        const client = getMpesaClient();
+        let result;
+        if (client) {
+            result = await client.submitManualPayment({
                 applicationCode: currentApplicationCode,
                 mpesaCode: mpesaCode,
                 phoneNumber: phoneNumber,
-                amount: amount
+                amount: amount,
+                userType: currentApplicationData.user_type
             });
-            
-            if (!result.success) {
-                // Handle rate limit error (HTTP 429)
-                if (result.error === 'RATE_LIMIT_EXCEEDED' || result.code === 429) {
-                    submitBtn.disabled = false;
-                    submitBtnText.textContent = originalText;
-                    showRateLimitError(result.message, result.retryAfter || 300);
-                    return;
-                }
-                
-                throw new Error(result.message || 'Failed to submit payment for verification');
-            }
-            
-            // Show success message
-            showManualPaymentSubmitted(mpesaCode, amount);
         } else {
-            // Fallback: Direct database insert
+            // Direct Edge Function fallback
             const supabase = initSupabase();
             if (!supabase) throw new Error('Database connection failed');
             
-            const { error: paymentError } = await supabase
-                .from('stokika_kit_payments')
-                .insert([{
+            const { data: verifyResult, error: verifyErr } = await supabase.functions.invoke('verify-kit-manual-payment', {
+                body: {
                     application_code: currentApplicationCode,
-                    user_type: currentApplicationData.user_type,
+                    mpesa_code: mpesaCode,
                     phone_number: phoneNumber,
                     amount: amount,
-                    payment_method: 'manual_paybill',
-                    payment_status: 'awaiting_verification',
-                    mpesa_receipt_number: mpesaCode,
-                    payment_reference: paymentReference,
-                    created_at: new Date().toISOString()
-                }]);
-            
-            if (paymentError) throw paymentError;
-            
-            // Show success message
-            showManualPaymentSubmitted(mpesaCode, amount);
+                    user_type: currentApplicationData.user_type
+                }
+            });
+            result = verifyResult;
+            if (verifyErr) {
+                result = { success: false, error: verifyErr.message || 'Edge function error' };
+            }
         }
+        
+        if (!result || !result.success) {
+            // Show failure reason clearly in the form — do NOT reset the page
+            if (submitBtn) submitBtn.disabled = false;
+            if (submitBtnText) submitBtnText.textContent = originalText;
+            
+            const failureMsg = result?.error || result?.message || 'Payment not found in our records. Please ensure you have completed the M-Pesa Paybill payment (Paybill: 1140839) and wait 1-2 minutes for confirmation.';
+            
+            // Show or update failure reason box below the form
+            let reasonBox = document.getElementById('manualPaymentFailureReason');
+            if (!reasonBox) {
+                reasonBox = document.createElement('div');
+                reasonBox.id = 'manualPaymentFailureReason';
+                reasonBox.className = 'failure-reason-box';
+                const formActions = document.querySelector('.form-actions');
+                if (formActions) {
+                    formActions.parentNode.insertBefore(reasonBox, formActions);
+                }
+            }
+            reasonBox.innerHTML = `<i class="fas fa-exclamation-circle"></i><p><strong>Payment not verified:</strong> ${XSSProtection.escapeHtml(sanitizeHTML(failureMsg))}</p>`;
+            reasonBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            return;
+        }
+        
+        // Payment successfully verified — show the full success page
+        showPaymentSuccess({
+            mpesaReceiptNumber: mpesaCode,
+            amount: amount,
+            method: 'M-Pesa Paybill'
+        });
         
     } catch (error) {
         console.error('Error submitting manual payment:', error);
-        const submitBtn = document.getElementById('submitPaymentBtn');
-        const submitBtnText = document.getElementById('submitBtnText');
-        submitBtn.disabled = false;
-        submitBtnText.textContent = 'Submit Payment';
-        showUserMessage(error.message || 'Error submitting payment. Please try again or contact support.', 'error');
+        if (submitBtn) submitBtn.disabled = false;
+        if (submitBtnText) submitBtnText.textContent = originalText || 'Submit Payment';
+        
+        // Show inline error
+        let reasonBox = document.getElementById('manualPaymentFailureReason');
+        if (!reasonBox) {
+            reasonBox = document.createElement('div');
+            reasonBox.id = 'manualPaymentFailureReason';
+            reasonBox.className = 'failure-reason-box';
+            const formActions = document.querySelector('.form-actions');
+            if (formActions) formActions.parentNode.insertBefore(reasonBox, formActions);
+        }
+        reasonBox.innerHTML = `<i class="fas fa-exclamation-circle"></i><p>${XSSProtection.escapeHtml(error.message || 'Error submitting payment. Please try again or contact support.')}</p>`;
+        if (reasonBox) reasonBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 }
 
@@ -1056,7 +1276,7 @@ async function submitManualPaymentVerification() {
 function showManualPaymentSubmitted(receiptCode, amount) {
     const container = document.getElementById('payment-dashboard');
     if (container) {
-        container.innerHTML = XSSProtection.sanitize(`
+        container.innerHTML = `
             <div class="payment-submitted">
                 <i class="fas fa-check-circle" style="font-size: 64px; color: #10b981; margin-bottom: 20px;"></i>
                 <h2>Payment Submitted Successfully!</h2>
@@ -1070,7 +1290,7 @@ function showManualPaymentSubmitted(receiptCode, amount) {
                 <p style="margin-top: 10px; color: #6b7280;">This process typically takes a few hours during business hours.</p>
                 <p style="margin-top: 20px; color: #6b7280; font-size: 0.9rem;">You can close this page now.</p>
             </div>
-        `);
+        `;
     }
 }
 

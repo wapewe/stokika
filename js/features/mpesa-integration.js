@@ -39,9 +39,9 @@ class MpesaIntegrationClient {
      * 
      * @param {Object} paymentData - Payment details
      * @param {string} paymentData.phoneNumber - Kenyan phone number (254XXXXXXXXX)
-     * @param {number} paymentData.amount - Payment amount in KES (must be 2500 or 3500)
+     * @param {number} paymentData.amount - Payment amount in KES (fetched dynamically from database)
      * @param {string} paymentData.applicationCode - User application code
-     * @param {string} paymentData.userType - 'field_agent' or 'supervisor'
+     * @param {string} paymentData.userType - 'field_agent', 'supervisor', or 'vendor'
      * @returns {Promise<Object>} { success, checkoutRequestId, merchantRequestId, message }
      * 
      * Requirements: 2.1, 2.2, 2.7
@@ -260,60 +260,56 @@ class MpesaIntegrationClient {
                 };
             }
 
-            // Create payment record with awaiting_verification status
-            const { data, error } = await this.supabase
-                .from('stokika_kit_payments')
-                .insert([{
-                    application_code: verificationData.applicationCode,
-                    phone_number: verificationData.phoneNumber,
-                    amount: verificationData.amount,
-                    payment_status: 'awaiting_verification',
-                    mpesa_receipt_number: verificationData.mpesaCode,
-                    payment_method: 'manual_paybill',
-                    created_at: new Date().toISOString()
-                }])
-                .select()
-                .single();
+            // Call Edge Function verify-kit-manual-payment to verify against database
+            try {
+                const { data: verifyResult, error: fnError } = await this.supabase.functions.invoke('verify-kit-manual-payment', {
+                    body: {
+                        application_code: verificationData.applicationCode,
+                        mpesa_code: verificationData.mpesaCode,
+                        phone_number: verificationData.phoneNumber,
+                        amount: verificationData.amount,
+                        user_type: verificationData.userType
+                    }
+                });
 
-            if (error) {
-                console.error('Error submitting manual payment:', error);
-                
-                // Check if this is a rate limit error (HTTP 429)
-                if (error.code === 'PGRST301' || error.message?.includes('rate limit')) {
-                    const retryMinutes = 5; // Default to 5 minutes
+                if (fnError) {
+                    console.error('[MpesaClient] Edge function error:', fnError);
                     return {
                         success: false,
-                        error: 'RATE_LIMIT_EXCEEDED',
-                        code: 429,
-                        message: `Too many payment attempts. Please try again in ${retryMinutes} minutes.`,
-                        retryAfter: retryMinutes * 60
+                        error: 'VERIFICATION_ERROR',
+                        message: fnError.message || 'Payment verification failed. Please try again.'
                     };
                 }
-                
+
+                if (!verifyResult?.success) {
+                    return {
+                        success: false,
+                        error: 'PAYMENT_UNVERIFIED',
+                        message: verifyResult?.error || 'M-Pesa transaction was not found in the database. Please ensure you have completed the Paybill payment.'
+                    };
+                }
+
+                return {
+                    success: true,
+                    verified: true,
+                    message: verifyResult.message || 'Payment verified successfully! Your account is active.',
+                    data: verifyResult.data
+                };
+            } catch (invokeErr) {
+                console.error('[MpesaClient] Verification invoke error:', invokeErr);
                 return {
                     success: false,
-                    error: 'DATABASE_ERROR',
-                    message: 'Unable to submit payment for verification. Please try again.',
-                    details: error.message
+                    error: 'NETWORK_ERROR',
+                    message: 'Unable to verify payment with server. Please check your internet connection.'
                 };
             }
-
-            return {
-                success: true,
-                message: 'Payment submitted successfully. An administrator will verify your payment shortly.',
-                data: {
-                    paymentId: data.id,
-                    status: data.payment_status,
-                    receiptNumber: data.mpesa_receipt_number
-                }
-            };
 
         } catch (error) {
             console.error('Error submitting manual payment:', error);
             return {
                 success: false,
                 error: 'UNKNOWN_ERROR',
-                message: 'An unexpected error occurred while submitting your payment',
+                message: 'An unexpected error occurred while verifying your payment',
                 details: error.message
             };
         }
@@ -342,19 +338,8 @@ class MpesaIntegrationClient {
         }
 
         // Validate amount
-        if (!paymentData.amount || typeof paymentData.amount !== 'number') {
+        if (!paymentData.amount || typeof paymentData.amount !== 'number' || paymentData.amount <= 0) {
             return { valid: false, message: 'Valid payment amount is required' };
-        }
-
-        // Validate amount matches kit price
-        const validAmounts = { field_agent: 1550, supervisor: 3500 };
-        const expectedAmount = validAmounts[paymentData.userType];
-
-        if (paymentData.amount !== expectedAmount) {
-            return {
-                valid: false,
-                message: `Invalid amount. ${paymentData.userType === 'field_agent' ? 'Field Agent' : 'Supervisor'} kit costs KES ${expectedAmount}`
-            };
         }
 
         // Validate application code
@@ -363,8 +348,8 @@ class MpesaIntegrationClient {
         }
 
         // Validate user type
-        if (!['field_agent', 'supervisor'].includes(paymentData.userType)) {
-            return { valid: false, message: 'User type must be either field_agent or supervisor' };
+        if (!['field_agent', 'supervisor', 'vendor'].includes(paymentData.userType)) {
+            return { valid: false, message: 'User type must be field_agent, supervisor, or vendor' };
         }
 
         return { valid: true };
@@ -437,22 +422,44 @@ class MpesaIntegrationClient {
             });
 
             if (response.error) {
+                let errorBody = null;
+                const status = response.error.status || (response.error.context && response.error.context.status);
+                try {
+                    if (response.error.context && typeof response.error.context.json === 'function') {
+                        errorBody = await response.error.context.json();
+                    }
+                } catch (e) {
+                    // Ignore body parse errors
+                }
+
                 // Check if this is a rate limit error (HTTP 429)
-                if (response.error.code === 'RATE_LIMIT_EXCEEDED' || response.error.status === 429) {
-                    const retryAfter = response.error.retry_after || 300; // Default to 5 minutes
+                if (status === 429 || response.error.code === 'RATE_LIMIT_EXCEEDED' || (errorBody && errorBody.retryAfter) || (errorBody && errorBody.error && String(errorBody.error).toLowerCase().includes('rate limit'))) {
+                    const retryAfter = (errorBody && errorBody.retryAfter) || response.error.retry_after || 300;
                     const retryMinutes = Math.ceil(retryAfter / 60);
                     
                     return {
                         success: false,
                         error: 'RATE_LIMIT_EXCEEDED',
                         code: 429,
-                        message: `Too many payment attempts. Please try again in ${retryMinutes} minute${retryMinutes !== 1 ? 's' : ''}.`,
+                        message: (errorBody && errorBody.error) || `Too many payment attempts. Please try again in ${retryMinutes} minute${retryMinutes !== 1 ? 's' : ''}.`,
                         retryAfter: retryAfter,
                         details: 'Payment rate limit exceeded'
                     };
                 }
                 
-                throw new Error(response.error.message || 'Edge function call failed');
+                const errorMessage = (errorBody && (errorBody.error || errorBody.message)) || response.error.message || 'Payment initiation failed';
+
+                // Do not retry 4xx or 5xx HTTP responses to avoid multiple STK pushes or rate-limit burning
+                if (status && status >= 400) {
+                    return {
+                        success: false,
+                        error: status === 500 ? 'SERVER_ERROR' : 'REQUEST_ERROR',
+                        code: status,
+                        message: errorMessage
+                    };
+                }
+
+                throw new Error(errorMessage);
             }
 
             return response.data;

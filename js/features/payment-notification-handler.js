@@ -150,28 +150,14 @@ class PaymentNotificationHandler {
 
         // Fallback: create simple toast
         const toast = document.createElement('div');
-        toast.className = `payment-notification payment-notification-${type}`;
+        toast.className = `payment-notification payment-notification-${type} payment-notification-slide-in`;
         toast.textContent = message;
-        toast.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            max-width: 400px;
-            padding: 16px 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            font-size: 14px;
-            line-height: 1.5;
-            z-index: 10000;
-            animation: slideInRight 0.3s ease-out;
-            background: ${this.getToastColor(type)};
-            color: white;
-        `;
 
         document.body.appendChild(toast);
 
         setTimeout(() => {
-            toast.style.animation = 'slideOutRight 0.3s ease-in';
+            toast.classList.remove('payment-notification-slide-in');
+            toast.classList.add('payment-notification-slide-out');
             setTimeout(() => toast.remove(), 300);
         }, duration);
     }
@@ -257,6 +243,41 @@ notificationStyles.textContent = `
 
     .payment-notification {
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        max-width: 400px;
+        padding: 16px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        font-size: 14px;
+        line-height: 1.5;
+        z-index: 10000;
+        color: white;
+    }
+
+    .payment-notification-slide-in {
+        animation: slideInRight 0.3s ease-out;
+    }
+
+    .payment-notification-slide-out {
+        animation: slideOutRight 0.3s ease-in;
+    }
+
+    .payment-notification-success {
+        background: #10b981;
+    }
+
+    .payment-notification-error {
+        background: #ef4444;
+    }
+
+    .payment-notification-info {
+        background: #3b82f6;
+    }
+
+    .payment-notification-warning {
+        background: #f59e0b;
     }
 
     .payment-notification strong {

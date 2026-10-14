@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Edge Function</title>
+</head>
+<body>
+    <h1>Test Edge Function</h1>
+    <button onclick="testFunction()">Test verify-application-code</button>
+    <pre id="result"></pre>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://eidsqrnwfndruuufyacc.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVpZHNxcm53Zm5kcnV1dWZ5YWNjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc3MzcxMTEsImV4cCI6MjEwMzMxMzExMX0.FTeFHJwnw1iT4AIknJUSNWyM221x4U-VkfTCdCsKOEY';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        async function testFunction() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = 'Testing...';
+            
+            try {
+                console.log('Calling edge function...');
+                const { data, error } = await supabase.functions.invoke('verify-application-code', {
+                    body: { application_code: 'SFS90918066' }
+                });
+                
+                console.log('Response:', { data, error });
+                
+                if (error) {
+                    resultDiv.textContent = `Error:\n${JSON.stringify(error, null, 2)}`;
+                } else {
+                    resultDiv.textContent = `Success:\n${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (err) {
+                console.error('Exception:', err);
+                resultDiv.textContent = `Exception:\n${err.message}\n${err.stack}`;
+            }
+        }
+    </script>
+</body>
+</html>

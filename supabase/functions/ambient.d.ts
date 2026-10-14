@@ -1,3 +1,4 @@
+// deno-lint-ignore-file no-explicit-any
 /**
  * Ambient type declarations for Supabase Edge Functions URL imports.
  * Resolves editor warnings when using the standard TypeScript language server.
@@ -8,24 +9,24 @@ declare module 'https://esm.sh/@supabase/supabase-js*' {
 }
 
 declare module 'https://esm.sh/*' {
-  const content: any;
+  const content: unknown;
   export default content;
-  export const createClient: any;
-  export type SupabaseClient = any;
+  export const createClient: unknown;
+  export type SupabaseClient = unknown;
   export * from '@supabase/supabase-js';
 }
 
 declare module 'https://deno.land/std*' {
-  export const serve: any;
-  export const assertEquals: any;
-  export const assertExists: any;
-  export const assertRejects: any;
-  const content: any;
+  export const serve: unknown;
+  export const assertEquals: unknown;
+  export const assertExists: unknown;
+  export const assertRejects: unknown;
+  const content: unknown;
   export default content;
 }
 
 declare module 'https://deno.land/*' {
-  const content: any;
+  const content: unknown;
   export default content;
 }
 
@@ -37,7 +38,15 @@ declare namespace Deno {
     delete(key: string): void;
     toObject(): Record<string, string>;
   }
-  export const env: Env;
-  export function test(name: string, fn: () => void | Promise<void>): void;
-  export function test(options: Record<string, unknown>, fn: () => void | Promise<void>): void;
+  export interface KvEntryMaybe<T> {
+    key: unknown[];
+    value: T | null;
+    versionstamp: string | null;
+  }
+  export interface Kv {
+    get<T = unknown>(key: unknown[]): Promise<KvEntryMaybe<T>>;
+    set(key: unknown[], value: unknown, options?: { expireIn?: number }): Promise<{ ok: boolean; versionstamp: string }>;
+    close(): void;
+  }
+  export function openKv(path?: string): Promise<Kv>;
 }

@@ -20,7 +20,7 @@
  */
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { createClient, SupabaseClient } from 'https://esm.sh/@supabase/supabase-js@2.38.4';
 import { getValidToken, validateCredentials } from '../shared/mpesa-auth.ts';
 
 // Timeout configuration interface
@@ -47,7 +47,7 @@ function validateAmount(amount: number): { valid: boolean; error?: string } {
 }
 
 async function checkRateLimit(
-  supabase: any,
+  supabase: SupabaseClient,
   identifier: string,
   type: 'user' | 'phone'
 ): Promise<{ allowed: boolean; reason?: string; retryAfter?: number }> {
@@ -82,7 +82,7 @@ async function checkRateLimit(
 }
 
 async function recordPaymentAttempt(
-  supabase: any,
+  supabase: SupabaseClient,
   identifier: string,
   type: 'user' | 'phone'
 ): Promise<void> {
@@ -94,7 +94,9 @@ async function recordPaymentAttempt(
       namespace: `stk_${type}`,
       created_at: new Date().toISOString()
     });
-  } catch (_) {}
+  } catch (_) {
+    // Ignore insertion error for rate limit logging
+  }
 }
 
 /**
@@ -104,7 +106,7 @@ async function recordPaymentAttempt(
  * Falls back to default if query fails
  */
 async function getTimeoutConfig(
-  supabase: any,
+  supabase: SupabaseClient,
   flowType: string
 ): Promise<TimeoutConfig> {
   try {
@@ -135,10 +137,10 @@ async function getTimeoutConfig(
  * Section 9.4: Insert metric record for STK Push initiation
  */
 async function recordPaymentInitiationMetric(
-  supabase: any,
+  supabase: SupabaseClient,
   paymentId: string,
   flowType: string,
-  metadata: any
+  metadata: Record<string, unknown>
 ): Promise<void> {
   try {
     await supabase.from('payment_metrics').insert({
@@ -201,10 +203,11 @@ interface MpesaSTKPushResponse {
 const PHONE_REGEX = /^254[0-9]{9}$/;
 
 /**
- * Kit prices by user type
+ * Kit prices by user type (Database fallback defaults)
+ * Field Agent: 1550, Supervisor: 3050, Vendor: 1050
  */
-const KIT_PRICES = {
-  field_agent: 2050,
+const KIT_PRICES: Record<string, number> = {
+  field_agent: 1550,
   supervisor: 3050,
   vendor: 1050
 };
@@ -224,9 +227,9 @@ function normalizePhoneNumber(phone: string): string {
 }
 
 /**
- * Validate STK Push request data
+ * Validate STK Push request data against database or default config
  */
-function validateRequest(request: STKPushRequest): { valid: boolean; error?: string } {
+function validateRequest(request: STKPushRequest, dbExpectedAmount?: number): { valid: boolean; error?: string } {
   // Validate phone number format
   if (!request.phoneNumber || !PHONE_REGEX.test(request.phoneNumber)) {
     return {
@@ -243,14 +246,16 @@ function validateRequest(request: STKPushRequest): { valid: boolean; error?: str
     };
   }
   
-  // Validate amount matches expected price (skip for registration flows)
-  const expectedAmount = KIT_PRICES[request.userType];
+  // Validate amount matches expected price from database (or fallback)
+  const expectedAmount = dbExpectedAmount || KIT_PRICES[request.userType] || 1050;
   const isRegistrationFlow = request.flowType === 'vendor_registration';
   
-  if (!isRegistrationFlow && request.amount !== expectedAmount) {
+  // Use rounded comparison to handle float/int mismatches (e.g. 1550.0 vs 1550)
+  // Also allow overpayments (amount >= expected)
+  if (!isRegistrationFlow && Math.round(request.amount) < expectedAmount) {
     return {
       valid: false,
-      error: `Invalid amount. ${request.userType} payment is KES ${expectedAmount}`
+      error: `Invalid amount. ${request.userType} payment requires KES ${expectedAmount}`
     };
   }
   
@@ -277,14 +282,14 @@ function validateRequest(request: STKPushRequest): { valid: boolean; error?: str
  * ENHANCED: Store flow_type and timeout config with payment (Section 9.2)
  */
 async function createPaymentRecords(
-  supabase: any,
+  supabase: SupabaseClient,
   request: STKPushRequest,
   timeoutConfig: TimeoutConfig
 ): Promise<{ intentId: string; transactionId: string; referenceCode: string; kitPaymentId?: string }> {
   const flowType = request.flowType || 'kit_payment';
   
-  // If payment intent already exists (e.g. from vendor registration)
-  if (request.paymentIntentId || request.userType === 'vendor') {
+  // If payment intent already exists (e.g. from vendor registration flow)
+  if (request.paymentIntentId) {
     const intentId = request.paymentIntentId;
     let referenceCode = request.accountReference || request.applicationCode || 'REGISTRATION';
     let profileId: string | null = null;
@@ -359,7 +364,7 @@ async function createPaymentRecords(
   // Determine payment purpose based on user type
   const paymentPurpose = request.userType === 'field_agent' 
     ? 'FIELD_AGENT_KIT' 
-    : 'SUPERVISOR_KIT';
+    : (request.userType === 'supervisor' ? 'SUPERVISOR_KIT' : 'REGISTRATION');
   
   // Generate unique reference using database function
   const { data: refData, error: refError } = await supabase
@@ -373,15 +378,27 @@ async function createPaymentRecords(
   console.log(`[STK Push] Generated payment reference: ${referenceCode}`);
   
   // Get user info based on application code
-  const userTable = request.userType === 'field_agent' ? 'field_agents' : 'supervisors';
-  const { data: userData, error: userError } = await supabase
-    .from(userTable)
-    .select('id, user_id')
-    .eq('application_code', request.applicationCode)
-    .single();
-  
-  if (userError || !userData) {
-    throw new Error(`User not found for application code: ${request.applicationCode}`);
+  let userData: any = null;
+  const cleanCode = (request.applicationCode || '').trim();
+  if (request.userType === 'vendor') {
+    const { data: vData } = await supabase
+      .from('vendors')
+      .select('id, profile_id')
+      .or(`registration_number.ilike.${cleanCode},tax_pin.ilike.${cleanCode},id.eq.${cleanCode}`)
+      .maybeSingle();
+    userData = vData;
+  } else {
+    const userTable = request.userType === 'field_agent' ? 'field_agents' : 'supervisors';
+    const { data: uData, error: userError } = await supabase
+      .from(userTable)
+      .select('id, profile_id')
+      .ilike('application_code', cleanCode)
+      .maybeSingle();
+    
+    if (userError || !uData) {
+      console.warn(`[STK Push] User query warning for ${cleanCode}:`, userError);
+    }
+    userData = uData;
   }
   
   // Create payment intent (the obligation)
@@ -389,8 +406,10 @@ async function createPaymentRecords(
     .from('payment_intents')
     .insert({
       payment_reference: referenceCode,
-      user_id: userData.user_id,
-      [request.userType === 'field_agent' ? 'field_agent_id' : 'supervisor_id']: userData.id,
+      profile_id: userData?.profile_id || null,
+      field_agent_id: request.userType === 'field_agent' ? userData?.id : null,
+      supervisor_id: request.userType === 'supervisor' ? userData?.id : null,
+      vendor_id: request.userType === 'vendor' ? userData?.id : null,
       payment_purpose: paymentPurpose,
       expected_amount: request.amount,
       currency: 'KES',
@@ -418,8 +437,10 @@ async function createPaymentRecords(
     .from('payment_transactions')
     .insert({
       payment_intent_id: intent.id,
-      user_id: userData.user_id,
-      [request.userType === 'field_agent' ? 'field_agent_id' : 'supervisor_id']: userData.id,
+      profile_id: userData?.profile_id || null,
+      field_agent_id: request.userType === 'field_agent' ? userData?.id : null,
+      supervisor_id: request.userType === 'supervisor' ? userData?.id : null,
+      vendor_id: request.userType === 'vendor' ? userData?.id : null,
       provider: 'MPESA',
       transaction_type: 'STK_PUSH',
       payment_channel: 'STK_PUSH',
@@ -485,7 +506,6 @@ async function createPaymentRecords(
         user_type: request.userType,
         payment_status: 'pending',
         payment_method: 'mpesa_stk',
-        flow_type: flowType,
         created_at: now,
         updated_at: now
       })
@@ -531,8 +551,7 @@ async function callMpesaSTKPushAPI(
 ): Promise<MpesaSTKPushResponse> {
   const environment = Deno.env.get('MPESA_ENVIRONMENT') || 'sandbox';
   const shortcode = Deno.env.get('MPESA_SHORTCODE')!;
-  const callbackUrl = Deno.env.get('MPESA_CALLBACK_URL') || 
-    `${Deno.env.get('SUPABASE_URL')}/functions/v1/mpesa-stk-callback`;
+  const callbackUrl = `${Deno.env.get('SUPABASE_URL')}/functions/v1/mpesa-stk-callback`;
   
   const apiUrl = environment === 'production'
     ? 'https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest'
@@ -627,7 +646,7 @@ async function callMpesaSTKPushAPI(
 }
 
 async function updatePaymentTransaction(
-  supabase: any,
+  supabase: SupabaseClient,
   transactionId: string,
   intentId: string,
   mpesaResponse?: MpesaSTKPushResponse,
@@ -724,15 +743,17 @@ function getUserFriendlyErrorMessage(error: string): string {
   return 'Payment could not be processed. Please try again or contact support.';
 }
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type'
+};
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, {
       status: 204,
-      headers: {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Methods': 'POST, OPTIONS',
-        'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type'
-      }
+      headers: corsHeaders
     });
   }
   
@@ -741,7 +762,7 @@ serve(async (req) => {
       JSON.stringify({ success: false, error: 'Method not allowed' }),
       {
         status: 405,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
     );
   }
@@ -758,7 +779,7 @@ serve(async (req) => {
     let requestData: STKPushRequest;
     try {
       requestData = await req.json();
-    } catch (error) {
+    } catch (_error) {
       return new Response(
         JSON.stringify({
           success: false,
@@ -766,7 +787,7 @@ serve(async (req) => {
         }),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json' }
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       );
     }
@@ -780,8 +801,25 @@ serve(async (req) => {
     
     console.log('[STK Push] Normalized phone:', requestData.phoneNumber?.replace(/(\d{3})(\d{3})(\d{3})/, '$1XXX$3'));
     
-    // Validate request
-    const validation = validateRequest(requestData);
+    // Query authoritative amount from database if available
+    let dbAmount: number | undefined;
+    try {
+      const { data: configData } = await supabase
+        .from('stokika_kit_config')
+        .select('kit_amount')
+        .eq('user_type', requestData.userType)
+        .eq('is_active', true)
+        .maybeSingle();
+      if (configData?.kit_amount) {
+        dbAmount = parseFloat(configData.kit_amount);
+        console.log(`[STK Push] Found DB kit amount for ${requestData.userType}: KES ${dbAmount}`);
+      }
+    } catch (dbErr) {
+      console.warn('[STK Push] Error fetching kit config from DB, using fallback:', dbErr);
+    }
+
+    // Validate request against database price
+    const validation = validateRequest(requestData, dbAmount);
     if (!validation.valid) {
       console.log('[STK Push] Validation failed:', validation.error);
       return new Response(
@@ -791,7 +829,7 @@ serve(async (req) => {
         }),
         {
           status: 400,
-          headers: { 'Content-Type': 'application/json' }
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       );
     }
@@ -801,7 +839,7 @@ serve(async (req) => {
     const timeoutConfig = await getTimeoutConfig(supabase, flowType);
     console.log(`[STK Push] Using timeout config:`, timeoutConfig);
     
-    // Check user rate limit
+    // Check user rate limit (read-only check, record attempt only after records are ready)
     if (requestData.userType !== 'vendor' && requestData.applicationCode) {
       const userRateLimit = await checkRateLimit(supabase, requestData.applicationCode, 'user');
       if (!userRateLimit.allowed) {
@@ -815,16 +853,16 @@ serve(async (req) => {
           {
             status: 429,
             headers: {
+              ...corsHeaders,
               'Content-Type': 'application/json',
               'Retry-After': String(userRateLimit.retryAfter || 600)
             }
           }
         );
       }
-      await recordPaymentAttempt(supabase, requestData.applicationCode, 'user');
     }
     
-    // Check phone rate limit
+    // Check phone rate limit (read-only check)
     const phoneRateLimit = await checkRateLimit(supabase, requestData.phoneNumber, 'phone');
     if (!phoneRateLimit.allowed) {
       console.log('[STK Push] Phone rate limit exceeded');
@@ -837,14 +875,13 @@ serve(async (req) => {
         {
           status: 429,
           headers: {
+            ...corsHeaders,
             'Content-Type': 'application/json',
             'Retry-After': String(phoneRateLimit.retryAfter || 3600)
           }
         }
       );
     }
-    
-    await recordPaymentAttempt(supabase, requestData.phoneNumber, 'phone');
     
     // Create payment records with timeout config
     const { intentId, transactionId, referenceCode, kitPaymentId } = await createPaymentRecords(
@@ -862,6 +899,12 @@ serve(async (req) => {
     });
     
     try {
+      // Record payment attempts ONLY when we are actually initiating the STK push to Safaricom
+      if (requestData.userType !== 'vendor' && requestData.applicationCode) {
+        await recordPaymentAttempt(supabase, requestData.applicationCode, 'user');
+      }
+      await recordPaymentAttempt(supabase, requestData.phoneNumber, 'phone');
+
       const accessToken = await getValidToken();
       const mpesaResponse = await callMpesaSTKPushAPI(accessToken, requestData, referenceCode);
       
@@ -879,7 +922,9 @@ serve(async (req) => {
               updated_at: new Date().toISOString()
             })
             .eq('id', kitPaymentId);
-        } catch (_) {}
+        } catch (_) {
+          // Ignore failure to update kit payment
+        }
       }
       
       const response: STKPushResponse & { paymentId?: string; paymentIntentId?: string } = {
@@ -900,7 +945,7 @@ serve(async (req) => {
         JSON.stringify(response),
         {
           status: 200,
-          headers: { 'Content-Type': 'application/json' }
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       );
       
@@ -915,11 +960,12 @@ serve(async (req) => {
       return new Response(
         JSON.stringify({
           success: false,
-          error: userMessage
+          error: userMessage,
+          details: errorMessage
         }),
         {
           status: 500,
-          headers: { 'Content-Type': 'application/json' }
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
         }
       );
     }
@@ -933,11 +979,12 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({
         success: false,
-        error: userMessage
+        error: userMessage,
+        details: errorMessage
       }),
       {
         status: 500,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       }
     );
   }

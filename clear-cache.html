@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clear Service Worker Cache - stokika</title>
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .status {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px 5px 10px 0;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .log {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            padding: 5px 0;
+            border-bottom: 1px solid #e9ecef;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>🧹 Service Worker Cache Cleaner</h1>
+        <p>This tool will unregister service workers and clear all cached files to fix integrity hash errors.</p>
+        
+        <div id="status" class="status info">
+            Ready to clear cache...
+        </div>
+        
+        <button id="clearBtn" onclick="clearEverything()">Clear All Caches & Reload</button>
+        <button onclick="justReload()">Just Reload Page</button>
+        
+        <div id="log" class="log" style="display:none;">
+            <strong>Activity Log:</strong>
+            <div id="logEntries"></div>
+        </div>
+    </div>
+
+    <script>
+        const statusDiv = document.getElementById('status');
+        const logDiv = document.getElementById('log');
+        const logEntries = document.getElementById('logEntries');
+        const clearBtn = document.getElementById('clearBtn');
+
+        function log(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logEntries.appendChild(entry);
+            logDiv.style.display = 'block';
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function updateStatus(message, type) {
+            statusDiv.textContent = message;
+            statusDiv.className = `status ${type}`;
+        }
+
+        async function clearEverything() {
+            clearBtn.disabled = true;
+            log('Starting cache cleanup...');
+            updateStatus('Clearing cache...', 'info');
+            
+            try {
+                // 1. Unregister all service workers
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    log(`Found ${registrations.length} service worker(s)`);
+                    
+                    for (let registration of registrations) {
+                        await registration.unregister();
+                        log(`✓ Unregistered service worker: ${registration.scope}`);
+                    }
+                }
+                
+                // 2. Clear all cache storage
+                if ('caches' in window) {
+                    const cacheNames = await caches.keys();
+                    log(`Found ${cacheNames.length} cache(s)`);
+                    
+                    for (let cacheName of cacheNames) {
+                        await caches.delete(cacheName);
+                        log(`✓ Deleted cache: ${cacheName}`);
+                    }
+                }
+                
+                // 3. Clear local storage
+                localStorage.clear();
+                log('✓ Cleared localStorage');
+                
+                // 4. Clear session storage
+                sessionStorage.clear();
+                log('✓ Cleared sessionStorage');
+                
+                // 5. Clear IndexedDB (if any)
+                if ('indexedDB' in window) {
+                    const dbs = await indexedDB.databases();
+                    for (let db of dbs) {
+                        if (db.name) {
+                            indexedDB.deleteDatabase(db.name);
+                            log(`✓ Deleted IndexedDB: ${db.name}`);
+                        }
+                    }
+                }
+                
+                updateStatus('✅ Cache cleared successfully! Reloading in 2 seconds...', 'success');
+                log('Cache cleanup complete!');
+                
+                setTimeout(() => {
+                    window.location.href = 'supervisor-onboarding.html';
+                }, 2000);
+                
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+                updateStatus(`❌ Error: ${error.message}`, 'error');
+                clearBtn.disabled = false;
+            }
+        }
+
+        function justReload() {
+            window.location.reload(true);
+        }
+
+        // Show current cache status
+        window.addEventListener('load', async () => {
+            try {
+                const swCount = 'serviceWorker' in navigator 
+                    ? (await navigator.serviceWorker.getRegistrations()).length 
+                    : 0;
+                const cacheCount = 'caches' in window 
+                    ? (await caches.keys()).length 
+                    : 0;
+                
+                log(`Current status: ${swCount} service worker(s), ${cacheCount} cache(s)`);
+                
+                if (swCount > 0 || cacheCount > 0) {
+                    updateStatus(`Found ${swCount} service worker(s) and ${cacheCount} cache(s). Click "Clear All Caches & Reload" to fix integrity errors.`, 'warning');
+                } else {
+                    updateStatus('No service workers or caches found. Your cache is clean!', 'success');
+                }
+            } catch (error) {
+                log(`Error checking status: ${error.message}`);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -8,7 +8,7 @@
     <!-- Static CSP Meta Tag -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; 
                    script-src 'self' https://cdn.jsdelivr.net; 
-                   style-src 'self' https://fonts.googleapis.com; 
+                   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; 
                    font-src 'self' https://fonts.gstatic.com; 
                    connect-src 'self' https://*.supabase.co; 
                    img-src 'self' data: https:; base-uri 'self'; 
@@ -43,7 +43,7 @@
             <p>Confidential – For Internal Recruitment Use Only</p>
         </div>
 
-        <form id="fieldAgentForm" data-sanitize="true">
+        <form id="fieldAgentForm" data-sanitize="true" data-on-valid-submit="handleFormSubmit">
             <!-- Section 1: Personal Information -->
             <div class="form-section">
                 <h2 class="section-title">1. PERSONAL INFORMATION</h2>
@@ -619,7 +619,7 @@
     <script src="js/security/csrf-protection.js"></script>
 
     <!-- Page-Specific Script -->
-    <script src="js/pages/field-agent-form.page.js"></script>
+    <script src="js/pages/field-agent-form.page.js?v=1.2.9"></script>
 </body>
 
 </html>

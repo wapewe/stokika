@@ -1,3 +1,4 @@
+/// <reference lib="deno.unstable" />
 /**
  * Payment Status Query Edge Function
  * 
@@ -10,8 +11,8 @@
  * Requirements: 10.4, 10.5, Security consideration from design
  */
 
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { serve } from 'std/http/server.ts';
+import { createClient } from '@supabase/supabase-js';
 
 // Rate limiting configuration
 const RATE_LIMIT_WINDOW = 60; // 1 minute in seconds
@@ -28,16 +29,19 @@ interface PaymentStatusResponse {
   amount?: number;
   payment_reference?: string;
   confirmed_at?: string;
-  transaction?: {
-    id: string;
-    status: string;
-    receipt_number: string;
-    confirmed_at: string;
-    payment_channel: string;
-    amount: number;
-    payer_phone?: string;
-  };
+  transaction?: PaymentTransactionRecord;
   error?: string;
+}
+
+interface PaymentTransactionRecord {
+  id: string;
+  status: string;
+  receipt_number?: string;
+  confirmed_at?: string;
+  payment_channel?: string;
+  amount?: number;
+  payer_phone?: string;
+  failure_reason?: string;
 }
 
 const corsHeaders = {
@@ -60,7 +64,7 @@ async function checkRateLimit(userId: string): Promise<{
   limit: number;
 }> {
   try {
-    const kv = await Deno.openKv();
+    const kv: Deno.Kv = await Deno.openKv();
     const key = ['rate_limit', 'payment_status', userId];
     const now = Date.now();
     const windowStart = now - (RATE_LIMIT_WINDOW * 1000);
@@ -76,7 +80,7 @@ async function checkRateLimit(userId: string): Promise<{
       
       if (result.value) {
         // Filter out requests outside the current window
-        requests = result.value.requests.filter(timestamp => timestamp > windowStart);
+        requests = result.value.requests.filter((timestamp: number) => timestamp > windowStart);
       }
       
       // Check if rate limit exceeded
@@ -187,7 +191,7 @@ serve(async (req) => {
 
     // Check optional authenticated user
     const authHeader = req.headers.get('authorization');
-    let user: any = null;
+    let user: { id: string } | null = null;
     if (authHeader && authHeader.startsWith('Bearer ')) {
       const token = authHeader.replace('Bearer ', '');
       const anonKey = Deno.env.get('SUPABASE_ANON_KEY');
@@ -197,7 +201,9 @@ serve(async (req) => {
           if (userData?.user) {
             user = userData.user;
           }
-        } catch (_) {}
+        } catch (_) {
+          // Ignore auth verification error, treat request as unauthenticated
+        }
       }
     }
 
@@ -326,9 +332,9 @@ serve(async (req) => {
     const currentStatus = intent.status as 'PENDING' | 'PROCESSING' | 'CONFIRMED' | 'FAILED' | 'EXPIRED';
     
     // Find the most recent confirmed transaction
-    const transactions = intent.payment_transactions || [];
-    const confirmedTransaction = transactions.find((t: any) => t.status === 'CONFIRMED');
-    const failedTransaction = transactions.find((t: any) => t.status === 'FAILED');
+    const transactions = (intent.payment_transactions || []) as PaymentTransactionRecord[];
+    const confirmedTransaction = transactions.find((t: PaymentTransactionRecord) => t.status === 'CONFIRMED');
+    const failedTransaction = transactions.find((t: PaymentTransactionRecord) => t.status === 'FAILED');
     
     // Build status message based on current state
     let message = '';

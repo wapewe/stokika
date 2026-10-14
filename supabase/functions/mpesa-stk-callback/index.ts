@@ -1,4 +1,4 @@
-﻿/**
+/**
  * M-Pesa STK Push Callback Edge Function
  * 
  * This function receives callbacks from M-Pesa after an STK Push is processed.
@@ -10,8 +10,8 @@
  * Requirements: Unified STK Push + C2B architecture
  */
 
-import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.38.4";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -167,20 +167,20 @@ serve(async (req) => {
     let extractedAmount: number | null = null;
     let mpesaReceiptNumber: string | null = null;
     let transactionDateISO: string | null = null;
-    let phoneNumber: string | null = null;
+    let _phoneNumber: string | null = null;
     
     if (resultCode === 0 && stkCallback.CallbackMetadata) {
       const callbackMetadata = stkCallback.CallbackMetadata.Item || [];
       
-      const amountItem = callbackMetadata.find((item: any) => item.Name === 'Amount');
-      const receiptItem = callbackMetadata.find((item: any) => item.Name === 'MpesaReceiptNumber');
-      const dateItem = callbackMetadata.find((item: any) => item.Name === 'TransactionDate');
-      const phoneItem = callbackMetadata.find((item: any) => item.Name === 'PhoneNumber');
+      const amountItem = callbackMetadata.find((item) => item.Name === 'Amount');
+      const receiptItem = callbackMetadata.find((item) => item.Name === 'MpesaReceiptNumber');
+      const dateItem = callbackMetadata.find((item) => item.Name === 'TransactionDate');
+      const phoneItem = callbackMetadata.find((item) => item.Name === 'PhoneNumber');
       
       extractedAmount = amountItem ? Number(amountItem.Value) : null;
       mpesaReceiptNumber = receiptItem ? String(receiptItem.Value) : null;
       transactionDateISO = dateItem ? parseTransactionDate(dateItem.Value) : null;
-      phoneNumber = phoneItem ? String(phoneItem.Value) : null;
+      _phoneNumber = phoneItem ? String(phoneItem.Value) : null;
     }
     
     // Process based on result code
@@ -361,6 +361,23 @@ serve(async (req) => {
             }
           }
           
+          // Update stokika_kit_payments status if this was a kit payment
+          try {
+            await supabase
+              .from('stokika_kit_payments')
+              .update({
+                payment_status: 'completed',
+                mpesa_receipt_number: mpesaReceiptNumber,
+                transaction_date: transactionDateISO || new Date().toISOString(),
+                verified_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+              })
+              .eq('checkout_request_id', checkoutRequestID);
+            console.log('[STK Callback] Updated stokika_kit_payments to completed for checkoutRequestID:', checkoutRequestID);
+          } catch (kitUpdateErr) {
+            console.warn('[STK Callback] Notice updating stokika_kit_payments:', kitUpdateErr);
+          }
+
           // Log payment confirmed event
           await supabase.from('payment_events').insert({
             payment_intent_id: intent.id,
@@ -408,6 +425,21 @@ serve(async (req) => {
           updated_at: new Date().toISOString()
         })
         .eq('id', transaction.payment_intent_id);
+      
+      // Update stokika_kit_payments as failed
+      try {
+        await supabase
+          .from('stokika_kit_payments')
+          .update({
+            payment_status: 'failed',
+            failure_reason: userFriendlyMessage,
+            updated_at: new Date().toISOString()
+          })
+          .eq('checkout_request_id', checkoutRequestID);
+        console.log('[STK Callback] Updated stokika_kit_payments to failed for checkoutRequestID:', checkoutRequestID);
+      } catch (kitUpdateErr) {
+        console.warn('[STK Callback] Notice updating stokika_kit_payments failed status:', kitUpdateErr);
+      }
       
       // Log failed event
       await supabase.from('payment_events').insert({

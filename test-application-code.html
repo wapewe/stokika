@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Application Code Verification</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+        }
+        
+        .test-section h2 {
+            color: #444;
+            font-size: 18px;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        
+        input {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: 600;
+        }
+        
+        button:hover {
+            background: #5568d3;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .result.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            display: block;
+        }
+        
+        .result.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            display: block;
+        }
+        
+        .result.info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+            display: block;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .status-badge.online {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        .status-badge.offline {
+            background: #f8d7da;
+            color: #721c24;
+        }
+        
+        .quick-codes {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .quick-code {
+            background: #f8f9fa;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            cursor: pointer;
+            border: 2px solid #ddd;
+            transition: all 0.2s;
+        }
+        
+        .quick-code:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+        }
+        
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Application Code Verification Tester</h1>
+        <p class="subtitle">Test the verify-application-code edge function</p>
+        
+        <!-- Connection Status -->
+        <div class="test-section">
+            <h2>📡 Connection Status <span id="statusBadge" class="status-badge offline">Checking...</span></h2>
+            <div id="connectionResult" class="result"></div>
+        </div>
+        
+        <!-- Test Application Code -->
+        <div class="test-section">
+            <h2>🎯 Test Application Code</h2>
+            <div class="input-group">
+                <input 
+                    type="text" 
+                    id="testCode" 
+                    placeholder="Enter application code (e.g., SFA-20261012-0001)"
+                    value="SFA-20261012-0001"
+                >
+                <button onclick="testCode()">Test Code</button>
+            </div>
+            
+            <div class="quick-codes">
+                <strong>Quick Test Codes:</strong>
+                <div class="quick-code" onclick="useCode('SFA-20261012-0001')">SFA-20261012-0001</div>
+                <div class="quick-code" onclick="useCode('STS-20261012-0001')">STS-20261012-0001</div>
+                <div class="quick-code" onclick="useCode('SFS90918066')">SFS90918066</div>
+            </div>
+            
+            <div id="testResult" class="result"></div>
+        </div>
+        
+        <!-- Check Database Records -->
+        <div class="test-section">
+            <h2>💾 Database Records</h2>
+            <button onclick="checkDatabase()">Check Field Agents & Supervisors</button>
+            <div id="dbResult" class="result"></div>
+        </div>
+        
+        <!-- Instructions -->
+        <div class="test-section">
+            <h2>📝 Instructions</h2>
+            <div class="result info" style="display: block;">
+1. First check if Supabase connection is working (green badge above)
+2. Test an application code using the input field
+3. If code is invalid, check database for existing codes
+4. Create test data if needed (see DIAGNOSE_KIT_PAYMENT.md)
+
+<strong>Expected Working Code Format:</strong>
+- Field Agent: SFA-YYYYMMDD-XXXX (e.g., SFA-20261012-0001)
+- Supervisor: STS-YYYYMMDD-XXXX (e.g., STS-20261012-0001)
+
+<strong>If all tests fail:</strong>
+1. Deploy edge functions: <code>supabase functions deploy verify-application-code</code>
+2. Create test data in Supabase dashboard (see DIAGNOSE_KIT_PAYMENT.md)
+3. Check browser console for detailed errors
+            </div>
+        </div>
+    </div>
+
+    <!-- Load Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
+    
+    <script>
+        let supabase = null;
+        
+        // Initialize Supabase
+        async function initSupabase() {
+            try {
+                // Try to get config from config.json
+                const configResponse = await fetch('/config.json');
+                const config = await configResponse.json();
+                
+                if (!config.supabaseUrl || !config.supabaseAnonKey) {
+                    throw new Error('Config missing Supabase credentials');
+                }
+                
+                supabase = window.supabase.createClient(
+                    config.supabaseUrl,
+                    config.supabaseAnonKey
+                );
+                
+                updateStatus(true, 'Connected to Supabase ✓');
+                return true;
+            } catch (error) {
+                console.error('Failed to initialize Supabase:', error);
+                updateStatus(false, 'Failed to connect: ' + error.message);
+                return false;
+            }
+        }
+        
+        function updateStatus(online, message) {
+            const badge = document.getElementById('statusBadge');
+            const result = document.getElementById('connectionResult');
+            
+            if (online) {
+                badge.textContent = 'Online';
+                badge.className = 'status-badge online';
+                result.className = 'result success';
+            } else {
+                badge.textContent = 'Offline';
+                badge.className = 'status-badge offline';
+                result.className = 'result error';
+            }
+            
+            result.textContent = message;
+            result.style.display = 'block';
+        }
+        
+        function useCode(code) {
+            document.getElementById('testCode').value = code;
+        }
+        
+        async function testCode() {
+            const code = document.getElementById('testCode').value.trim();
+            const resultDiv = document.getElementById('testResult');
+            
+            if (!code) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = '❌ Please enter an application code';
+                return;
+            }
+            
+            if (!supabase) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = '❌ Supabase not initialized. Check connection status above.';
+                return;
+            }
+            
+            resultDiv.className = 'result info';
+            resultDiv.innerHTML = '<div class="spinner"></div>Testing code: ' + code;
+            
+            try {
+                console.log('Testing application code:', code);
+                
+                const { data, error } = await supabase.functions.invoke('verify-application-code', {
+                    body: { application_code: code }
+                });
+                
+                if (error) {
+                    console.error('Edge function error:', error);
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ Edge Function Error:\n\n${JSON.stringify(error, null, 2)}`;
+                    return;
+                }
+                
+                console.log('Edge function response:', data);
+                
+                if (data.success) {
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ Code Valid!\n\nApplication Data:\n${JSON.stringify(data.data, null, 2)}`;
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ Code Invalid\n\nResponse:\n${JSON.stringify(data, null, 2)}`;
+                }
+            } catch (error) {
+                console.error('Test error:', error);
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Test Failed:\n\n${error.message}\n\nCheck browser console for details.`;
+            }
+        }
+        
+        async function checkDatabase() {
+            const resultDiv = document.getElementById('dbResult');
+            
+            if (!supabase) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = '❌ Supabase not initialized';
+                return;
+            }
+            
+            resultDiv.className = 'result info';
+            resultDiv.innerHTML = '<div class="spinner"></div>Checking database...';
+            
+            try {
+                // Try to get field agents (will fail due to RLS, but that's ok)
+                const { data: agents, error: agentError } = await supabase
+                    .from('field_agents')
+                    .select('application_code, full_name, phone, approval_status')
+                    .limit(5);
+                
+                const { data: supervisors, error: supervisorError } = await supabase
+                    .from('supervisors')
+                    .select('application_code, full_name, phone, approval_status')
+                    .limit(5);
+                
+                let output = '📊 Database Check Results:\n\n';
+                
+                if (agentError && agentError.code === '42501') {
+                    output += '⚠️ Field Agents: RLS policy blocking direct access (expected)\n';
+                    output += '   Use the edge function to verify codes instead.\n\n';
+                } else if (agentError) {
+                    output += `❌ Field Agents Error: ${agentError.message}\n\n`;
+                } else if (agents && agents.length > 0) {
+                    output += `✅ Field Agents: ${agents.length} record(s) found\n`;
+                    agents.forEach(a => {
+                        output += `   - ${a.application_code || 'NO CODE'}: ${a.full_name}\n`;
+                    });
+                    output += '\n';
+                } else {
+                    output += '📭 Field Agents: No records found\n\n';
+                }
+                
+                if (supervisorError && supervisorError.code === '42501') {
+                    output += '⚠️ Supervisors: RLS policy blocking direct access (expected)\n';
+                    output += '   Use the edge function to verify codes instead.\n';
+                } else if (supervisorError) {
+                    output += `❌ Supervisors Error: ${supervisorError.message}\n`;
+                } else if (supervisors && supervisors.length > 0) {
+                    output += `✅ Supervisors: ${supervisors.length} record(s) found\n`;
+                    supervisors.forEach(s => {
+                        output += `   - ${s.application_code || 'NO CODE'}: ${s.full_name}\n`;
+                    });
+                } else {
+                    output += '📭 Supervisors: No records found\n';
+                }
+                
+                output += '\n💡 TIP: If no application codes are shown, you need to:\n';
+                output += '1. Submit test applications via field-agent.html or supervisor-onboarding.html\n';
+                output += '2. Or manually insert test data (see DIAGNOSE_KIT_PAYMENT.md)';
+                
+                resultDiv.className = 'result info';
+                resultDiv.textContent = output;
+                
+            } catch (error) {
+                console.error('Database check error:', error);
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Database Check Failed:\n\n${error.message}`;
+            }
+        }
+        
+        // Initialize on load
+        window.addEventListener('load', initSupabase);
+    </script>
+</body>
+</html>

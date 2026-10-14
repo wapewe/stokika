@@ -382,7 +382,7 @@ class ComprehensiveOnboarding {
         }
     }
 
-    // Get kit configuration
+    // Get kit configuration (fetches from database, with updated price fallbacks)
     async getKitConfig(userType) {
         try {
             const { data, error } = await this.supabase
@@ -390,13 +390,35 @@ class ComprehensiveOnboarding {
                 .select('*')
                 .eq('user_type', userType)
                 .eq('is_active', true)
-                .single();
-            if (error) throw error;
-            return data;
+                .maybeSingle();
+            if (!error && data) return data;
         } catch (error) {
-            console.error('Error getting kit config:', error);
-            return null;
+            console.error('Error getting kit config from database:', error);
         }
+
+        // Database fallback defaults: Vendor 1050, Field Agent 1550, Supervisor 3050
+        const fallbacks = {
+            field_agent: {
+                user_type: 'field_agent',
+                kit_amount: 1550.00,
+                kit_items: ['Stokika Branded T-Shirt', 'ID Badge & Lanyard', 'Product Catalog', 'Order Forms', 'Branded Bag', 'Training Manual', 'Mobile App Access'],
+                description: 'Complete starter kit for field agents'
+            },
+            supervisor: {
+                user_type: 'supervisor',
+                kit_amount: 3050.00,
+                kit_items: ['Stokika Branded Polo Shirt', 'Supervisor ID Badge & Lanyard', 'Product Catalog', 'Order Forms', 'Branded Laptop Bag', 'Training Manual', 'Supervisor Handbook', 'Mobile App Access', 'Territory Management Tools'],
+                description: 'Complete starter kit for supervisors'
+            },
+            vendor: {
+                user_type: 'vendor',
+                kit_amount: 1050.00,
+                kit_items: ['Stokika Merchant Access', 'Vendor Starter Materials', 'Product Placement Guide', 'Digital Payment Setup', 'Merchant Support'],
+                description: 'Vendor onboarding and platform activation fee'
+            }
+        };
+
+        return fallbacks[userType] || null;
     }
 
     // Submit kit payment (supports both userId and applicationCode)

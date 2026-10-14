@@ -24,3 +24,28 @@ major_version = 15
 
 [functions.get-config]
 verify_jwt = false
+
+[functions.verify-application-code]
+verify_jwt = false
+
+[functions.get-kit-payment-status]
+verify_jwt = false
+
+[functions.mpesa-stk-push]
+verify_jwt = false
+
+[functions.mpesa-stk-callback]
+verify_jwt = false
+
+[functions.payment-status]
+verify_jwt = false
+
+[functions.mpesa-status-query]
+verify_jwt = false
+
+[functions.manual-payment-verify]
+verify_jwt = false
+
+[functions.verify-kit-manual-payment]
+verify_jwt = false
+

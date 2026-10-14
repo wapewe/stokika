@@ -1,6 +1,16 @@
 {
   "compilerOptions": {
     "allowJs": true,
-    "lib": ["deno.window"]
+    "lib": [
+      "deno.window",
+      "deno.unstable"
+    ]
+  },
+  "unstable": [
+    "kv"
+  ],
+  "imports": {
+    "std/": "https://deno.land/std@0.168.0/",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2.39.3"
   }
 }

@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Content-Security-Policy" 
           content="default-src 'self'; 
-                   script-src 'self' https://cdn.jsdelivr.net; 
-                   style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com; 
+                   script-src 'self' https://cdn.jsdelivr.net 'unsafe-inline'; 
+                   style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com 'unsafe-inline'; 
                    font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; 
                    connect-src 'self' https://*.supabase.co; 
                    img-src 'self' data: https:; base-uri 'self'; 
@@ -19,7 +19,7 @@
     <link rel="stylesheet" 
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" 
           crossorigin="anonymous">
-    <link rel="stylesheet" href="css/kit-payment.css">
+    <link rel="stylesheet" href="css/kit-payment.css?v=1.2.9">
 </head>
 <body>
     <div class="brand-header">
@@ -63,16 +63,31 @@
         </div>
     </div>
 
-    <!-- Supabase CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
-            crossorigin="anonymous"></script>
+    <!-- Supabase CDN (without integrity check to avoid version mismatch issues) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
     
-        <!-- Payment Notification System -->
+    <!-- Core Configuration -->
+    <script src="js/core/config-loader.js"></script>
+    <script src="js/core/setup.js"></script>
+    <script src="js/core/supabase-config.js"></script>
+    
+    <!-- Security Layer -->
+    <script src="js/security/input-sanitizer.js"></script>
+    <script src="js/security/xss-protection.js"></script>
+    <script src="js/security/csrf-protection.js"></script>
+    <script src="js/security/secure-session.js"></script>
+    
+    <!-- M-Pesa Integration -->
+    <script src="js/features/mpesa-integration.js?v=1.2.9"></script>
+    
+    <!-- Onboarding System -->
+    <script src="js/features/comprehensive-onboarding.js?v=1.2.9"></script>
+    
+    <!-- Payment Notification System -->
     <script src="js/features/payment-notification-handler.js"></script>
     <script src="js/features/payment-notification-integration.js"></script>
     
-    <!-- Compiled TypeScript -->
-        <script src="dist/kit-payment.js"></script>
+    <!-- Main Application Script -->
+    <script src="js/pages/kit-payment.page.js?v=1.2.9"></script>
 </body>
 </html>

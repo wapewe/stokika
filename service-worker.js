@@ -1,4 +1,4 @@
-const CACHE_VERSION = '1.2.2';
+const CACHE_VERSION = '1.2.9';
 const CACHE_NAME = `stokika-v${CACHE_VERSION}`;
 const RUNTIME_CACHE = `stokika-runtime-v${CACHE_VERSION}`;
 

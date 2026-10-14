@@ -60,7 +60,7 @@ CREATE POLICY "Admins can manage all kit payments" ON stokika_kit_payments FOR A
 
 -- Insert default kit configurations
 INSERT INTO stokika_kit_config (user_type, kit_amount, kit_items, description) VALUES
-('field_agent', 2500.00, ARRAY[
+('field_agent', 1550.00, ARRAY[
     'Stokika Branded T-Shirt',
     'ID Badge & Lanyard',
     'Product Catalog',
@@ -69,7 +69,7 @@ INSERT INTO stokika_kit_config (user_type, kit_amount, kit_items, description) V
     'Training Manual',
     'Mobile App Access'
 ], 'Complete starter kit for field agents including branded materials and training resources'),
-('supervisor', 3500.00, ARRAY[
+('supervisor', 3050.00, ARRAY[
     'Stokika Branded Polo Shirt',
     'Supervisor ID Badge & Lanyard',
     'Product Catalog',
@@ -79,7 +79,14 @@ INSERT INTO stokika_kit_config (user_type, kit_amount, kit_items, description) V
     'Supervisor Handbook',
     'Mobile App Access',
     'Territory Management Tools'
-], 'Complete starter kit for supervisors including management tools and branded materials');
+], 'Complete starter kit for supervisors including management tools and branded materials'),
+('vendor', 1050.00, ARRAY[
+    'Stokika Merchant Access',
+    'Vendor Starter Materials',
+    'Product Placement Guide',
+    'Digital Payment Setup',
+    'Merchant Support'
+], 'Vendor onboarding and platform activation fee');
 
 -- Function to check if kit payment is verified
 CREATE OR REPLACE FUNCTION check_kit_payment_verified(p_user_id UUID)

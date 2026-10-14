@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Kit Payment Access</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        .result {
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 5px;
+            white-space: pre-wrap;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        input {
+            padding: 8px;
+            width: 300px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔧 Kit Payment Access Diagnostics</h1>
+    <p>This page tests whether anonymous users can access the required tables for kit payment.</p>
+
+    <div class="test-section">
+        <h2>Test Configuration</h2>
+        <div id="configResult" class="result info">Loading Supabase configuration...</div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Application Code Lookup</h2>
+        <input type="text" id="testCode" placeholder="Enter application code (e.g., SFS90918066)" />
+        <button onclick="testApplicationLookup()">Test Lookup</button>
+        <div id="lookupResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>Test Table Access</h2>
+        <button onclick="testFieldAgents()">Test field_agents</button>
+        <button onclick="testSupervisors()">Test supervisors</button>
+        <button onclick="testKitPayments()">Test stokika_kit_payments</button>
+        <div id="tableTestResult"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>RLS Policy Status</h2>
+        <div id="policyInfo" class="result info">
+            <strong>Expected Policies:</strong>
+            
+            1. field_agents: "Allow anonymous read by application_code"
+            2. supervisors: "Allow anonymous read by application_code"
+            3. stokika_kit_payments: "Allow anonymous read kit payments by application_code"
+            4. stokika_kit_payments: "Allow anonymous insert kit payments"
+            
+            If tests fail, you need to apply the SQL migration from:
+            supabase-migrations/enable-kit-payment-lookup.sql
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config/supabase-config.js"></script>
+    <script>
+        let supabaseClient;
+
+        // Initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            try {
+                if (window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
+                    supabaseClient = window.supabase.createClient(
+                        window.SUPABASE_URL,
+                        window.SUPABASE_ANON_KEY
+                    );
+                    document.getElementById('configResult').innerHTML = `
+                        <div class="success">✅ Supabase client initialized</div>
+                        <strong>URL:</strong> ${window.SUPABASE_URL}
+                        <strong>Using:</strong> Anonymous (anon) key
+                    `;
+                } else {
+                    document.getElementById('configResult').innerHTML = `
+                        <div class="error">❌ Supabase configuration not found</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('configResult').innerHTML = `
+                    <div class="error">❌ Error: ${error.message}</div>
+                `;
+            }
+        });
+
+        async function testApplicationLookup() {
+            const code = document.getElementById('testCode').value.trim();
+            const resultDiv = document.getElementById('lookupResult');
+            
+            if (!code) {
+                resultDiv.innerHTML = '<div class="result error">Please enter an application code</div>';
+                return;
+            }
+
+            resultDiv.innerHTML = '<div class="result info">Testing...</div>';
+
+            try {
+                // Test field_agents
+                const { data: agent, error: agentError } = await supabaseClient
+                    .from('field_agents')
+                    .select('*')
+                    .eq('application_code', code)
+                    .maybeSingle();
+
+                // Test supervisors
+                const { data: supervisor, error: supError } = await supabaseClient
+                    .from('supervisors')
+                    .select('*')
+                    .eq('application_code', code)
+                    .maybeSingle();
+
+                let result = '<div class="result">';
+                
+                if (agent) {
+                    result += `<div class="success">✅ Found in field_agents table</div>
+                    <strong>Name:</strong> ${agent.full_name}
+                    <strong>Phone:</strong> ${agent.phone}
+                    <strong>Status:</strong> ${agent.approval_status}`;
+                } else if (agentError) {
+                    result += `<div class="error">❌ field_agents error: ${agentError.message}</div>`;
+                    if (agentError.message.includes('JWT')) {
+                        result += `<strong>Issue:</strong> RLS policy not configured for anonymous access`;
+                    }
+                } else {
+                    result += '<div class="info">ℹ️ Not found in field_agents</div>';
+                }
+
+                if (supervisor) {
+                    result += `<div class="success">✅ Found in supervisors table</div>
+                    <strong>Name:</strong> ${supervisor.full_name}
+                    <strong>Phone:</strong> ${supervisor.phone}
+                    <strong>Status:</strong> ${supervisor.approval_status}`;
+                } else if (supError) {
+                    result += `<div class="error">❌ supervisors error: ${supError.message}</div>`;
+                    if (supError.message.includes('JWT')) {
+                        result += `<strong>Issue:</strong> RLS policy not configured for anonymous access`;
+                    }
+                } else {
+                    result += '<div class="info">ℹ️ Not found in supervisors</div>';
+                }
+
+                if (!agent && !supervisor && !agentError && !supError) {
+                    result += '<div class="error">❌ Application code not found in either table</div>';
+                }
+
+                result += '</div>';
+                resultDiv.innerHTML = result;
+
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="result error">❌ Error: ${error.message}</div>`;
+            }
+        }
+
+        async function testFieldAgents() {
+            await testTable('field_agents');
+        }
+
+        async function testSupervisors() {
+            await testTable('supervisors');
+        }
+
+        async function testKitPayments() {
+            await testTable('stokika_kit_payments');
+        }
+
+        async function testTable(tableName) {
+            const resultDiv = document.getElementById('tableTestResult');
+            resultDiv.innerHTML = `<div class="result info">Testing ${tableName}...</div>`;
+
+            try {
+                const { data, error, count } = await supabaseClient
+                    .from(tableName)
+                    .select('*', { count: 'exact', head: true });
+
+                if (error) {
+                    resultDiv.innerHTML = `
+                        <div class="result error">
+                            ❌ <strong>${tableName}</strong> - Access Denied
+                            <strong>Error:</strong> ${error.message}
+                            <strong>Code:</strong> ${error.code}
+                            
+                            ${error.code === '42501' ? '⚠️ This is an RLS policy error. You need to apply the SQL migration.' : ''}
+                        </div>
+                    `;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="result success">
+                            ✅ <strong>${tableName}</strong> - Access Granted
+                            <strong>Total rows:</strong> ${count || 0}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                resultDiv.innerHTML = `
+                    <div class="result error">
+                        ❌ <strong>${tableName}</strong> - Error
+                        ${error.message}
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -211,7 +211,7 @@ CREATE TABLE IF NOT EXISTS mpesa_transactions (
 
 -- Insert default kit configurations
 INSERT INTO kit_configurations (role_type, payment_amount, kit_items, benefits) VALUES
-('field_agent', 2500.00, 
+('field_agent', 1550.00, 
  '[
     {"item": "Stokika Account", "quantity": 1, "description": "Platform access account"},
     {"item": "T-Shirts", "quantity": 2, "description": "1 Round neck + 1 Polo shirt"},
@@ -228,7 +228,7 @@ INSERT INTO kit_configurations (role_type, payment_amount, kit_items, benefits) 
     {"benefit": "Field Agent Training", "description": "Comprehensive field agent training program"}
  ]'
 ),
-('supervisor', 3500.00,
+('supervisor', 3050.00,
  '[
     {"item": "Stokika Account", "quantity": 1, "description": "Platform access account with supervisor privileges"},
     {"item": "T-Shirts", "quantity": 2, "description": "1 Round neck + 1 Polo shirt"},
@@ -246,6 +246,17 @@ INSERT INTO kit_configurations (role_type, payment_amount, kit_items, benefits) 
     {"benefit": "Supervisor Training", "description": "Leadership and management training program"},
     {"benefit": "Territory Management", "description": "Territory assignment and management tools"}
  ]'
+),
+('vendor', 1050.00,
+ '[
+    {"item": "Stokika Merchant Access", "quantity": 1, "description": "Vendor platform account"},
+    {"item": "Digital Payment Setup", "quantity": 1, "description": "M-Pesa payment gateway integration"},
+    {"item": "Vendor Starter Materials", "quantity": 1, "description": "Merchant materials and guides"}
+ ]',
+ '[
+    {"benefit": "Platform Trading Access", "description": "Full access to sell on Stokika platform"},
+    {"benefit": "Merchant Support", "description": "Dedicated seller support and dispute resolution"}
+ ]'
 )
 ON CONFLICT (role_type) DO UPDATE SET
     payment_amount = EXCLUDED.payment_amount,
@@ -260,7 +271,7 @@ INSERT INTO onboarding_templates (role_type, template_name, steps, is_default) V
     {"step": 2, "name": "Document Review", "description": "Admin reviews submitted documents", "requires_admin": true},
     {"step": 3, "name": "Schedule Interview", "description": "Admin schedules interview with candidate", "requires_admin": true},
     {"step": 4, "name": "Interview Conducted", "description": "Interview completed and notes recorded", "requires_admin": true},
-    {"step": 5, "name": "Kit Payment", "description": "Candidate pays for Stokika kit (KES 2,500)", "requires_payment": true, "payment_amount": 2500},
+    {"step": 5, "name": "Kit Payment", "description": "Candidate pays for Stokika kit (KES 1,550)", "requires_payment": true, "payment_amount": 1550},
     {"step": 6, "name": "Payment Verification", "description": "Admin verifies M-Pesa payment", "requires_admin": true},
     {"step": 7, "name": "Account Creation", "description": "Admin creates Stokika platform account with email confirmation", "requires_admin": true},
     {"step": 8, "name": "Territory Assignment", "description": "Admin assigns territory to field agent", "requires_admin": true},
@@ -274,7 +285,7 @@ INSERT INTO onboarding_templates (role_type, template_name, steps, is_default) V
     {"step": 2, "name": "Document Review", "description": "Admin reviews submitted documents and qualifications", "requires_admin": true},
     {"step": 3, "name": "Schedule Interview", "description": "Admin schedules comprehensive interview", "requires_admin": true},
     {"step": 4, "name": "Interview Conducted", "description": "Interview completed with leadership assessment", "requires_admin": true},
-    {"step": 5, "name": "Kit Payment", "description": "Candidate pays for Supervisor kit (KES 3,500)", "requires_payment": true, "payment_amount": 3500},
+    {"step": 5, "name": "Kit Payment", "description": "Candidate pays for Supervisor kit (KES 3,050)", "requires_payment": true, "payment_amount": 3050},
     {"step": 6, "name": "Payment Verification", "description": "Admin verifies M-Pesa payment", "requires_admin": true},
     {"step": 7, "name": "Account Creation", "description": "Admin creates Stokika platform account with supervisor privileges and email confirmation", "requires_admin": true},
     {"step": 8, "name": "Territory Assignment", "description": "Admin assigns territory to supervisor", "requires_admin": true},

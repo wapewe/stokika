@@ -328,8 +328,41 @@
             You will require this code in the future to check your application status or proceed to the next steps. Please save it securely.
         </div>
         
-        <div style="margin-top: 2rem;">
-            <a href="dalana.html" class="btn-primary">Back to Home</a>
+        <div class="timeline">
+            <h3 style="font-size: 1.15rem; color: #1a1a1a; margin-bottom: 1.25rem; font-weight: 700; text-align: left;">What Happens Next</h3>
+            <div class="timeline-item">
+                <div class="timeline-number">1</div>
+                <div class="timeline-content">
+                    <h4>Stage 1: Application Review</h4>
+                    <p>Our recruitment team verifies your submitted details and uploaded documents within 72 hours.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-number">2</div>
+                <div class="timeline-content">
+                    <h4>Stage 2: Approval & Notification</h4>
+                    <p>Once approved, you will receive an SMS and email notification with your approval status.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-number">3</div>
+                <div class="timeline-content">
+                    <h4>Stage 3: Starter Kit Payment</h4>
+                    <p>Use your application code to complete your starter kit payment and activate your onboarding kit.</p>
+                </div>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-number">4</div>
+                <div class="timeline-content">
+                    <h4>Stage 4: Training & Deployment</h4>
+                    <p>Complete your orientation training, receive your starter kit and credentials, and begin field operations.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="dalana.html" class="btn-secondary" style="margin-left: 0;">Back to Home</a>
+            <a id="kitPaymentBtn" href="kit-payment.html" class="btn-primary">Proceed to Kit Payment</a>
         </div>
         
         <p style="margin-top: 2rem; color: #999; font-size: 0.9rem;">
@@ -357,6 +390,10 @@
             
             if (code && code !== 'undefined' && code !== 'null') {
                 document.getElementById('appCode').textContent = code;
+                const kitPaymentBtn = document.getElementById('kitPaymentBtn');
+                if (kitPaymentBtn) {
+                    kitPaymentBtn.href = `kit-payment.html?code=${encodeURIComponent(code)}`;
+                }
                 successContainer.style.display = 'block';
             } else {
                 errorContainer.style.display = 'block';
