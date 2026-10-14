@@ -309,43 +309,77 @@ function setupConditionalFields() {
     });
 }
 
+let isSubmitting = false;
+
+function formatTo254(phone) {
+    if (!phone) return '';
+    let cleaned = String(phone).replace(/[^0-9]/g, '');
+    if (cleaned.startsWith('0')) {
+        cleaned = '254' + cleaned.substring(1);
+    } else if (cleaned.startsWith('7') || cleaned.startsWith('1')) {
+        cleaned = '254' + cleaned;
+    }
+    return cleaned;
+}
+
+window.handleFormSubmit = handleFormSubmit;
+
 async function handleFormSubmit(e) {
-    e.preventDefault();
-    
-    const form = e.target;
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
-    
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const originalBtnText = submitBtn.textContent;
-
-    // ============================================================
-    // STEP 1: Client-Side Validation
-    // ============================================================
-    
-    // Validate ID number
-    const idValidation = validateIdNumber(data.idNumber);
-    if (!idValidation.valid) {
-        showIdError(idValidation.message);
-        alert('Please fix all validation errors before submitting.');
-        return;
+    if (e && typeof e.preventDefault === 'function') {
+        e.preventDefault();
     }
     
-    // Enforce 18+ age
-    const dob = new Date(data.dateOfBirth);
-    const minAge = new Date();
-    minAge.setFullYear(minAge.getFullYear() - 18);
-    if (dob > minAge) {
-        alert('You must be at least 18 years old to apply.');
+    if (isSubmitting) return;
+    isSubmitting = true;
+    
+    const form = document.getElementById('fieldAgentForm');
+    if (!form) {
+        console.error('Field agent form not found');
+        isSubmitting = false;
         return;
     }
 
-    // Show loading state
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting...';
-    submitBtn.style.opacity = '0.6';
+    const submitBtn = document.querySelector('.btn-submit-onboarding') || form.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn?.textContent || 'Submit Application';
 
     try {
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        
+        const fieldExperienceTypes = formData.getAll('fieldExperienceTypes');
+        const languages = formData.getAll('languages');
+        const internetAccess = formData.getAll('internetAccess');
+
+        // ============================================================
+        // STEP 1: Client-Side Validation
+        // ============================================================
+        
+        // Validate ID number
+        const idValidation = validateIdNumber(data.idNumber);
+        if (!idValidation.valid) {
+            showIdError(idValidation.message);
+            showErrorMessage('Please fix all validation errors before submitting.');
+            return;
+        }
+        
+        // Enforce 18+ age
+        const dob = new Date(data.dateOfBirth);
+        const minAge = new Date();
+        minAge.setFullYear(minAge.getFullYear() - 18);
+        if (dob > minAge) {
+            showErrorMessage('You must be at least 18 years old to apply.');
+            return;
+        }
+
+        // Show loading overlay (Stage 1)
+        showLoadingOverlay('Submitting your application...');
+        
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Submitting...';
+            submitBtn.style.opacity = '0.6';
+        }
+
         // ============================================================
         // STEP 2: Initialize Supabase
         // ============================================================
@@ -356,9 +390,12 @@ async function handleFormSubmit(e) {
         }
         
         // ============================================================
-        // STEP 3: Generate Application Code via RPC
+        // STEP 3: Generate Application Code via RPC (Stage 2)
         // ============================================================
         
+        updateLoadingMessage('Generating your unique application code...');
+        if (submitBtn) submitBtn.textContent = 'Generating application code...';
+
         const { data: codeData, error: codeError } = await supabase
             .rpc('generate_field_agent_code', {
                 id_number: data.idNumber
@@ -387,10 +424,11 @@ async function handleFormSubmit(e) {
         const applicationCode = codeData;
         
         // ============================================================
-        // STEP 4: Upload Documents to Supabase Storage
+        // STEP 4: Upload Documents to Supabase Storage (Stage 3)
         // ============================================================
         
-        submitBtn.textContent = 'Uploading documents...';
+        updateLoadingMessage('Uploading your documents securely...');
+        if (submitBtn) submitBtn.textContent = 'Uploading documents...';
         
         const fileFields = [
             { name: 'idFront', required: true },
@@ -405,7 +443,7 @@ async function handleFormSubmit(e) {
         
         for (const field of fileFields) {
             const fileInput = form.querySelector(`input[name="${field.name}"]`);
-            const file = fileInput?.files[0];
+            const file = fileInput?.files?.[0];
             
             if (!file) {
                 if (field.required) {
@@ -444,23 +482,30 @@ async function handleFormSubmit(e) {
         }
         
         // ============================================================
-        // STEP 5: Insert Application Record with Document URLs
+        // STEP 5: Insert Application Record with Document URLs (Stage 4)
         // ============================================================
         
-        submitBtn.textContent = 'Saving application...';
+        updateLoadingMessage('Saving your application record...');
+        if (submitBtn) submitBtn.textContent = 'Saving application...';
         
         // Split full name into first and last name
         const nameParts = data.fullName.trim().split(' ');
         const firstName = nameParts[0];
         const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : '';
         
+        // Format all phone numbers to 254XXXXXXXXX for database CHECK constraints
+        const agentPhone = formatTo254(data.phone);
+        const kinPhone = formatTo254(data.kinPhone);
+        const ref1Phone = formatTo254(data.ref1Phone);
+        const ref2Phone = formatTo254(data.ref2Phone);
+
         const { error: insertError } = await supabase
             .from('field_agents')
             .insert({
                 application_code: applicationCode,
                 first_name: firstName,
                 last_name: lastName,
-                phone: data.phone,
+                phone: agentPhone,
                 email: data.email,
                 id_number: data.idNumber,
                 date_of_birth: data.dateOfBirth,
@@ -471,20 +516,20 @@ async function handleFormSubmit(e) {
                 ward: data.ward,
                 kin_name: data.kinName,
                 kin_relationship: data.kinRelationship,
-                kin_phone: data.kinPhone,
+                kin_phone: kinPhone,
                 kin_address: data.kinAddress,
                 currently_employed: data.currentlyEmployed,
                 current_employer: data.currentEmployer,
                 has_previous_experience: data.hasFieldExperience,
-                experience: Array.isArray(data.fieldExperienceTypes) 
-                    ? data.fieldExperienceTypes.join(', ') 
-                    : data.fieldExperienceTypes || null,
+                experience: fieldExperienceTypes.length > 0 
+                    ? fieldExperienceTypes.join(', ') 
+                    : (data.fieldExperienceTypes || null),
                 experience_other: data.otherExperience,
                 years_experience: data.yearsExperience,
                 sme_experience: data.experienceDescription,
-                languages: Array.isArray(data.languages) 
-                    ? data.languages.join(', ') 
-                    : data.languages || null,
+                languages: languages.length > 0 
+                    ? languages.join(', ') 
+                    : (data.languages || null),
                 local_languages: data.localLanguages,
                 local_market_familiar: data.familiarWithMarket,
                 market_areas: data.marketAreas,
@@ -492,14 +537,14 @@ async function handleFormSubmit(e) {
                 phone_brand: data.phoneBrand,
                 android_version: data.androidVersion,
                 can_use_smartphone: data.canUseSmartphone,
-                internet_access: Array.isArray(data.internetAccess) 
-                    ? data.internetAccess.join(', ') 
-                    : data.internetAccess || null,
+                internet_access: internetAccess.length > 0 
+                    ? internetAccess.join(', ') 
+                    : (data.internetAccess || null),
                 referee1_name: data.ref1Name,
-                referee1_phone: data.ref1Phone,
+                referee1_phone: ref1Phone,
                 referee1_relationship: data.ref1Relationship,
                 referee2_name: data.ref2Name,
-                referee2_phone: data.ref2Phone,
+                referee2_phone: ref2Phone,
                 referee2_relationship: data.ref2Relationship,
                 criminal_history: data.hasMisconduct,
                 criminal_explanation: data.misconductExplanation,
@@ -515,9 +560,7 @@ async function handleFormSubmit(e) {
                 passport_photo_url: uploadedFiles.passportPhoto,
                 good_conduct_url: uploadedFiles.goodConduct,
                 agreement: data.agreement ? 'agreed' : 'not_agreed',
-                status: 'pending',
-                application_date: new Date().toISOString(),
-                timezone: 'Africa/Nairobi'
+                status: 'pending'
             });
 
         if (insertError) {
@@ -526,24 +569,35 @@ async function handleFormSubmit(e) {
         }
 
         // ============================================================
-        // STEP 6: Redirect to Success Page
+        // STEP 6: Redirect to Success Page (Stage 5)
         // ============================================================
         
-        // Show success message briefly
-        submitBtn.textContent = '✓ Success! Redirecting...';
-        submitBtn.style.background = '#00A651';
+        // Hide loading overlay
+        hideLoadingOverlay();
+        
+        // Show success message
+        showSuccessMessage('Application submitted successfully! Redirecting...');
+        
+        // Update button state
+        if (submitBtn) {
+            submitBtn.textContent = '✓ Success! Redirecting...';
+            submitBtn.style.background = '#00A651';
+        }
         
         // Clear form on successful submission
         form.reset();
         clearIdError();
         
-        // Redirect after short delay
+        // Redirect after short delay to show the application code and next stages
         setTimeout(() => {
             window.location.href = `registration-success.html?code=${encodeURIComponent(applicationCode)}`;
-        }, 500);
+        }, 1500);
         
     } catch (error) {
         console.error('Error submitting application:', error);
+        
+        // Hide loading overlay
+        hideLoadingOverlay();
         
         // Restore button state
         submitBtn.disabled = false;
@@ -556,21 +610,197 @@ async function handleFormSubmit(e) {
         // Display user-friendly error message (form data preserved - no reset)
         if (errorMessage === 'Duplicate ID number') {
             // Error already shown via showIdError()
-            alert('This ID number has already been used. Each person can only apply once.');
+            showErrorMessage('This ID number has already been used. Each person can only apply once.');
         } else if (errorMessage.includes('Unable to generate unique code')) {
-            alert('Unable to generate unique code. Please try again.');
+            showErrorMessage('Unable to generate unique code. Please try again.');
         } else if (errorMessage.includes('Failed to initialize Supabase')) {
-            alert('Unable to connect to database service. Please check your network and try again.');
+            showErrorMessage('Unable to connect to database service. Please check your network and try again.');
         } else if (errorMessage.includes('Failed to upload')) {
-            alert(`File upload error: ${errorMessage}. Please check your files and try again.`);
+            showErrorMessage(`File upload error: ${errorMessage}. Please check your files and try again.`);
         } else if (errorMessage.includes('Network') || errorMessage.includes('network') || errorMessage.includes('Failed to fetch')) {
-            alert('Network error. Please check your connection and try again.');
+            showErrorMessage('Network error. Please check your connection and try again.');
         } else if (errorMessage.includes('Failed to generate application code')) {
-            alert('Error generating application code. Please try again.');
+            showErrorMessage('Error generating application code. Please try again.');
         } else if (errorMessage.includes('insert') || errorMessage.includes('database')) {
-            alert('Error submitting application. Please try again.');
+            showErrorMessage('Error submitting application. Please try again.');
         } else {
-            alert('Error submitting application. Please try again. If the problem persists, contact support.');
+            showErrorMessage('Error submitting application. Please try again. If the problem persists, contact support.');
         }
+    } finally {
+        isSubmitting = false;
     }
+}
+
+// ============================================================
+// UI FEEDBACK FUNCTIONS
+// ============================================================
+
+/**
+ * Show loading overlay with message
+ * @param {string} message - Loading message to display
+ */
+function showLoadingOverlay(message = 'Processing...') {
+    // Remove existing overlay if present
+    hideLoadingOverlay();
+    
+    const overlay = document.createElement('div');
+    overlay.id = 'loadingOverlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        backdrop-filter: blur(4px);
+    `;
+    
+    overlay.innerHTML = `
+        <div style="
+            background: white;
+            padding: 2rem 3rem;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+        ">
+            <div style="
+                width: 50px;
+                height: 50px;
+                border: 4px solid #f3f3f3;
+                border-top: 4px solid #FF6B00;
+                border-radius: 50%;
+                animation: spin 1s linear infinite;
+                margin: 0 auto 1rem;
+            "></div>
+            <p id="loadingMessage" style="
+                margin: 0;
+                font-size: 1.1rem;
+                font-weight: 500;
+                color: #333;
+            ">${message}</p>
+        </div>
+    `;
+    
+    // Add spinning animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(overlay);
+}
+
+/**
+ * Update loading overlay message
+ * @param {string} message - New message to display
+ */
+function updateLoadingMessage(message) {
+    const loadingMessage = document.getElementById('loadingMessage');
+    if (loadingMessage) {
+        loadingMessage.textContent = message;
+    }
+}
+
+/**
+ * Hide loading overlay
+ */
+function hideLoadingOverlay() {
+    const overlay = document.getElementById('loadingOverlay');
+    if (overlay) {
+        overlay.remove();
+    }
+}
+
+/**
+ * Show success message
+ * @param {string} message - Success message to display
+ */
+function showSuccessMessage(message) {
+    showNotification(message, 'success');
+}
+
+/**
+ * Show error message
+ * @param {string} message - Error message to display
+ */
+function showErrorMessage(message) {
+    showNotification(message, 'error');
+}
+
+/**
+ * Show notification toast
+ * @param {string} message - Message to display
+ * @param {string} type - 'success' or 'error'
+ */
+function showNotification(message, type = 'info') {
+    // Remove existing notifications
+    const existing = document.querySelectorAll('.notification-toast');
+    existing.forEach(el => el.remove());
+    
+    const notification = document.createElement('div');
+    notification.className = 'notification-toast';
+    
+    const bgColor = type === 'success' ? '#00A651' : type === 'error' ? '#DC3545' : '#FF6B00';
+    const icon = type === 'success' ? '✓' : type === 'error' ? '✕' : 'ℹ';
+    
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: ${bgColor};
+        color: white;
+        padding: 1rem 1.5rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        z-index: 10000;
+        font-size: 1rem;
+        font-weight: 500;
+        max-width: 400px;
+        animation: slideIn 0.3s ease-out;
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+    `;
+    
+    notification.innerHTML = `
+        <span style="
+            font-size: 1.5rem;
+            font-weight: bold;
+        ">${icon}</span>
+        <span>${message}</span>
+    `;
+    
+    // Add slide animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+    
+    document.body.appendChild(notification);
+    
+    // Auto-remove after 5 seconds (or longer for errors)
+    const duration = type === 'error' ? 7000 : 5000;
+    setTimeout(() => {
+        notification.style.animation = 'slideIn 0.3s ease-out reverse';
+        setTimeout(() => notification.remove(), 300);
+    }, duration);
 }
