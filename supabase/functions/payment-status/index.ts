@@ -11,8 +11,8 @@
  * Requirements: 10.4, 10.5, Security consideration from design
  */
 
-import { serve } from 'std/http/server.ts';
-import { createClient } from '@supabase/supabase-js';
+import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
 
 // Rate limiting configuration
 const RATE_LIMIT_WINDOW = 60; // 1 minute in seconds
