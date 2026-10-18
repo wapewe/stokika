@@ -313,9 +313,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Character counter
     document.getElementById('bmcTextarea')?.addEventListener('input', updateCharCounter);
     
-    // Validate step
+    // Validate step - VENDOR MODAL ONLY
     window.validateStep = function validateStep(stepNumber) {
-        const currentStepEl = document.querySelector(`.form-step[data-step="${stepNumber}"]`);
+        const currentStepEl = document.querySelector(`#vendorRegistrationModal .form-step[data-step="${stepNumber}"]`);
         if (!currentStepEl) return false;
         
         const requiredInputs = currentStepEl.querySelectorAll('[required]');
@@ -330,24 +330,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         if (!allValid) {
-            console.warn(`⚠️ Step ${stepNumber} validation failed`);
+            console.warn(`⚠️ Vendor modal Step ${stepNumber} validation failed`);
             return false;
         }
         
-        console.log(`✅ Step ${stepNumber} validation passed`);
+        console.log(`✅ Vendor modal Step ${stepNumber} validation passed`);
         return true;
     }
     
-    // Show step
+    // Show step - VENDOR MODAL ONLY
     window.showStep = function showStep(stepNumber) {
-        console.log(`📝 Showing step ${stepNumber}`);
+        console.log(`📝 Vendor modal: Showing step ${stepNumber}`);
         
-        const allSteps = document.querySelectorAll('.form-step');
+        const allSteps = document.querySelectorAll('#vendorRegistrationModal .form-step');
         allSteps.forEach(step => {
             step.classList.remove('active');
         });
         
-        const targetStep = document.querySelector(`.form-step[data-step="${stepNumber}"]`);
+        const targetStep = document.querySelector(`#vendorRegistrationModal .form-step[data-step="${stepNumber}"]`);
         if (targetStep) {
             targetStep.classList.add('active');
             
@@ -356,10 +356,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 loadBmcSection(0);
             }
             
-            console.log(`✅ Step ${stepNumber} is now visible`);
+            console.log(`✅ Vendor modal Step ${stepNumber} is now visible`);
         }
         
-        const progressSteps = document.querySelectorAll('.progress-step');
+        const progressSteps = document.querySelectorAll('#vendorRegistrationModal .progress-step');
         progressSteps.forEach((step, index) => {
             const stepNum = index + 1;
             if (stepNum === stepNumber) {
@@ -453,24 +453,29 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Step navigation (non-BMC steps)
+    // Step navigation (non-BMC steps) - VENDOR MODAL ONLY
     document.addEventListener('click', (e) => {
+        // CRITICAL: Only handle clicks within vendor modal
+        if (!e.target.closest('#vendorRegistrationModal')) {
+            return;
+        }
+        
         // Continue to Payment button (Step 4 -> Step 5)
         if (e.target.id === 'continueToPayment' || e.target.closest('#continueToPayment')) {
             e.preventDefault();
             
-            console.log('[Navigation] Continue to Payment clicked');
+            console.log('[Vendor Navigation] Continue to Payment clicked');
             
             // Validate Step 4
             if (!validateStep(4)) {
-                console.warn('⚠️ Step 4 validation failed - cannot proceed to payment');
+                console.warn('⚠️ Vendor Step 4 validation failed - cannot proceed to payment');
                 alert('⚠️ Please complete all required fields before proceeding to payment.');
                 return;
             }
             
             // Collect form data for payment validation
             currentFormData = collectFormData();
-            console.log('[Navigation] Form data collected for payment:', currentFormData);
+            console.log('[Vendor Navigation] Form data collected for payment:', currentFormData);
             
             // Navigate to Step 5
             showStep(5);
@@ -482,13 +487,13 @@ document.addEventListener('DOMContentLoaded', () => {
             !e.target.closest('.form-step[data-step="3"]') &&
             e.target.id !== 'continueToPayment') {
             e.preventDefault();
-            const currentStep = document.querySelector('.form-step.active');
+            const currentStep = document.querySelector('#vendorRegistrationModal .form-step.active');
             if (currentStep) {
                 const currentStepNum = parseInt(currentStep.dataset.step);
                 if (validateStep(currentStepNum)) {
                     showStep(currentStepNum + 1);
                 } else {
-                    console.warn('⚠️ Please complete all required fields');
+                    console.warn('⚠️ Vendor modal: Please complete all required fields');
                 }
             }
         }
@@ -497,7 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if ((e.target.classList.contains('btn-previous') || e.target.closest('.btn-previous')) &&
             !e.target.closest('.form-step[data-step="3"]')) {
             e.preventDefault();
-            const currentStep = document.querySelector('.form-step.active');
+            const currentStep = document.querySelector('#vendorRegistrationModal .form-step.active');
             if (currentStep) {
                 const currentStepNum = parseInt(currentStep.dataset.step);
                 if (currentStepNum > 1) {

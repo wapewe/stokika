@@ -71,9 +71,31 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             e.stopPropagation();
             console.log('🚚 Register as Supplier clicked');
-            alert('Supplier registration coming soon!');
+            
+            // Close the get started modal first
+            closeGetStartedModal();
+            
+            // Open supplier registration modal
+            const supplierModal = document.getElementById('supplierRegistrationModal');
+            if (supplierModal) {
+                // Remove any inline display:none style
+                supplierModal.style.display = '';
+                supplierModal.classList.add('active');
+                document.body.classList.add('modal-open');
+            }
         });
         console.log('✅ Register as Supplier button handler attached');
+    }
+    
+    // Handle "Register as Delivery Partner" button click
+    const registerDeliveryBtn = document.querySelector('.btn-modal.delivery .register-btn');
+    if (registerDeliveryBtn) {
+        registerDeliveryBtn.addEventListener('click', function(e) {
+            // Let normal link navigation happen to delivery-partner.html
+            console.log('🛵 Register as Delivery Partner clicked - navigating to form');
+            closeGetStartedModal();
+        });
+        console.log('✅ Register as Delivery Partner button handler attached');
     }
     
     // Close modal button

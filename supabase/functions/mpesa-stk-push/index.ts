@@ -52,11 +52,20 @@ async function checkRateLimit(
   type: 'user' | 'phone'
 ): Promise<{ allowed: boolean; reason?: string; retryAfter?: number }> {
   const windowSeconds = type === 'user' ? 600 : 3600;
-  const maxRequests = type === 'user' ? 3 : 5;
+  // User rate limit: 5 requests per 10 minutes (stricter for individual users)
+  // Phone rate limit: 10 requests per 1 hour (allows multiple payment attempts per household)
+  const maxRequests = type === 'user' ? 5 : 10;
   const key = `stk_${type}:${identifier}`;
   const windowStart = new Date(Date.now() - windowSeconds * 1000).toISOString();
 
   try {
+    // Clean up expired entries for this key before counting
+    await supabase
+      .from('rate_limits')
+      .delete()
+      .eq('key', key)
+      .lt('created_at', windowStart);
+
     const { count, error } = await supabase
       .from('rate_limits')
       .select('*', { count: 'exact', head: true })
@@ -773,7 +782,7 @@ serve(async (req) => {
     validateCredentials();
     
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabaseServiceKey = Deno.env.get('SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     
     let requestData: STKPushRequest;
@@ -891,7 +900,12 @@ serve(async (req) => {
     );
     
     // SECTION 9.4: Record payment initiation metric
-    await recordPaymentInitiationMetric(supabase, kitPaymentId || intentId, flowType, {
+    // payment_id references different tables depending on flow_type:
+    // - kit_payment: stores stokika_kit_payments.id (kitPaymentId)
+    // - vendor_registration: stores payment_intents.id (intentId)
+    // FK constraint was dropped to allow dual-table references (see migration 20261016000004)
+    const metricPaymentId = flowType === 'kit_payment' ? kitPaymentId : intentId;
+    await recordPaymentInitiationMetric(supabase, metricPaymentId || intentId, flowType, {
       user_type: requestData.userType,
       amount: requestData.amount,
       phone_number: requestData.phoneNumber,

@@ -323,7 +323,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         <label style="display:block;margin-bottom:0.5rem;color:#374151;font-weight:600;font-size:0.875rem">Payment Method</label>
                         <select id="paymentMethod" onchange="handlePaymentMethodChange()" style="width:100%;padding:0.875rem;border:2px solid #e5e7eb;border-radius:12px;font-size:1rem;transition:all 0.2s" onfocus="this.style.borderColor='#10b981'" onblur="this.style.borderColor='#e5e7eb'">
                             <option value="">Select method</option>
-                            <option value="manual">Manual Payment (Enter Code)</option>
                             <option value="prompt">M-Pesa Prompt (STK Push)</option>
                         </select>
                     </div>
@@ -360,14 +359,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     window.handlePaymentMethodChange = function() {
         const method = document.getElementById('paymentMethod').value;
-        const paybillInfo = document.getElementById('paybillInfo');
         const codeField = document.getElementById('codeField');
         
-        if (method === 'manual') {
-            paybillInfo.style.display = 'block';
-            codeField.style.display = 'block';
-        } else if (method === 'prompt') {
-            paybillInfo.style.display = 'none';
+        // Only STK Push supported now
+        if (codeField) {
+            codeField.style.display = 'none';
+        }
             codeField.style.display = 'none';
         } else {
             paybillInfo.style.display = 'none';

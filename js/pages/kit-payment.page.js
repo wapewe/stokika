@@ -4,6 +4,7 @@ let mpesaClient = null;
 let currentCheckoutRequestId = null;
 let paymentAttempts = 0;
 let pollInterval = null;
+let selectedUserType = null; // Track selected user type
 
 // Sanitize HTML to prevent XSS
 function sanitizeHTML(str) {
@@ -13,11 +14,85 @@ function sanitizeHTML(str) {
     return div.innerHTML;
 }
 
+// Mask phone number for display
+function maskPhoneNumber(phone) {
+    if (!phone || phone.length < 8) return phone || 'N/A';
+    // Format: 254XXX***678
+    if (phone.length === 12 && phone.startsWith('254')) {
+        return `254${phone.substring(3, 6)}***${phone.substring(9)}`;
+    }
+    // Format: 07XX***678
+    if (phone.length === 10 && phone.startsWith('0')) {
+        return `${phone.substring(0, 4)}***${phone.substring(7)}`;
+    }
+    // Fallback: show first 4 and last 3
+    if (phone.length > 7) {
+        return `${phone.substring(0, 4)}***${phone.substring(phone.length - 3)}`;
+    }
+    return phone;
+}
+
+// Map M-Pesa error messages to user-friendly text
+function getUserFriendlyPaymentError(errorMessage) {
+    const message = (errorMessage || '').toLowerCase();
+    
+    // Map common error patterns to user-friendly messages
+    if (message.includes('insufficient') || message.includes('balance')) {
+        return '💰 Insufficient M-Pesa balance. Please top up your account and try again.';
+    }
+    if (message.includes('cancel')) {
+        return '🚫 You cancelled the payment. Click "Retry Payment" when you\'re ready to try again.';
+    }
+    if (message.includes('timeout') || message.includes('timed out')) {
+        return '⏱️ Payment request timed out. Please check your phone and try again.';
+    }
+    if (message.includes('invalid') && message.includes('phone')) {
+        return '📱 Invalid phone number. Please check the number and try again.';
+    }
+    if (message.includes('unavailable') || message.includes('service')) {
+        return '🔧 M-Pesa service temporarily unavailable. Please try again in a few minutes.';
+    }
+    if (message.includes('rate limit') || message.includes('too many')) {
+        return '⏳ Too many payment requests. Please wait a few minutes and try again.';
+    }
+    if (message.includes('401') || message.includes('unauthorized') || message.includes('credentials')) {
+        return '🔒 Payment service configuration error. Please contact support.';
+    }
+    if (message.includes('wrong pin') || message.includes('incorrect pin')) {
+        return '🔢 Wrong M-Pesa PIN entered. Please try again with the correct PIN.';
+    }
+    if (message.includes('busy') || message.includes('system busy')) {
+        return '⚡ M-Pesa system is busy. Please try again in a moment.';
+    }
+    
+    // Return the original message if no mapping found
+    return errorMessage || 'Payment could not be processed. Please try again or contact support.';
+}
+
 // Show user message
-function showUserMessage(message, type = 'error') {
+function showUserMessage(message, type = 'error', useToast = false) {
+    // Use toast for non-critical messages
+    if (useToast && window.toast) {
+        if (type === 'error') {
+            toast.error(message);
+        } else if (type === 'success') {
+            toast.success(message);
+        } else if (type === 'warning') {
+            toast.warning(message);
+        } else {
+            toast.info(message);
+        }
+        return;
+    }
+    
+    // Full page message for critical errors
     const container = document.getElementById('payment-dashboard');
     if (!container) {
         console.error('Payment dashboard container not found');
+        // Fallback to toast if available
+        if (window.toast) {
+            toast.error(message);
+        }
         return;
     }
     
@@ -67,6 +142,42 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('code-entry-section').style.display = 'block';
             document.getElementById('payment-dashboard').style.display = 'none';
             
+            // User Type Selection Handler
+            const userTypeSelect = document.getElementById('userTypeSelect');
+            const codeInputSection = document.getElementById('codeInputSection');
+            const codeInput = document.getElementById('applicationCodeInput');
+            const codeFormatHelp = document.getElementById('codeFormatHelp');
+            
+            if (userTypeSelect) {
+                userTypeSelect.addEventListener('change', (e) => {
+                    selectedUserType = e.target.value;
+                    
+                    if (selectedUserType) {
+                        // Show application code input section
+                        codeInputSection.style.display = 'block';
+                        
+                        // Update placeholder and help text based on selection
+                        if (selectedUserType === 'supervisor') {
+                            codeInput.placeholder = 'e.g., SFS29797339';
+                            codeFormatHelp.innerHTML = '<i class="fas fa-info-circle"></i> Supervisor codes start with <strong>SFS</strong>';
+                        } else if (selectedUserType === 'field_agent') {
+                            codeInput.placeholder = 'e.g., SFA12345678';
+                            codeFormatHelp.innerHTML = '<i class="fas fa-info-circle"></i> Field Agent codes start with <strong>SFA</strong>';
+                        }
+                        
+                        // Clear any previous input
+                        codeInput.value = '';
+                        
+                        // Focus on input after animation
+                        setTimeout(() => {
+                            codeInput.focus();
+                        }, 300);
+                    } else {
+                        codeInputSection.style.display = 'none';
+                    }
+                });
+            }
+            
             // Attach verify button event listener
             const verifyBtn = document.getElementById('verifyCodeBtn');
             if (verifyBtn) {
@@ -81,11 +192,37 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // Verify application code from input
 window.verifyApplicationCode = async function() {
+    const userTypeSelect = document.getElementById('userTypeSelect');
     const codeInput = document.getElementById('applicationCodeInput');
     const code = codeInput.value.trim().toUpperCase();
     
+    // Validate user type is selected
+    if (!selectedUserType) {
+        toast.error('Please select whether you are a Supervisor or Field Agent first');
+        userTypeSelect.focus();
+        return;
+    }
+    
+    // Validate code is entered
     if (!code) {
-        alert('Please enter your application code');
+        toast.error('Please enter your application code');
+        codeInput.focus();
+        return;
+    }
+    
+    // Validate code format matches selected user type
+    const isSupervisorCode = code.startsWith('SFS');
+    const isFieldAgentCode = code.startsWith('SFA');
+    
+    if (selectedUserType === 'supervisor' && !isSupervisorCode) {
+        toast.error('You selected "Supervisor" but entered a code that doesn\'t start with SFS. Supervisor codes must start with "SFS". Please check your code or change your role selection.', 6000);
+        codeInput.focus();
+        return;
+    }
+    
+    if (selectedUserType === 'field_agent' && !isFieldAgentCode) {
+        toast.error('You selected "Field Agent" but entered a code that doesn\'t start with SFA. Field Agent codes must start with "SFA". Please check your code or change your role selection.', 6000);
+        codeInput.focus();
         return;
     }
     
@@ -190,7 +327,10 @@ async function verifyAndLoadPayment(code) {
         }
 
         if (!application) {
-            throw new Error('Invalid application code. Please check and try again.');
+            toast.error('Invalid application code. Please check and try again.');
+            document.getElementById('code-entry-section').style.display = 'block';
+            document.getElementById('payment-dashboard').style.display = 'none';
+            return;
         }
 
         currentApplicationData = application;
@@ -381,11 +521,6 @@ function renderPaymentForm(application, kitConfig) {
                     <h4>M-Pesa STK Push</h4>
                     <p>Get a payment prompt on your phone &mdash; instant &amp; secure</p>
                 </div>
-                <div class="method-option" data-method="manual" tabindex="0" role="button" aria-label="Manual M-Pesa Paybill">
-                    <div class="method-icon"><i class="fas fa-mobile-alt"></i></div>
-                    <h4>M-Pesa Paybill</h4>
-                    <p>Pay via Paybill then enter your transaction code here</p>
-                </div>
             </div>
             
             <form id="kitPaymentForm" style="display: none;">
@@ -414,47 +549,6 @@ function renderPaymentForm(application, kitConfig) {
                     
                     <div id="paymentStatusContainer" style="display: none; margin-top: 20px;">
                         <!-- Status updates will appear here -->
-                    </div>
-                </div>
-                
-                <div id="manualPaymentSection" style="display: none;">
-                    <div class="payment-instructions">
-                        <h4>M-Pesa Paybill Payment Instructions:</h4>
-                        <ol>
-                            <li>Go to M-Pesa menu on your phone</li>
-                            <li>Select <strong>Lipa na M-Pesa</strong></li>
-                            <li>Select <strong>Pay Bill</strong></li>
-                            <li>Enter Business Number: <strong>1140839</strong></li>
-                            <li>Enter Account Number: <strong>${sanitizeHTML(currentApplicationCode)}</strong></li>
-                            <li>Enter Amount: <strong>KES ${amount.toLocaleString()}</strong></li>
-                            <li>Enter your M-Pesa PIN and confirm</li>
-                            <li>You will receive a confirmation SMS with transaction code</li>
-                            <li>Enter the transaction code below</li>
-                        </ol>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label for="mpesaCode">M-Pesa Transaction Code *</label>
-                        <input type="text" 
-                               id="mpesaCode" 
-                               name="mpesaCode"
-                               placeholder="e.g., QA12BC3456" 
-                               maxlength="20"
-                               autocomplete="off"
-                               autocapitalize="characters"
-                               spellcheck="false"
-                               style="text-transform: uppercase; font-family: monospace; font-size: 16px; font-weight: 700; letter-spacing: 0.05em;" />
-                        <small style="color: #6b7280;">The 10-character code from your M-Pesa confirmation SMS</small>
-                    </div>
-                    <div class="form-group">
-                        <label for="phoneNumber">Phone Number Used *</label>
-                        <input type="tel" 
-                               id="phoneNumber" 
-                               name="phoneNumber"
-                               value="${phone}" 
-                               placeholder="07XX, 01XX or 254X format"
-                               maxlength="15" />
-                        <small style="color: #6b7280;">Enter in format: 0712345678 or 254712345678</small>
                     </div>
                 </div>
                 
@@ -500,18 +594,6 @@ function attachEventListeners() {
         });
     });
     
-    const mpesaCodeInput = document.getElementById('mpesaCode');
-    if (mpesaCodeInput) {
-        mpesaCodeInput.addEventListener('input', (e) => {
-            const start = e.target.selectionStart;
-            const end = e.target.selectionEnd;
-            e.target.value = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
-            if (start !== null && end !== null) {
-                e.target.setSelectionRange(start, end);
-            }
-        });
-    }
-
     const backBtn = document.getElementById('backButton');
     if (backBtn) backBtn.addEventListener('click', resetPaymentMethod);
     
@@ -534,7 +616,6 @@ function selectPaymentMethod(method) {
         const paymentMethodInput = document.getElementById('paymentMethod');
         const selector = document.querySelector('.payment-method-selector');
         const form = document.getElementById('kitPaymentForm');
-        const manualSection = document.getElementById('manualPaymentSection');
         const stkSection = document.getElementById('stkPushSection');
         
         if (!paymentMethodInput || !selector || !form) {
@@ -542,61 +623,33 @@ function selectPaymentMethod(method) {
             return;
         }
         
-        paymentMethodInput.value = method;
-        selector.style.display = 'none';
-        form.style.display = 'block';
-        
-        const mpesaCodeInput = document.getElementById('mpesaCode');
-        const phoneInput = document.getElementById('phoneNumber');
-        const stkPhoneInput = document.getElementById('stkPhoneNumber');
-
-        if (method === 'manual') {
-            manualSection.style.display = 'block';
-            stkSection.style.display = 'none';
-            if (mpesaCodeInput) { 
-                mpesaCodeInput.required = true; 
-                mpesaCodeInput.disabled = false;
-                mpesaCodeInput.removeAttribute('disabled');
+        // Only support STK Push now (manual payment removed)
+        if (method === 'mpesa-stk') {
+            paymentMethodInput.value = method;
+            selector.style.display = 'none';
+            form.style.display = 'block';
+            
+            if (stkSection) {
+                stkSection.style.display = 'block';
             }
-            if (phoneInput) { 
-                phoneInput.required = true; 
-                phoneInput.disabled = false;
-                phoneInput.removeAttribute('disabled');
-            }
-            if (stkPhoneInput) { 
-                stkPhoneInput.required = false; 
-                stkPhoneInput.disabled = true; 
-            }
-            setTimeout(() => {
-                if (mpesaCodeInput) {
-                    mpesaCodeInput.focus();
-                }
-            }, 100);
-        } else if (method === 'mpesa-stk') {
-            manualSection.style.display = 'none';
-            stkSection.style.display = 'block';
+            
+            const stkPhoneInput = document.getElementById('stkPhoneNumber');
             if (stkPhoneInput) { 
                 stkPhoneInput.required = true; 
                 stkPhoneInput.disabled = false;
                 stkPhoneInput.removeAttribute('disabled');
-            }
-            if (mpesaCodeInput) { 
-                mpesaCodeInput.required = false; 
-                mpesaCodeInput.disabled = true; 
-            }
-            if (phoneInput) { 
-                phoneInput.required = false; 
-                phoneInput.disabled = true; 
-            }
-            setTimeout(() => {
-                if (stkPhoneInput) {
+                
+                setTimeout(() => {
                     stkPhoneInput.focus();
-                }
-            }, 100);
+                }, 100);
+            }
+        } else {
+            console.warn('Unsupported payment method:', method);
+            toast.error('Only M-Pesa STK Push payment is supported');
         }
     } catch (error) {
         console.error('Error selecting payment method:', error);
-        showUserMessage('Failed to select payment method');
+        toast.error('Failed to select payment method');
     }
 }
 
@@ -625,15 +678,12 @@ async function submitKitPayment(event) {
         if (paymentMethod === 'mpesa-stk') {
             // Task 10.2: Implement STK Push initiation flow
             await initiateSTKPushPayment();
-        } else if (paymentMethod === 'manual') {
-            // Task 10.5: Implement manual payment submission
-            await submitManualPaymentVerification();
         } else {
-            showUserMessage('Invalid payment method selected', 'error');
+            toast.error('Invalid payment method selected');
         }
     } catch (error) {
         console.error('Error submitting payment:', error);
-        showUserMessage(error.message || 'Error submitting payment. Please try again or contact support.', 'error');
+        toast.error(error.message || 'Error submitting payment. Please try again or contact support.');
     }
 }
 
@@ -677,7 +727,7 @@ async function initiateSTKPushPayment() {
         // Check rate limiting (client-side check)
         paymentAttempts++;
         if (paymentAttempts > 3) {
-            throw new Error('Maximum payment attempts exceeded. Please try again in 10 minutes or use manual payment.');
+            throw new Error('Maximum payment attempts exceeded. Please wait 10 minutes and try again.');
         }
         
         // Show status container
@@ -710,9 +760,9 @@ async function initiateSTKPushPayment() {
                 return;
             }
             
-            // Task 10.4: Check if should offer retry or manual payment
+            // Show error with retry option
             if (paymentAttempts >= 3) {
-                showSTKPushFailureWithManualOption(result.message || result.error);
+                showSTKPushError(result.message || result.error, false);
             } else {
                 showSTKPushError(result.message || result.error, true);
             }
@@ -745,11 +795,11 @@ async function initiateSTKPushPayment() {
         submitBtn.disabled = false;
         submitBtnText.textContent = 'Initiate Payment';
         
-        // Task 10.4: Show error with retry option if not exceeded
+        // Show error with retry option if not exceeded
         if (paymentAttempts < 3) {
             showSTKPushError(error.message, true);
         } else {
-            showSTKPushFailureWithManualOption(error.message);
+            showSTKPushError(error.message, false);
         }
     }
 }
@@ -873,33 +923,34 @@ function showPaymentFailed(message, paymentData) {
     const statusContainer = document.getElementById('paymentStatusContainer');
     const submitBtn = document.getElementById('submitPaymentBtn');
     
+    // Map error message to user-friendly text
+    const friendlyMessage = getUserFriendlyPaymentError(message);
+    
     const retryButtonHTML = paymentAttempts < 3 ? `
         <button type="button" class="btn btn-primary" id="retryPaymentBtn" style="margin-top: 15px;">
             <i class="fas fa-redo"></i> Retry Payment
         </button>
     ` : `
-        <p style="color: #f59e0b; margin-top: 15px;"><strong>Maximum retry attempts reached.</strong> Please try manual payment below.</p>
+        <p style="color: #ef4444; margin-top: 15px;"><strong>Maximum retry attempts reached.</strong> Please wait 10 minutes and try again.</p>
     `;
     
     statusContainer.innerHTML = `
         <div class="payment-status-failed">
             <i class="fas fa-times-circle" style="color: #ef4444; font-size: 48px;"></i>
             <h4 style="color: #ef4444; margin: 15px 0;">Payment Failed</h4>
-            <p style="color: #6b7280;">${XSSProtection.escapeHtml(sanitizeHTML(message))}</p>
+            <p style="color: #6b7280;">${XSSProtection.escapeHtml(sanitizeHTML(friendlyMessage))}</p>
+            <p style="color: #9ca3af; font-size: 0.85rem; margin-top: 10px;">Attempts: ${paymentAttempts}/3</p>
             ${retryButtonHTML}
         </div>
     `;
     
-    // Task 10.4: Attach retry handler
+    // Attach retry handler
     if (paymentAttempts < 3) {
         submitBtn.style.display = 'inline-flex';
         const retryBtn = document.getElementById('retryPaymentBtn');
         if (retryBtn) {
             retryBtn.addEventListener('click', retrySTKPushPayment);
         }
-    } else {
-        // Task 10.5: Show manual payment option
-        showManualPaymentFallback();
     }
 }
 
@@ -912,7 +963,7 @@ function showPaymentTimeout() {
             <i class="fas fa-redo"></i> Try Again
         </button>
     ` : `
-        <p style="color: #f59e0b; margin-top: 15px;"><strong>Maximum retry attempts reached.</strong> Please try manual payment below.</p>
+        <p style="color: #ef4444; margin-top: 15px;"><strong>Maximum retry attempts reached.</strong> Please wait 10 minutes and try again.</p>
     `;
     
     statusContainer.innerHTML = `
@@ -924,15 +975,12 @@ function showPaymentTimeout() {
         </div>
     `;
     
-    // Task 10.4: Attach retry handler
+    // Attach retry handler
     if (paymentAttempts < 3) {
         const retryBtn = document.getElementById('retryPaymentBtn');
         if (retryBtn) {
             retryBtn.addEventListener('click', retrySTKPushPayment);
         }
-    } else {
-        // Task 10.5: Show manual payment option
-        showManualPaymentFallback();
     }
 }
 
@@ -996,30 +1044,7 @@ function showSTKPushError(message, showRetry = false) {
     `;
 }
 
-// Helper function to show STK failure with manual option
-function showSTKPushFailureWithManualOption(message) {
-    const statusContainer = document.getElementById('paymentStatusContainer');
-    statusContainer.style.display = 'block';
-    
-    statusContainer.innerHTML = `
-        <div class="payment-status-error">
-            <i class="fas fa-exclamation-triangle" style="color: #ef4444; font-size: 48px;"></i>
-            <h4 style="color: #ef4444; margin: 15px 0;">STK Push Unavailable</h4>
-            <p style="color: #6b7280;">${XSSProtection.escapeHtml(sanitizeHTML(message))}</p>
-            <p style="color: #f59e0b; margin-top: 15px;"><strong>Maximum retry attempts reached.</strong></p>
-            <p style="color: #6b7280;">Please use the manual payment option below.</p>
-            <button type="button" class="btn btn-primary" id="switchToManualBtn" style="margin-top: 15px;">
-                <i class="fas fa-hand-holding-usd"></i> Use Manual Payment
-            </button>
-        </div>
-    `;
-    const switchBtn = document.getElementById('switchToManualBtn');
-    if (switchBtn) {
-        switchBtn.addEventListener('click', showManualPaymentFallback);
-    }
-}
-
-// Helper function to show rate limit error (Task 40)
+// Helper function to show rate limit error
 function showRateLimitError(message, retryAfter) {
     const statusContainer = document.getElementById('paymentStatusContainer');
     statusContainer.style.display = 'block';
@@ -1033,20 +1058,12 @@ function showRateLimitError(message, retryAfter) {
             <p style="color: #6b7280;">${XSSProtection.escapeHtml(sanitizeHTML(message))}</p>
             <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 15px; margin: 20px 0; border-radius: 4px;">
                 <p style="color: #92400e; margin: 0;"><strong>Rate Limit Exceeded</strong></p>
-                <p style="color: #92400e; margin: 5px 0 0 0;">Please wait ${retryMinutes} minute${retryMinutes !== 1 ? 's' : ''} before trying again, or use the manual payment option below.</p>
+                <p style="color: #92400e; margin: 5px 0 0 0;">Please wait ${retryMinutes} minute${retryMinutes !== 1 ? 's' : ''} before trying again.</p>
             </div>
-            <button type="button" class="btn btn-primary" id="switchToManualBtn" style="margin-top: 15px;">
-                <i class="fas fa-hand-holding-usd"></i> Use Manual Payment Instead
-            </button>
         </div>
     `;
     
-    const switchBtn = document.getElementById('switchToManualBtn');
-    if (switchBtn) {
-        switchBtn.addEventListener('click', showManualPaymentFallback);
-    }
-    
-    // Disable payment button and show countdown
+    // Disable payment button
     const submitBtn = document.getElementById('submitPaymentBtn');
     if (submitBtn) {
         submitBtn.disabled = true;
@@ -1054,14 +1071,13 @@ function showRateLimitError(message, retryAfter) {
     }
 }
 
-// Task 10.4: Implement retry payment flow
+// Implement retry payment flow
 async function retrySTKPushPayment() {
     console.log('Retrying STK Push payment, attempt:', paymentAttempts + 1);
     
     // Check rate limit
     if (paymentAttempts >= 3) {
-        showUserMessage('Maximum retry attempts exceeded. Please wait 10 minutes or use manual payment.', 'error');
-        showManualPaymentFallback();
+        toast.error('Maximum retry attempts exceeded. Please wait 10 minutes before trying again.');
         return;
     }
     
@@ -1108,192 +1124,6 @@ async function recheckPaymentStatus(checkoutRequestId) {
     }
 }
 
-// Task 10.5: Implement manual payment submission UI
-function showManualPaymentFallback() {
-    // Switch to manual payment method
-    const manualSection = document.getElementById('manualPaymentSection');
-    const stkSection = document.getElementById('stkPushSection');
-    const paymentMethodInput = document.getElementById('paymentMethod');
-    const submitBtn = document.getElementById('submitPaymentBtn');
-    const submitBtnText = document.getElementById('submitBtnText');
-    const mpesaCodeInput = document.getElementById('mpesaCode');
-    const phoneInput = document.getElementById('phoneNumber');
-    const stkPhoneInput = document.getElementById('stkPhoneNumber');
-    
-    if (manualSection && stkSection) {
-        stkSection.style.display = 'none';
-        manualSection.style.display = 'block';
-        if (paymentMethodInput) paymentMethodInput.value = 'manual';
-        if (submitBtn) {
-            submitBtn.style.display = 'inline-flex';
-            submitBtn.disabled = false;
-        }
-        if (submitBtnText) submitBtnText.textContent = 'Submit Payment';
-        
-        // Ensure manual fields are completely enabled and required
-        if (mpesaCodeInput) {
-            mpesaCodeInput.required = true;
-            mpesaCodeInput.disabled = false;
-            mpesaCodeInput.removeAttribute('disabled');
-        }
-        if (phoneInput) {
-            phoneInput.required = true;
-            phoneInput.disabled = false;
-            phoneInput.removeAttribute('disabled');
-        }
-        if (stkPhoneInput) {
-            stkPhoneInput.required = false;
-            stkPhoneInput.disabled = true;
-        }
-        
-        // Scroll to manual section and focus code input
-        manualSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        setTimeout(() => {
-            if (mpesaCodeInput) {
-                mpesaCodeInput.focus();
-            }
-        }, 150);
-    }
-}
-
-// Task 10.5: Submit manual payment verification
-async function submitManualPaymentVerification() {
-    let submitBtn, submitBtnText, originalText;
-    try {
-        submitBtn = document.getElementById('submitPaymentBtn');
-        submitBtnText = document.getElementById('submitBtnText');
-        originalText = submitBtnText ? submitBtnText.textContent : 'Submit Payment';
-        if (submitBtn) submitBtn.disabled = true;
-        if (submitBtnText) submitBtnText.textContent = 'Verifying...';
-        
-        const mpesaCode = document.getElementById('mpesaCode').value.trim();
-        let phoneNumber = document.getElementById('phoneNumber').value.trim();
-        const paymentReference = document.getElementById('paymentReference')?.value?.trim() || null;
-        
-        if (!mpesaCode || !phoneNumber) {
-            throw new Error('Please enter your M-Pesa transaction code and phone number');
-        }
-        
-        // Validate receipt code format (10 alphanumeric characters)
-        const receiptRegex = /^[A-Z0-9]{10}$/i;
-        if (!receiptRegex.test(mpesaCode)) {
-            throw new Error('Invalid M-Pesa receipt code format. Should be 10 alphanumeric characters (e.g., QA12BC3456)');
-        }
-        
-        // Normalize phone number
-        phoneNumber = normalizePhoneNumber(phoneNumber);
-        if (!phoneNumber) {
-            throw new Error('Invalid phone number format. Use format: 0712345678 or 254712345678');
-        }
-        
-        // Get kit configuration
-        const onboarding = new ComprehensiveOnboarding();
-        const kitConfig = await onboarding.getKitConfig(currentApplicationData.user_type);
-        if (!kitConfig) throw new Error('Kit configuration not found');
-        
-        const amount = parseFloat(kitConfig.kit_amount);
-        
-        const client = getMpesaClient();
-        let result;
-        if (client) {
-            result = await client.submitManualPayment({
-                applicationCode: currentApplicationCode,
-                mpesaCode: mpesaCode,
-                phoneNumber: phoneNumber,
-                amount: amount,
-                userType: currentApplicationData.user_type
-            });
-        } else {
-            // Direct Edge Function fallback
-            const supabase = initSupabase();
-            if (!supabase) throw new Error('Database connection failed');
-            
-            const { data: verifyResult, error: verifyErr } = await supabase.functions.invoke('verify-kit-manual-payment', {
-                body: {
-                    application_code: currentApplicationCode,
-                    mpesa_code: mpesaCode,
-                    phone_number: phoneNumber,
-                    amount: amount,
-                    user_type: currentApplicationData.user_type
-                }
-            });
-            result = verifyResult;
-            if (verifyErr) {
-                result = { success: false, error: verifyErr.message || 'Edge function error' };
-            }
-        }
-        
-        if (!result || !result.success) {
-            // Show failure reason clearly in the form — do NOT reset the page
-            if (submitBtn) submitBtn.disabled = false;
-            if (submitBtnText) submitBtnText.textContent = originalText;
-            
-            const failureMsg = result?.error || result?.message || 'Payment not found in our records. Please ensure you have completed the M-Pesa Paybill payment (Paybill: 1140839) and wait 1-2 minutes for confirmation.';
-            
-            // Show or update failure reason box below the form
-            let reasonBox = document.getElementById('manualPaymentFailureReason');
-            if (!reasonBox) {
-                reasonBox = document.createElement('div');
-                reasonBox.id = 'manualPaymentFailureReason';
-                reasonBox.className = 'failure-reason-box';
-                const formActions = document.querySelector('.form-actions');
-                if (formActions) {
-                    formActions.parentNode.insertBefore(reasonBox, formActions);
-                }
-            }
-            reasonBox.innerHTML = `<i class="fas fa-exclamation-circle"></i><p><strong>Payment not verified:</strong> ${XSSProtection.escapeHtml(sanitizeHTML(failureMsg))}</p>`;
-            reasonBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            return;
-        }
-        
-        // Payment successfully verified — show the full success page
-        showPaymentSuccess({
-            mpesaReceiptNumber: mpesaCode,
-            amount: amount,
-            method: 'M-Pesa Paybill'
-        });
-        
-    } catch (error) {
-        console.error('Error submitting manual payment:', error);
-        if (submitBtn) submitBtn.disabled = false;
-        if (submitBtnText) submitBtnText.textContent = originalText || 'Submit Payment';
-        
-        // Show inline error
-        let reasonBox = document.getElementById('manualPaymentFailureReason');
-        if (!reasonBox) {
-            reasonBox = document.createElement('div');
-            reasonBox.id = 'manualPaymentFailureReason';
-            reasonBox.className = 'failure-reason-box';
-            const formActions = document.querySelector('.form-actions');
-            if (formActions) formActions.parentNode.insertBefore(reasonBox, formActions);
-        }
-        reasonBox.innerHTML = `<i class="fas fa-exclamation-circle"></i><p>${XSSProtection.escapeHtml(error.message || 'Error submitting payment. Please try again or contact support.')}</p>`;
-        if (reasonBox) reasonBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-}
-
-// Helper function to show manual payment submitted confirmation
-function showManualPaymentSubmitted(receiptCode, amount) {
-    const container = document.getElementById('payment-dashboard');
-    if (container) {
-        container.innerHTML = `
-            <div class="payment-submitted">
-                <i class="fas fa-check-circle" style="font-size: 64px; color: #10b981; margin-bottom: 20px;"></i>
-                <h2>Payment Submitted Successfully!</h2>
-                <p>Your manual payment has been submitted and is awaiting admin verification.</p>
-                <div style="margin-top: 30px; padding: 20px; background: #f0fdf4; border-radius: 8px;">
-                    <p><strong>M-Pesa Receipt Code:</strong> ${XSSProtection.escapeHtml(sanitizeHTML(receiptCode))}</p>
-                    <p><strong>Amount:</strong> KES ${XSSProtection.escapeHtml(amount.toLocaleString())}</p>
-                    <p><strong>Status:</strong> <span style="color: #f59e0b;">Awaiting Verification</span></p>
-                </div>
-                <p style="margin-top: 20px; color: #6b7280;">You will receive an email notification once your payment is verified by an administrator.</p>
-                <p style="margin-top: 10px; color: #6b7280;">This process typically takes a few hours during business hours.</p>
-                <p style="margin-top: 20px; color: #6b7280; font-size: 0.9rem;">You can close this page now.</p>
-            </div>
-        `;
-    }
-}
-
 // Helper function to normalize phone number to 254XXXXXXXXX format
 function normalizePhoneNumber(phone) {
     if (!phone) return null;
@@ -1326,9 +1156,9 @@ function normalizePhoneNumber(phone) {
 }
 
 async function initializeTokenPayment(token) {
-    showUserMessage('Token-based payment not supported. Please use the direct payment link.', 'info');
+    toast.info('Token-based payment not supported. Please use the direct payment link.');
 }
 
 function showError(message) {
-    showUserMessage(message, 'error');
+    toast.error(message);
 }

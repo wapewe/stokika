@@ -151,14 +151,24 @@ async function requestNewToken(): Promise<{ access_token: string; expires_in: nu
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
     try {
       console.log(`[M-Pesa Auth] Requesting OAuth token (attempt ${attempt}/${maxRetries})...`);
+      console.log(`[M-Pesa Auth] API URL: ${apiUrl}`);
+      
+      // Create AbortController for timeout (30 seconds)
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 30000);
       
       const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
           'Authorization': `Basic ${credentials}`,
           'Content-Type': 'application/json'
-        }
+        },
+        signal: controller.signal
       });
+      
+      clearTimeout(timeoutId);
+      
+      console.log(`[M-Pesa Auth] Response status: ${response.status}`);
       
       if (!response.ok) {
         const errorText = await response.text();
@@ -200,9 +210,16 @@ async function requestNewToken(): Promise<{ access_token: string; expires_in: nu
       }
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
-      console.error(`[M-Pesa Auth] Error on attempt ${attempt}:`, lastError.message);
       
-      // If it's a network error and we have retries left, continue
+      // Check if it was a timeout
+      if (lastError.name === 'AbortError') {
+        console.error(`[M-Pesa Auth] Request timeout on attempt ${attempt} (30s limit exceeded)`);
+        lastError = new Error('M-Pesa OAuth request timed out after 30 seconds');
+      } else {
+        console.error(`[M-Pesa Auth] Error on attempt ${attempt}:`, lastError.message);
+      }
+      
+      // If it's a network error or timeout and we have retries left, continue
       if (attempt < maxRetries) {
         const delay = retryDelays[attempt - 1];
         console.log(`[M-Pesa Auth] Waiting ${delay}ms before retry...`);

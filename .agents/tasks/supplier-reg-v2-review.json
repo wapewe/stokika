@@ -1,0 +1,78 @@
+{
+  "verdict": "CHANGES_REQUESTED",
+  "findings": [
+    {
+      "issue": "Product list empty-state validation gap",
+      "description": "Step 2 validation checks `state.formData.products.length === 0` but never displays the error to the user when products array is empty; the check happens but no error element is rendered in the product list container. Add a form-group wrapper around the product list with an error display target.",
+      "severity": "high",
+      "confidence": "confirmed"
+    },
+    {
+      "issue": "Missing deferred payment period validation display",
+      "description": "When `deferredPayment` is `yes_agreed` or `yes_after_verification`, step 4 validation checks that `deferredPeriods.length > 0`, but the error is never rendered because there's no form-group wrapper around the checkbox group. Add form-group wrapper and error target.",
+      "severity": "high",
+      "confidence": "confirmed"
+    },
+    {
+      "issue": "Categories empty-state validation gap",
+      "description": "Step 2 validation checks `state.formData.categories.length === 0` but the searchable multi-select has no form-group wrapper, so the error-message div is never rendered. Wrap the multi-select in a form-group div.",
+      "severity": "high",
+      "confidence": "confirmed"
+    },
+    {
+      "issue": "Counties served empty-state validation gap",
+      "description": "Step 3 validation checks `state.formData.countiesServed.length === 0` but the searchable multi-select has no form-group wrapper. Wrap in form-group.",
+      "severity": "high",
+      "confidence": "confirmed"
+    },
+    {
+      "issue": "Searchable multi-select search clear doesn't reset option display",
+      "description": "When user types in `.sms-search`, options are filtered by setting `display: none` on non-matching options. But there's no logic to restore `display: block` when the search input is cleared. If user types 'Nai', sees Nairobi, clears the input, other options stay hidden. Add logic to reset all option display on empty search.",
+      "severity": "medium",
+      "confidence": "likely"
+    },
+    {
+      "issue": "Registration number field hidden by default",
+      "description": "Registration number field is hidden with `style='display:none'` on page load and only shown when businessRegistrationStatus changes. But if user has a draft saved with `businessRegistrationStatus = 'registered_company'`, the field stays hidden until they interact with the dropdown. Fix: run conditional field visibility logic after loading draft.",
+      "severity": "medium",
+      "confidence": "confirmed"
+    },
+    {
+      "issue": "Delivery details hidden by default",
+      "description": "Delivery method, lead time, fee structure, and minimum order for delivery are wrapped in `#sr-deliveryDetails` which is `display:none` by default. If user has a draft saved with `deliveryCapability = 'yes'`, the fields stay hidden until they click the radio again. Run conditional visibility logic after loading draft.",
+      "severity": "medium",
+      "confidence": "confirmed"
+    },
+    {
+      "issue": "Deferred payment details hidden by default",
+      "description": "Same issue as delivery details. If user has draft with `deferredPayment = 'yes_agreed'`, the fields stay hidden. Run conditional visibility logic after loading draft.",
+      "severity": "medium",
+      "confidence": "confirmed"
+    },
+    {
+      "issue": "Preferred payment method dropdown not populated on draft load",
+      "description": "`updatePreferredPaymentOptions()` is called when user checks a payment method checkbox, but not on draft load. If draft has `paymentMethods = ['mpesa', 'bank_transfer']` and `preferredPaymentMethod = 'mpesa'`, the dropdown will be empty on load. Call `updatePreferredPaymentOptions()` after loading draft.",
+      "severity": "medium",
+      "confidence": "confirmed"
+    },
+    {
+      "issue": "Product category dropdown not populated on draft load",
+      "description": "`updateProductCategoryOptions()` is called when user selects/deselects a category, but not on draft load. If draft has `categories = ['Fresh Produce', 'Grains']`, the product form's category dropdown will only show 'Select category' until user interacts with the categories multi-select. Call `updateProductCategoryOptions()` after loading draft.",
+      "severity": "medium",
+      "confidence": "confirmed"
+    },
+    {
+      "issue": "Duplicate product at client side",
+      "description": "`saveProduct()` checks for duplicate product name+category only within the existing products array, but the check happens after the user clicks 'Save Product'. If they add the same product twice, the second save is blocked with a toast, but the form remains open. Better UX: disable the save button or show inline warning as they type. Alternatively, accept the current behavior as intentional (block on save, keep form open for correction).",
+      "severity": "low",
+      "confidence": "confirmed"
+    },
+    {
+      "issue": "Phone validation too strict for landlines",
+      "description": "`validatePhone()` uses regex `/^(?:\\+254|0)[17]\\d{8}$/` which only accepts Kenyan mobile (07xx, 01xx). The label says '(Mobile only)' so this is intentional, but supplier businesses may want to provide landline office numbers. Consider allowing landline format or clarifying that mobile-only is a business requirement.",
+      "severity": "low",
+      "confidence": "confirmed"
+    }
+  ],
+  "reviewDoc": "c:\\Users\\ADMIN\\Music\\stokika\\.agents\\tasks\\supplier-reg-v2-review.md"
+}

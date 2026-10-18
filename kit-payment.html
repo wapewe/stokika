@@ -20,11 +20,12 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" 
           crossorigin="anonymous">
     <link rel="stylesheet" href="css/kit-payment.css?v=1.2.9">
+    <link rel="stylesheet" href="css/toast.css">
 </head>
 <body>
     <div class="brand-header">
         <a href="https://www.stokika.com" target="_blank" rel="noopener noreferrer">
-            <img src="assets/logos/logo.png.png" alt="Stokika" class="brand-logo">
+            <img src="assets/logos/logo-dark.png" alt="Stokika" class="brand-logo">
         </a>
     </div>
 
@@ -36,22 +37,43 @@
         
         <div id="code-entry-section" class="code-entry-hidden">
             <div class="kit-details">
-                <h3>Enter Your Application Code</h3>
-                <p>Please enter the application code you received when you submitted your application.</p>
-                <div class="form-group form-group-spaced">
-                    <label for="applicationCodeInput">Application Code *</label>
-                    <input type="text" 
-                           id="applicationCodeInput" 
-                           name="applicationCodeInput"
-                           placeholder="e.g., SFA012345678" 
-                           class="code-input" 
-                           data-sanitize-type="string"
-                           maxlength="50"
-                           required />
+                <h3>Select Your Role</h3>
+                <p>Choose whether you're registering as a Supervisor or Field Agent, then enter your application code.</p>
+                
+                <!-- Step 1: User Type Selection -->
+                <div id="userTypeSelection" class="form-group form-group-spaced">
+                    <label for="userTypeSelect">I am registering as *</label>
+                    <select id="userTypeSelect" class="form-select" required>
+                        <option value="">-- Select Your Role --</option>
+                        <option value="supervisor">Supervisor</option>
+                        <option value="field_agent">Field Agent</option>
+                    </select>
+                    <p class="help-text">
+                        <i class="fas fa-info-circle"></i> 
+                        <strong>Supervisor:</strong> Application codes start with <strong>SFS</strong><br>
+                        <i class="fas fa-info-circle"></i> 
+                        <strong>Field Agent:</strong> Application codes start with <strong>SFA</strong>
+                    </p>
                 </div>
-                <button id="verifyCodeBtn" class="btn btn-verify">
-                    <i class="fas fa-check-circle"></i> Continue to Payment
-                </button>
+                
+                <!-- Step 2: Application Code (Hidden until user type selected) -->
+                <div id="codeInputSection" style="display: none;">
+                    <div class="form-group form-group-spaced">
+                        <label for="applicationCodeInput">Application Code *</label>
+                        <input type="text" 
+                               id="applicationCodeInput" 
+                               name="applicationCodeInput"
+                               placeholder="Enter your application code" 
+                               class="code-input" 
+                               data-sanitize-type="string"
+                               maxlength="50"
+                               required />
+                        <p class="help-text" id="codeFormatHelp"></p>
+                    </div>
+                    <button id="verifyCodeBtn" class="btn btn-verify">
+                        <i class="fas fa-check-circle"></i> Continue to Payment
+                    </button>
+                </div>
             </div>
         </div>
         
@@ -76,6 +98,10 @@
     <script src="js/security/xss-protection.js"></script>
     <script src="js/security/csrf-protection.js"></script>
     <script src="js/security/secure-session.js"></script>
+    
+    <!-- Toast Notification System -->
+    <script src="js/utils/toast.js"></script>
+    <script src="js/utils/global-toast-init.js"></script>
     
     <!-- M-Pesa Integration -->
     <script src="js/features/mpesa-integration.js?v=1.2.9"></script>

@@ -88,7 +88,7 @@ serve(async (req) => {
   
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabaseServiceKey = Deno.env.get('SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
     
     // Get M-Pesa callback data
@@ -328,7 +328,7 @@ serve(async (req) => {
                 {
                   method: 'POST',
                   headers: {
-                    'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
+                    'Authorization': `Bearer ${Deno.env.get('SERVICE_ROLE_KEY')}`,
                     'Content-Type': 'application/json'
                   },
                   body: JSON.stringify({ paymentIntentId: intent.id })

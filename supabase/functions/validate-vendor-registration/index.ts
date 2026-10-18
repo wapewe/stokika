@@ -237,7 +237,7 @@ function generateValidationToken(data: ValidationRequest): string {
     iat: Math.floor(Date.now() / 1000)
   }
 
-  const secret = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+  const secret = Deno.env.get('SERVICE_ROLE_KEY')!
   
   const encodedHeader = btoa(JSON.stringify(header)).replace(/=/g, '')
   const encodedPayload = btoa(JSON.stringify(payload)).replace(/=/g, '')
@@ -271,7 +271,7 @@ serve(async (req) => {
       
       // Initialize Supabase for logging
       const supabaseUrl = Deno.env.get('SUPABASE_URL')!
-      const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+      const supabaseServiceKey = Deno.env.get('SERVICE_ROLE_KEY')!
       const supabase = createClient(supabaseUrl, supabaseServiceKey)
       
       // Log rate limit violation
@@ -303,7 +303,7 @@ serve(async (req) => {
 
     // Initialize Supabase
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!
-    const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    const supabaseServiceKey = Deno.env.get('SERVICE_ROLE_KEY')!
     const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
     // Check for duplicates

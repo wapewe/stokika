@@ -9,7 +9,7 @@
 
 // Configuration
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') || 'http://localhost:54321'
-const SUPABASE_SERVICE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') || 'your-service-role-key-here'
+const SUPABASE_SERVICE_KEY = Deno.env.get('SERVICE_ROLE_KEY') || 'your-service-role-key-here'
 const FUNCTION_URL = `${SUPABASE_URL}/functions/v1/scheduled-cycle-check`
 
 interface TestResult {

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supplier Modal Test</title>
+    <link rel="stylesheet" href="css/supplier-registration-v2.css">
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+        
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .test-button {
+            padding: 15px 30px;
+            background: #10b981;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 32px;
+            height: 32px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #64748b;
+        }
+    </style>
+</head>
+<body>
+    <h1>Supplier Registration Modal Test</h1>
+    <button class="test-button" onclick="openModal()">Open Supplier Modal</button>
+    
+    <div class="modal-overlay" id="supplierRegistrationModal">
+        <div class="modal-content supplier-registration-v2">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            
+            <div class="registration-header">
+                <h2>Supplier Registration</h2>
+                <p class="registration-tagline">Join stokika — Empowering African Entrepreneurs</p>
+            </div>
+            
+            <div class="registration-progress">
+                <div class="progress-step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Business</div>
+                </div>
+                <div class="progress-step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Products</div>
+                </div>
+                <div class="progress-step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Coverage</div>
+                </div>
+                <div class="progress-step" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Terms</div>
+                </div>
+                <div class="progress-step" data-step="5">
+                    <div class="step-number">5</div>
+                    <div class="step-label">Verify</div>
+                </div>
+            </div>
+            
+            <form id="supplierRegistrationForm" class="supplier-form-v2">
+                <!-- STEP 1: Business Profile -->
+                <div class="form-step active" data-step="1">
+                    <h3 class="step-title">Business Profile</h3>
+                    <div class="form-group">
+                        <label for="sr-businessName">Business / Company Name <span class="required">*</span></label>
+                        <input type="text" id="sr-businessName" name="businessName" placeholder="Registered or operating business name">
+                    </div>
+                    <div class="form-group">
+                        <label for="sr-phone">Phone Number <span class="required">*</span></label>
+                        <input type="tel" id="sr-phone" name="phoneNumber" placeholder="e.g. +254 700 000 000">
+                    </div>
+                    <div class="form-group">
+                        <label for="sr-email">Email Address</label>
+                        <input type="email" id="sr-email" name="emailAddress" placeholder="Optional">
+                    </div>
+                </div>
+                
+                <!-- STEP 2: Products -->
+                <div class="form-step" data-step="2">
+                    <h3 class="step-title">Products & Pricing</h3>
+                    <div class="form-group">
+                        <label>Product Categories</label>
+                        <input type="text" placeholder="Search categories...">
+                    </div>
+                </div>
+                
+                <!-- Navigation -->
+                <div class="form-navigation">
+                    <button type="button" class="btn-prev" id="btnPrevStep" style="display:none">Previous</button>
+                    <button type="button" class="btn-next" id="btnNextStep">Next</button>
+                    <button type="submit" class="btn-submit" id="btnSubmitForm" style="display:none">Submit Registration</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <script>
+        function openModal() {
+            const modal = document.getElementById('supplierRegistrationModal');
+            modal.style.display = 'flex';
+            modal.classList.add('active');
+            console.log('Modal opened');
+        }
+        
+        function closeModal() {
+            const modal = document.getElementById('supplierRegistrationModal');
+            modal.style.display = 'none';
+            modal.classList.remove('active');
+            console.log('Modal closed');
+        }
+        
+        // Also load the supplier registration v2 JS
+        const script = document.createElement('script');
+        script.src = 'js/features/supplier-registration-v2.js';
+        document.body.appendChild(script);
+        
+        console.log('Test page loaded. Click button to open modal.');
+        console.log('Check browser console for any JavaScript errors.');
+        console.log('Inspect the modal with browser DevTools to see why content is not showing.');
+    </script>
+</body>
+</html>

@@ -187,6 +187,21 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }, { passive: true });
     }
+    
+    const deliveryCard = document.getElementById('joinDelivery');
+    if (deliveryCard) {
+        deliveryCard.addEventListener('click', handleMobileCardClick);
+        deliveryCard.addEventListener('touchstart', (e) => {
+            if (window.innerWidth <= 1024 && !e.target.closest('.register-btn')) {
+                deliveryCard.style.transform = 'scale(0.98)';
+            }
+        }, { passive: true });
+        deliveryCard.addEventListener('touchend', () => {
+            if (window.innerWidth <= 1024) {
+                deliveryCard.style.transform = '';
+            }
+        }, { passive: true });
+    }
 });
 
 // Handle vendor card click (entire card)
@@ -241,6 +256,8 @@ if (supplierModalClose) {
         console.log('🔴 Supplier modal X clicked');
         if (supplierRegistrationModal) {
             supplierRegistrationModal.classList.remove('active');
+            supplierRegistrationModal.style.display = 'none';
+            document.body.classList.remove('modal-open');
         }
     });
 }
@@ -252,6 +269,8 @@ if (supplierRegistrationModal) {
         if (e.target === supplierRegistrationModal) {
             console.log('🔴 Supplier modal overlay clicked');
             supplierRegistrationModal.classList.remove('active');
+            supplierRegistrationModal.style.display = 'none';
+            document.body.classList.remove('modal-open');
         }
     });
 }
@@ -1104,29 +1123,52 @@ document.addEventListener('DOMContentLoaded', function() {
 document.addEventListener('DOMContentLoaded', function() {
     // Join as Supplier button in For Suppliers section
     const btnSupplier = document.querySelector('.btn-supplier');
+    console.log('🔍 Looking for .btn-supplier:', btnSupplier);
     if (btnSupplier) {
         btnSupplier.addEventListener('click', function(e) {
             e.preventDefault();
+            console.log('🚀 Join as Supplier clicked');
             const modal = document.getElementById('supplierRegistrationModal');
+            console.log('🔍 Modal found:', modal);
             if (modal) {
+                // Remove any inline display:none style
+                modal.style.display = 'flex';
                 modal.classList.add('active');
+                document.body.classList.add('modal-open');
+                console.log('✅ Modal activated');
+            } else {
+                console.error('❌ Modal not found!');
             }
         });
+        console.log('✅ Join as Supplier handler attached');
+    } else {
+        console.warn('⚠️ .btn-supplier button not found in DOM');
     }
 
     // I'm a Supplier button in pricing CTA section
     const btnSupplierCTA = document.querySelector('.btn-cta.supplier');
+    console.log('🔍 Looking for .btn-cta.supplier:', btnSupplierCTA);
     if (btnSupplierCTA) {
         btnSupplierCTA.addEventListener('click', function(e) {
             e.preventDefault();
-            console.log('📦 Supplier CTA button clicked');
+            console.log('🚀 I\'m a Supplier CTA clicked');
             const modal = document.getElementById('supplierRegistrationModal');
+            console.log('🔍 Modal found:', modal);
             if (modal) {
+                // Remove any inline display:none style
+                modal.style.display = 'flex';
                 modal.classList.add('active');
                 document.body.classList.add('modal-open');
+                console.log('✅ Modal activated with body lock');
+            } else {
+                console.error('❌ Modal not found!');
             }
         });
+        console.log('✅ I\'m a Supplier CTA handler attached');
+    } else {
+        console.warn('⚠️ .btn-cta.supplier button not found in DOM');
     }
 
     console.log('✅ Button event listeners initialized');
 });
+

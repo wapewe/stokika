@@ -104,7 +104,7 @@ export function withSecurity(
     try {
       // Initialize Supabase client with service role
       const supabaseUrl = Deno.env.get('SUPABASE_URL');
-      const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+      const supabaseServiceKey = Deno.env.get('SERVICE_ROLE_KEY');
 
       if (!supabaseUrl || !supabaseServiceKey) {
         console.error('[Middleware] Missing required environment variables');
@@ -217,7 +217,7 @@ export function withSecurity(
       if (options.logAuditOnFailure) {
         try {
           const supabaseUrl = Deno.env.get('SUPABASE_URL');
-          const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+          const supabaseServiceKey = Deno.env.get('SERVICE_ROLE_KEY');
           
           if (supabaseUrl && supabaseServiceKey) {
             const supabase = createClient(supabaseUrl, supabaseServiceKey);
@@ -358,7 +358,7 @@ export function withWebhook(
     try {
       // Initialize Supabase
       const supabaseUrl = Deno.env.get('SUPABASE_URL');
-      const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+      const supabaseServiceKey = Deno.env.get('SERVICE_ROLE_KEY');
 
       if (!supabaseUrl || !supabaseServiceKey) {
         return createErrorResponse('Server configuration error', 500);

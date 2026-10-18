@@ -165,9 +165,13 @@
 /* ========================================
    GET STARTED BUTTONS - Modern cards
    ======================================== */
+#getStartedModal .modal-content {
+    max-width: 960px;
+}
+
 .modal-buttons {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
     gap: 1.5rem;
 }
 
@@ -245,6 +249,10 @@
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
 }
 
+.modal-icon-circle.purple {
+    background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+}
+
 /* Feature List */
 .feature-list {
     text-align: left;
@@ -287,6 +295,9 @@
     color: #ffffff;
     margin-top: 1rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    text-decoration: none;
+    display: inline-block;
+    box-sizing: border-box;
 }
 
 .register-btn.green {
@@ -295,6 +306,10 @@
 
 .register-btn.blue {
     background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+}
+
+.register-btn.purple {
+    background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
 }
 
 .register-btn:hover {

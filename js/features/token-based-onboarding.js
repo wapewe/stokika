@@ -116,45 +116,6 @@ class TokenBasedOnboardingSystem {
         return data;
     }
 
-    async submitManualPayment(mpesaCode, phoneNumber) {
-        const existingPayment = await this.getPaymentStatus();
-        if (!existingPayment) {
-            throw new Error('No pending payment found');
-        }
-
-        // Create manual M-Pesa transaction
-        const { data: transaction, error } = await this.supabase
-            .from('mpesa_transactions')
-            .insert({
-                kit_payment_id: existingPayment.id,
-                transaction_type: 'payment',
-                phone_number: phoneNumber,
-                amount: existingPayment.payment_amount,
-                mpesa_receipt_number: mpesaCode,
-                transaction_date: new Date().toISOString(),
-                account_reference: `STOKIKA-${existingPayment.id.substring(0, 8)}`,
-                transaction_desc: `Manual Stokika Kit Payment - ${this.entityType}`,
-                status: 'success'
-            })
-            .select()
-            .single();
-
-        if (error) throw error;
-
-        // Update kit payment status
-        await this.supabase
-            .from('kit_payments')
-            .update({
-                mpesa_code: mpesaCode,
-                phone_number: phoneNumber,
-                payment_date: new Date().toISOString(),
-                status: 'verified'
-            })
-            .eq('id', existingPayment.id);
-
-        return { success: true, message: 'Payment submitted successfully. Awaiting admin verification.' };
-    }
-
     formatCurrency(amount) {
         return new Intl.NumberFormat('en-KE', {
             style: 'currency',
@@ -342,32 +303,6 @@ class TokenBasedOnboardingUI {
                 `}
             </div>
         `;
-    }
-
-    async submitPayment() {
-        const mpesaCode = document.getElementById('mpesa-code')?.value;
-        const phoneNumber = document.getElementById('payment-phone')?.value;
-
-        if (!mpesaCode || !phoneNumber) {
-            this.showMessage('Please fill in all payment details', 'error');
-            return;
-        }
-
-        try {
-            // Create payment if it doesn't exist
-            if (!this.paymentStatus) {
-                await this.onboardingSystem.createKitPayment(phoneNumber);
-            }
-
-            const result = await this.onboardingSystem.submitManualPayment(mpesaCode, phoneNumber);
-            if (result.success) {
-                this.showMessage(result.message, 'success');
-                await this.loadData();
-                this.renderDashboard();
-            }
-        } catch (error) {
-            this.showMessage('Error submitting payment: ' + error.message, 'error');
-        }
     }
 
     showMessage(message, type = 'info') {

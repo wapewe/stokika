@@ -148,7 +148,7 @@ async function triggerAutomaticStatusQueries(
     try {
       // Call mpesa-status-query function
       const statusQueryUrl = `${Deno.env.get('SUPABASE_URL')}/functions/v1/mpesa-status-query`;
-      const serviceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+      const serviceKey = Deno.env.get('SERVICE_ROLE_KEY');
 
       const response = await fetch(statusQueryUrl, {
         method: 'POST',
@@ -192,7 +192,7 @@ serve(async (req: Request) => {
 
   // Initialize Supabase client with service role
   const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-  const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+  const supabaseServiceKey = Deno.env.get('SERVICE_ROLE_KEY')!;
   const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
   const startTime = Date.now();

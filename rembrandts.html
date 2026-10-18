@@ -22,9 +22,9 @@
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/rembrandts.css">
     <link rel="stylesheet" href="css/payment-timeout-config.css">
-    <link rel="stylesheet" href="css/manual-payment-verification.css">
     <link rel="stylesheet" href="css/pagination.css">
     <link rel="stylesheet" href="css/advanced-features.css">
+    <link rel="stylesheet" href="css/toast.css">
 </head>
 <body>
     <aside class="sidebar sidebar-scrollable">
@@ -530,41 +530,75 @@
         <!-- Manual Payments Tab (Section 8) -->
         <div id="manual-payments-tab" class="tab-content">
             <div class="toolbar">
-                <h2>✋ Manual Payment Verification</h2>
+                <h2>✋ Payment Verification Dashboard</h2>
                 <button class="btn-refresh" id="btnRefreshManualPayments">🔄 Refresh</button>
             </div>
 
             <div id="manualPaymentAlert" class="alert" style="display: none;"></div>
 
-            <!-- Search and Filters -->
-            <div class="manual-payment-filters">
-                <div class="filter-group">
-                    <label for="manualPaymentSearch">Search</label>
-                    <input type="text" id="manualPaymentSearch" placeholder="Application code, phone, receipt, transaction ID...">
-                </div>
-                <div class="filter-group">
-                    <label for="manualPaymentStatusFilter">Status Filter</label>
-                    <select id="manualPaymentStatusFilter">
-                        <option value="">All Manual Payments</option>
-                        <option value="manual_verification_pending">Awaiting Verification</option>
-                        <option value="timeout">Timeout</option>
-                        <option value="verified">Verified</option>
-                        <option value="rejected">Rejected</option>
-                    </select>
-                </div>
-                <div class="filter-buttons">
-                    <button class="btn-action btn-view" id="btnClearManualPaymentSearch">Clear Search</button>
-                </div>
+            <!-- Sub-tabs for different payment types -->
+            <div class="sub-tabs">
+                <button class="sub-tab-btn active" data-subtab="stk-payments" data-tab-type="payment">STK Push Payments</button>
+                <button class="sub-tab-btn" data-subtab="all-payments" data-tab-type="payment">All Payments</button>
             </div>
 
-            <!-- Loading State -->
-            <div id="manualPaymentsLoading" class="loading" style="display: none;">Loading payments...</div>
+            <!-- STK Payments Sub-tab -->
+            <div id="paymentSubTabStkPayments" class="sub-tab-content active">
+                <h3>STK Push Payments</h3>
+                <p class="info-text">Payments made via M-Pesa STK Push (phone prompt)</p>
+                
+                <div class="manual-payment-filters">
+                    <div class="filter-group">
+                        <label for="stkPaymentSearch">Search</label>
+                        <input type="text" id="stkPaymentSearch" placeholder="Application code, phone, checkout ID...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="stkPaymentStatusFilter">Status Filter</label>
+                        <select id="stkPaymentStatusFilter">
+                            <option value="">All Statuses</option>
+                            <option value="pending">⏳ Pending</option>
+                            <option value="completed">✅ Completed</option>
+                            <option value="failed">❌ Failed</option>
+                            <option value="timeout">⏱️ Timeout</option>
+                        </select>
+                    </div>
+                    <div class="filter-buttons">
+                        <button class="btn-action btn-view" id="btnClearStkPaymentSearch">Clear Search</button>
+                    </div>
+                </div>
 
-            <!-- Payments Table -->
-            <div id="manualPaymentsTable"></div>
+                <div id="stkPaymentsLoading" class="loading" style="display: none;">Loading STK payments...</div>
+                <div id="stkPaymentsTable"></div>
+                <div id="stkPaymentsPagination"></div>
+            </div>
 
-            <!-- Pagination -->
-            <div id="manualPaymentsPagination"></div>
+            <!-- All Payments Sub-tab -->
+            <div id="paymentSubTabAllPayments" class="sub-tab-content">
+                <h3>All Delivery Partner Payments</h3>
+                <p class="info-text">Combined view of all payment methods</p>
+                
+                <div class="manual-payment-filters">
+                    <div class="filter-group">
+                        <label for="allPaymentSearch">Search</label>
+                        <input type="text" id="allPaymentSearch" placeholder="Application code, phone...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="allPaymentTypeFilter">Payment Method</label>
+                        <select id="allPaymentTypeFilter">
+                            <option value="">All Methods</option>
+                            <option value="manual">Manual Code Entry</option>
+                            <option value="stk">STK Push</option>
+                        </select>
+                    </div>
+                    <div class="filter-buttons">
+                        <button class="btn-action btn-view" id="btnClearAllPaymentSearch">Clear Search</button>
+                    </div>
+                </div>
+
+                <div id="allPaymentsLoading" class="loading" style="display: none;">Loading all payments...</div>
+                <div id="allPaymentsTable"></div>
+                <div id="allPaymentsPagination"></div>
+            </div>
         </div>
 
         <!-- Payment Detail Modal -->
@@ -578,8 +612,6 @@
                     <!-- Content will be dynamically populated -->
                 </div>
             </div>
-        </div>
-            <div class="loading">Section 8 implementation coming soon...</div>
         </div><div id="emailModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Send Bulk Email</h2><button type="button" class="close">&times;</button></div><div class="email-form"><div class="filter-group"><label for="emailSubject">Subject</label><input type="text" id="emailSubject" placeholder="Enter email subject" aria-label="Email subject"></div><div class="filter-group"><label>Message</label><textarea id="emailMessage" placeholder="Enter your message..."></textarea></div><div class="filter-group"><label for="emailRecipients">Recipients</label><select id="emailRecipients" title="Select email recipients"><option value="all">All Applicants</option><option value="pending">Pending Applications</option><option value="approved">Approved Agents</option><option value="rejected">Rejected Applications</option><option value="selected">Selected Only</option></select></div><button class="btn-submit" id="btnSendBulkEmail">Send Email</button></div></div></div>
     <div id="singleEmailModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Send Email to <span id="singleEmailName"></span></h2><button type="button" class="close">&times;</button></div><div class="email-form"><div class="filter-group"><label for="singleEmailTo">To</label><input type="email" id="singleEmailTo" readonly aria-label="Recipient email address"></div><div class="filter-group"><label for="singleEmailSubject">Subject</label><input type="text" id="singleEmailSubject" placeholder="Enter email subject" aria-label="Email subject"></div><div class="filter-group"><label>Message</label><textarea id="singleEmailMessage" placeholder="Enter your message..."></textarea></div><button class="btn-submit" id="btnSendSingleEmail">Send Email</button></div></div></div>
     <div id="manageSupervisorModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Manage Supervisor</h2><button type="button" class="close">&times;</button></div><form id="manageSupervisorForm" data-sanitize="true"><input type="hidden" id="manageSupervisorId"><input type="hidden" id="manageSupervisorApprovedAt"><input type="hidden" id="manageSupervisorInterviewDate"><div class="detail-section"><h3>Supervisor Information</h3><p><strong>Supervisor Number (Internal Only):</strong> <span id="manageSupervisorNumber" class="agent-number-private"></span></p><p><strong>Name:</strong> <span id="manageSupervisorName"></span></p><p class="warning-text">⚠️ Supervisor numbers are confidential and unique. Do not share.</p></div><div class="detail-section"><h3>Application Status</h3><div class="form-group"><label for="manageSupervisorApprovalStatus">Approval Status</label><select id="manageSupervisorApprovalStatus" name="approvalStatus" title="Select approval status"><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="suspended">Suspended</option></select></div><div class="form-group"><label for="manageSupervisorInterviewStatus">Interview Status</label><select id="manageSupervisorInterviewStatus" name="interviewStatus" title="Select interview status"><option value="not_interviewed">Not Interviewed</option><option value="awaiting_interview">Awaiting Interview</option><option value="interviewed">Interviewed</option></select></div><div class="form-group"><label for="manageSupervisorInterviewNotes">Interview Notes</label><textarea id="manageSupervisorInterviewNotes" name="interviewNotes" data-sanitize-type="string" rows="3" placeholder="Add interview notes..."></textarea></div><div class="form-group"><label for="manageSupervisorRejectionReason">Rejection Reason (if rejected)</label><textarea id="manageSupervisorRejectionReason" name="rejectionReason" data-sanitize-type="string" rows="3" placeholder="Reason for rejection..."></textarea></div><button type="submit" class="btn-submit">Save Changes</button></div></form></div></div>
@@ -618,7 +650,9 @@
     
     <!-- Page Scripts (load after security) -->
     <script src="js/features/payment-timeout-config.js"></script>
-    <script src="js/features/manual-payment-verification.js"></script>
     <script src="js/pages/rembrandts.page.js"></script>
+    <!-- Toast Notification System -->
+    <script src="js/utils/toast.js"></script>
+    <script src="js/utils/global-toast-init.js"></script>
 </body>
 </html>

@@ -226,53 +226,6 @@ class EnhancedOnboardingSystem {
         };
     }
 
-    async submitManualPayment(mpesaCode, phoneNumber) {
-        try {
-            const existingPayment = await this.getKitPaymentStatus();
-            if (!existingPayment) {
-                throw new Error('No pending payment found');
-            }
-
-            // Create manual M-Pesa transaction
-            const { data: transaction, error } = await this.supabase
-                .from('mpesa_transactions')
-                .insert({
-                    kit_payment_id: existingPayment.id,
-                    transaction_type: 'payment',
-                    phone_number: phoneNumber,
-                    amount: existingPayment.payment_amount,
-                    mpesa_receipt_number: mpesaCode,
-                    transaction_date: new Date().toISOString(),
-                    account_reference: `STOKIKA-${existingPayment.id.substring(0, 8)}`,
-                    transaction_desc: `Manual Stokika Kit Payment - ${this.userRole}`,
-                    status: 'success'
-                })
-                .select()
-                .single();
-
-            if (error) throw error;
-
-            // Update kit payment status
-            await this.supabase
-                .from('kit_payments')
-                .update({
-                    mpesa_code: mpesaCode,
-                    phone_number: phoneNumber,
-                    payment_date: new Date().toISOString(),
-                    status: 'verified'
-                })
-                .eq('id', existingPayment.id);
-
-            return {
-                success: true,
-                message: 'Payment submitted successfully. Awaiting admin verification.'
-            };
-        } catch (error) {
-            console.error('Error submitting manual payment:', error);
-            throw error;
-        }
-    }
-
     async getTerritoryAssignment() {
         if (!this.entityId || this.userRole !== 'field_agent') return null;
 
@@ -546,42 +499,6 @@ class EnhancedOnboardingDashboardUI {
         }
     }
 
-    async submitManualPayment() {
-        const mpesaCodeInput = document.getElementById('mpesa-code');
-        const phoneNumberInput = document.getElementById('payment-phone');
-        
-        const mpesaCode = mpesaCodeInput?.value?.trim();
-        const phoneNumber = phoneNumberInput?.value?.trim();
-
-        if (!mpesaCode || !phoneNumber) {
-            this.showMessage('Please fill in all payment details', 'error');
-            return;
-        }
-
-        // Validate M-Pesa code format (10 alphanumeric characters)
-        if (!/^[A-Z0-9]{10}$/i.test(mpesaCode)) {
-            this.showMessage('Invalid M-Pesa code format. Must be 10 alphanumeric characters.', 'error');
-            return;
-        }
-
-        // Validate Kenyan phone number format
-        if (!/^254[17]\d{8}$/.test(phoneNumber)) {
-            this.showMessage('Invalid phone number format. Use Kenyan format: 254XXXXXXXXX', 'error');
-            return;
-        }
-
-        try {
-            const result = await this.onboardingSystem.submitManualPayment(mpesaCode.toUpperCase(), phoneNumber);
-            if (result.success) {
-                this.showMessage(result.message, 'success');
-                await this.loadUserData();
-                this.renderDashboard();
-            }
-        } catch (error) {
-            this.showMessage('Error submitting payment: ' + error.message, 'error');
-        }
-    }
-
     async checkPaymentStatus() {
         await this.loadUserData();
         this.renderDashboard();
@@ -596,23 +513,6 @@ class EnhancedOnboardingDashboardUI {
         if (container) {
             container.insertBefore(messageDiv, container.firstChild);
             setTimeout(() => messageDiv.remove(), 5000);
-        }
-    }
-
-    attachEventListeners() {
-        // Initialize input sanitizer for the manual payment form
-        if (window.InputSanitizer) {
-            const form = document.getElementById('manual-payment-form');
-            if (form) {
-                // Initialize the form sanitization
-                window.InputSanitizer.initForm('#manual-payment-form');
-                
-                // Add form submit handler
-                form.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    await this.submitManualPayment();
-                });
-            }
         }
     }
 }

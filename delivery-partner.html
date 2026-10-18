@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Strict Content Security Policy (unsafe-hashes allows img load-error handling via JS) -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self';
+                   script-src 'self' https://cdn.jsdelivr.net;
+                   style-src 'self' https://fonts.googleapis.com;
+                   font-src 'self' https://fonts.gstatic.com;
+                   connect-src 'self' https://*.supabase.co wss://*.supabase.co;
+                   img-src 'self' data: https:;
+                   base-uri 'self';
+                   form-action 'self';">
+
+    <title>Delivery Partner Registration - Stokika</title>
+    <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
+    <link rel="apple-touch-icon" href="assets/logos/logo.png">
+    <meta name="description" content="Join Stokika as a verified delivery partner. Flexible schedules, steady income, and instant payout tracking across Kenya.">
+
+    <!-- Security Headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- External Stylesheet only — no inline CSS -->
+    <link rel="stylesheet" href="css/pages/delivery-partner.css">
+    <link rel="stylesheet" href="css/toast.css">
+</head>
+
+<body>
+    <!-- Top Navigation -->
+    <div class="back-to-home">
+        <a href="dalana.html" class="btn-back" id="backHomeLink">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7" />
+            </svg>
+            Back to Home
+        </a>
+    </div>
+
+    <!-- Main Onboarding Container -->
+    <div class="onboarding-container">
+
+        <!-- Header Banner -->
+        <div class="onboarding-header">
+            <div class="header-logo">
+                <!-- No inline onerror — JS handles broken logo via 'error' event listener -->
+                <img src="assets/logos/logo.png" alt="Stokika" class="header-logo-img" id="headerLogoImg">
+            </div>
+            <div class="header-badge">🛵 Delivery Partner</div>
+            <h1>Join Stokika's Delivery Network</h1>
+            <p>Sign up in under 3 minutes. Flexible schedules, instant payout tracking, and real delivery jobs matched to your vehicle and area.</p>
+            <div class="header-steps-hint">
+                <span>Personal Details</span>
+                <span class="dot">·</span>
+                <span>Delivery Profile</span>
+                <span class="dot">·</span>
+                <span>Operating Area</span>
+                <span class="dot">·</span>
+                <span>Activate Account</span>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="form-progress-bar" role="progressbar" aria-label="Registration progress">
+            <div class="progress-line-track">
+                <div class="progress-line-fill" id="progressFill"></div>
+            </div>
+
+            <div class="progress-step-item active" data-step="1">
+                <div class="step-circle">1</div>
+                <div class="step-label">Personal</div>
+            </div>
+            <div class="progress-step-item" data-step="2">
+                <div class="step-circle">2</div>
+                <div class="step-label">Delivery</div>
+            </div>
+            <div class="progress-step-item" data-step="3">
+                <div class="step-circle">3</div>
+                <div class="step-label">Location</div>
+            </div>
+            <div class="progress-step-item" data-step="4">
+                <div class="step-circle">4</div>
+                <div class="step-label">Activate</div>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <form id="deliveryPartnerForm" novalidate autocomplete="off" spellcheck="false">
+
+            <!-- ═══════════════════════════════════════════════════
+                 STEP 1: Personal Details
+            ═══════════════════════════════════════════════════ -->
+            <div class="form-step active" data-step="1" id="step1">
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon">👤</div>
+                        <div>
+                            <h2 class="section-title">Personal Details</h2>
+                            <p class="section-desc">Tell us who you are. Takes about 1 minute.</p>
+                        </div>
+                    </div>
+
+                    <!-- Full Name -->
+                    <div class="form-group">
+                        <label for="fullName">Full name <span class="required-star">*</span></label>
+                        <input type="text" id="fullName" name="fullName"
+                            placeholder="e.g. Samuel Otieno Mwangi"
+                            required maxlength="100"
+                            autocomplete="name">
+                        <span class="error-message" id="fullNameError"></span>
+                    </div>
+
+                    <!-- Phone + Email row -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phone">Phone number <span class="required-star">*</span></label>
+                            <input type="tel" id="phone" name="phone"
+                                placeholder="e.g. 0712 345 678"
+                                data-sanitize-type="phone"
+                                required maxlength="15"
+                                autocomplete="tel">
+                            <span class="field-hint">Used for delivery communication and account access</span>
+                            <span class="error-message" id="phoneError"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email address <span class="optional-tag">Optional</span></label>
+                            <input type="email" id="email" name="email"
+                                placeholder="e.g. samuel@example.com"
+                                data-sanitize-type="email"
+                                maxlength="120"
+                                autocomplete="email">
+                            <span class="field-hint">For notifications and account recovery</span>
+                            <span class="error-message" id="emailError"></span>
+                        </div>
+                    </div>
+
+                    <!-- Partner Type -->
+                    <div class="form-group">
+                        <label>Partner type <span class="required-star">*</span></label>
+                        <div class="partner-type-cards" id="partnerTypeCards" role="radiogroup" aria-label="Partner type">
+                            <label class="type-card" for="typeIndividual">
+                                <input type="radio" id="typeIndividual" name="partnerType" value="individual" checked>
+                                <div class="type-card-inner">
+                                    <div class="type-icon">🏍️</div>
+                                    <div class="type-name">Individual</div>
+                                    <div class="type-desc">Deliver independently using your own or rented vehicle</div>
+                                </div>
+                            </label>
+                            <label class="type-card" for="typeBusiness">
+                                <input type="radio" id="typeBusiness" name="partnerType" value="business">
+                                <div class="type-card-inner">
+                                    <div class="type-icon">🏢</div>
+                                    <div class="type-name">Delivery Business</div>
+                                    <div class="type-desc">A registered business offering delivery services</div>
+                                </div>
+                            </label>
+                            <label class="type-card" for="typeFleet">
+                                <input type="radio" id="typeFleet" name="partnerType" value="fleet">
+                                <div class="type-card-inner">
+                                    <div class="type-icon">🚛</div>
+                                    <div class="type-name">Fleet Operator</div>
+                                    <div class="type-desc">Managing multiple drivers or riders as a fleet</div>
+                                </div>
+                            </label>
+                        </div>
+                        <span class="error-message" id="partnerTypeError"></span>
+                    </div>
+
+                    <!-- County + Town row -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="county">County <span class="required-star">*</span></label>
+                            <select id="county" name="county" required>
+                                <option value="">Select your county</option>
+                                <option>Baringo</option><option>Bomet</option><option>Bungoma</option>
+                                <option>Busia</option><option>Elgeyo-Marakwet</option><option>Embu</option>
+                                <option>Garissa</option><option>Homa Bay</option><option>Isiolo</option>
+                                <option>Kajiado</option><option>Kakamega</option><option>Kericho</option>
+                                <option>Kiambu</option><option>Kilifi</option><option>Kirinyaga</option>
+                                <option>Kisii</option><option>Kisumu</option><option>Kitui</option>
+                                <option>Kwale</option><option>Laikipia</option><option>Lamu</option>
+                                <option>Machakos</option><option>Makueni</option><option>Mandera</option>
+                                <option>Marsabit</option><option>Meru</option><option>Migori</option>
+                                <option>Mombasa</option><option>Murang'a</option><option>Nairobi</option>
+                                <option>Nakuru</option><option>Nandi</option><option>Narok</option>
+                                <option>Nyamira</option><option>Nyandarua</option><option>Nyeri</option>
+                                <option>Samburu</option><option>Siaya</option><option>Taita-Taveta</option>
+                                <option>Tana River</option><option>Tharaka-Nithi</option>
+                                <option>Trans-Nzoia</option><option>Turkana</option>
+                                <option>Uasin Gishu</option><option>Vihiga</option><option>Wajir</option>
+                                <option>West Pokot</option>
+                            </select>
+                            <span class="error-message" id="countyError"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="town">Town / Area <span class="required-star">*</span></label>
+                            <input type="text" id="town" name="town"
+                                placeholder="e.g. Westlands, Kisumu CBD, Thika"
+                                required maxlength="80">
+                            <span class="error-message" id="townError"></span>
+                        </div>
+                    </div>
+
+                    <!-- National ID — required for Paybill account number -->
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="nationalId">National ID number <span class="required-star">*</span></label>
+                            <input type="text" id="nationalId" name="nationalId"
+                                placeholder="e.g. 12345678"
+                                data-sanitize-type="numeric"
+                                required maxlength="12"
+                                inputmode="numeric">
+                            <span class="field-hint">Used as your Paybill account number for payment identification</span>
+                            <span class="error-message" id="nationalIdError"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Gender <span class="optional-tag">Optional</span></label>
+                            <select id="gender" name="gender">
+                                <option value="">Prefer not to say</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <span class="error-message" id="genderError"></span>
+                        </div>
+                    </div>
+                    <!-- Gender Other Specify -->
+                    <div class="form-group hidden" id="genderOtherGroup">
+                        <label for="genderOther">Please specify gender <span class="required-star">*</span></label>
+                        <input type="text" id="genderOther" name="genderOther"
+                            placeholder="Specify your gender"
+                            maxlength="50">
+                        <span class="error-message" id="genderOtherError"></span>
+                    </div>
+                </div>
+
+                <!-- Conditional Business Fields (shown for business / fleet) -->
+                <div class="form-section business-fields hidden" id="businessFields">
+                    <div class="section-header">
+                        <div class="section-icon">🏢</div>
+                        <div>
+                            <h2 class="section-title">Business Information</h2>
+                            <p class="section-desc">Tell us about your delivery business.</p>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="businessName">Business / trading name <span class="required-star">*</span></label>
+                            <input type="text" id="businessName" name="businessName"
+                                placeholder="e.g. Otieno Courier Services"
+                                maxlength="120">
+                            <span class="error-message" id="businessNameError"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="businessType">Business type <span class="required-star">*</span></label>
+                            <select id="businessType" name="businessType">
+                                <option value="">Select type</option>
+                                <option value="sole_proprietor">Sole Proprietorship</option>
+                                <option value="partnership">Partnership</option>
+                                <option value="company">Limited Company</option>
+                                <option value="cooperative">Cooperative</option>
+                                <option value="other">Other</option>
+                            </select>
+                            <span class="error-message" id="businessTypeError"></span>
+                        </div>
+                    </div>
+                    <!-- Business Type Other Specify -->
+                    <div class="form-group hidden" id="businessTypeOtherGroup">
+                        <label for="businessTypeOther">Please specify business type <span class="required-star">*</span></label>
+                        <input type="text" id="businessTypeOther" name="businessTypeOther"
+                            placeholder="e.g. Community group, transport SACCO, youth group"
+                            maxlength="100">
+                        <span class="error-message" id="businessTypeOtherError"></span>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="businessRegNumber">Business registration number <span class="optional-tag">Optional now</span></label>
+                            <input type="text" id="businessRegNumber" name="businessRegNumber"
+                                placeholder="e.g. BN/2023/XXXXX"
+                                data-sanitize-type="alphanumeric"
+                                maxlength="40">
+                            <span class="field-hint">Required before verification — you can add it later</span>
+                        </div>
+                        <div class="form-group">
+                            <label for="activeDrivers">Number of active drivers / riders <span class="required-star">*</span></label>
+                            <select id="activeDrivers" name="activeDrivers">
+                                <option value="">Select range</option>
+                                <option value="1-5">1 – 5</option>
+                                <option value="6-20">6 – 20</option>
+                                <option value="21-50">21 – 50</option>
+                                <option value="51+">51 or more</option>
+                            </select>
+                            <span class="error-message" id="activeDriversError"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a href="dalana.html" class="btn-ghost" id="cancelLink">Cancel</a>
+                    <button type="button" class="btn-primary" id="toStep2Btn">
+                        Continue to Delivery Profile
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════
+                 STEP 2: Delivery Profile
+            ═══════════════════════════════════════════════════ -->
+            <div class="form-step" data-step="2" id="step2">
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon">🚚</div>
+                        <div>
+                            <h2 class="section-title">Delivery Profile</h2>
+                            <p class="section-desc">This tells us what deliveries you can handle. Takes 1–2 minutes.</p>
+                        </div>
+                    </div>
+
+                    <!-- A. Primary delivery method — icon cards -->
+                    <div class="form-group">
+                        <label>Primary delivery method <span class="required-star">*</span></label>
+                        <div class="vehicle-cards" id="vehicleCards" role="radiogroup" aria-label="Primary delivery method">
+                            <label class="vehicle-card" for="vehicleMotorcycle">
+                                <input type="radio" id="vehicleMotorcycle" name="vehicleType" value="motorcycle">
+                                <div class="vehicle-card-inner">
+                                    <div class="vehicle-icon">🏍️</div>
+                                    <div class="vehicle-name">Motorcycle / Boda Boda</div>
+                                </div>
+                            </label>
+                            <label class="vehicle-card" for="vehicleBicycle">
+                                <input type="radio" id="vehicleBicycle" name="vehicleType" value="bicycle">
+                                <div class="vehicle-card-inner">
+                                    <div class="vehicle-icon">🚲</div>
+                                    <div class="vehicle-name">Bicycle</div>
+                                </div>
+                            </label>
+                            <label class="vehicle-card" for="vehicleCar">
+                                <input type="radio" id="vehicleCar" name="vehicleType" value="car">
+                                <div class="vehicle-card-inner">
+                                    <div class="vehicle-icon">🚗</div>
+                                    <div class="vehicle-name">Car</div>
+                                </div>
+                            </label>
+                            <label class="vehicle-card" for="vehiclePickup">
+                                <input type="radio" id="vehiclePickup" name="vehicleType" value="pickup">
+                                <div class="vehicle-card-inner">
+                                    <div class="vehicle-icon">🛻</div>
+                                    <div class="vehicle-name">Pickup Truck</div>
+                                </div>
+                            </label>
+                            <label class="vehicle-card" for="vehicleVan">
+                                <input type="radio" id="vehicleVan" name="vehicleType" value="van">
+                                <div class="vehicle-card-inner">
+                                    <div class="vehicle-icon">🚐</div>
+                                    <div class="vehicle-name">Van</div>
+                                </div>
+                            </label>
+                            <label class="vehicle-card" for="vehicleLorry">
+                                <input type="radio" id="vehicleLorry" name="vehicleType" value="lorry">
+                                <div class="vehicle-card-inner">
+                                    <div class="vehicle-icon">🚛</div>
+                                    <div class="vehicle-name">Lorry / Truck</div>
+                                </div>
+                            </label>
+                            <label class="vehicle-card" for="vehicleWalking">
+                                <input type="radio" id="vehicleWalking" name="vehicleType" value="walking">
+                                <div class="vehicle-card-inner">
+                                    <div class="vehicle-icon">🚶</div>
+                                    <div class="vehicle-name">Walking Courier</div>
+                                </div>
+                            </label>
+                            <label class="vehicle-card" for="vehicleOther">
+                                <input type="radio" id="vehicleOther" name="vehicleType" value="other">
+                                <div class="vehicle-card-inner">
+                                    <div class="vehicle-icon">🔧</div>
+                                    <div class="vehicle-name">Other</div>
+                                </div>
+                            </label>
+                        </div>
+                        <!-- "Other" vehicle specify field — shown when Other is selected -->
+                        <div class="form-group hidden" id="vehicleOtherGroup">
+                            <label for="vehicleOtherSpecify">Please specify your delivery method <span class="required-star">*</span></label>
+                            <input type="text" id="vehicleOtherSpecify" name="vehicleOtherSpecify"
+                                placeholder="e.g. Tuk-tuk, Canoe, Electric scooter"
+                                maxlength="80">
+                            <span class="error-message" id="vehicleOtherSpecifyError"></span>
+                        </div>
+                        <span class="error-message" id="vehicleTypeError"></span>
+                    </div>
+
+                    <!-- B. Vehicle relationship -->
+                    <div class="form-group">
+                        <label for="vehicleAccess">Vehicle access <span class="required-star">*</span></label>
+                        <select id="vehicleAccess" name="vehicleAccess" required>
+                            <option value="">What is your relationship with the vehicle?</option>
+                            <option value="owned">I own the vehicle</option>
+                            <option value="rented">I rent or lease it</option>
+                            <option value="provided">Provided by another person / business</option>
+                            <option value="access_when_needed">I can access one when needed</option>
+                            <option value="fleet_owner">I operate a fleet of vehicles</option>
+                        </select>
+                        <span class="error-message" id="vehicleAccessError"></span>
+                    </div>
+
+                    <!-- C. Vehicle info — shown conditionally (hidden for walking couriers) -->
+                    <div id="vehicleInfoFields">
+                        <div class="form-row">
+                            <div class="form-group" id="makeModelGroup">
+                                <label for="vehicleMakeModel">Make / model <span class="optional-tag">Optional</span></label>
+                                <input type="text" id="vehicleMakeModel" name="vehicleMakeModel"
+                                    placeholder="e.g. Honda CB125, Toyota Hilux"
+                                    data-sanitize-type="alphanumeric-spaces"
+                                    maxlength="80">
+                            </div>
+                            <div class="form-group" id="regNumberGroup">
+                                <label for="registrationNumber">Registration number <span class="optional-tag">Optional now</span></label>
+                                <input type="text" id="registrationNumber" name="registrationNumber"
+                                    placeholder="e.g. KDE 123A"
+                                    data-sanitize-type="alphanumeric"
+                                    maxlength="12">
+                                <span class="field-hint">Required before vehicle-based assignments</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fleet vehicles count — shown for fleet operators only -->
+                    <div class="form-group hidden" id="fleetVehiclesGroup">
+                        <label for="fleetVehicles">Number of vehicles in your fleet <span class="required-star">*</span></label>
+                        <select id="fleetVehicles" name="fleetVehicles">
+                            <option value="">Select range</option>
+                            <option value="2-5">2 – 5 vehicles</option>
+                            <option value="6-15">6 – 15 vehicles</option>
+                            <option value="16-30">16 – 30 vehicles</option>
+                            <option value="31+">31 or more</option>
+                        </select>
+                    </div>
+
+                    <!-- D. Carrying capacity -->
+                    <div class="form-group" id="capacityGroup">
+                        <label for="carryingCapacity">Maximum typical load <span class="required-star">*</span></label>
+                        <div class="capacity-options" id="capacityOptions" role="radiogroup" aria-label="Carrying capacity">
+                            <label class="capacity-pill" for="capSmall">
+                                <input type="radio" id="capSmall" name="carryingCapacity" value="small_parcels">
+                                <span>Small parcels</span>
+                            </label>
+                            <label class="capacity-pill" for="cap20">
+                                <input type="radio" id="cap20" name="carryingCapacity" value="up_to_20kg">
+                                <span>Up to 20 kg</span>
+                            </label>
+                            <label class="capacity-pill" for="cap50">
+                                <input type="radio" id="cap50" name="carryingCapacity" value="21_50kg" checked>
+                                <span>21 – 50 kg</span>
+                            </label>
+                            <label class="capacity-pill" for="cap100">
+                                <input type="radio" id="cap100" name="carryingCapacity" value="51_100kg">
+                                <span>51 – 100 kg</span>
+                            </label>
+                            <label class="capacity-pill" for="cap500">
+                                <input type="radio" id="cap500" name="carryingCapacity" value="101_500kg">
+                                <span>101 – 500 kg</span>
+                            </label>
+                            <label class="capacity-pill" for="capHeavy">
+                                <input type="radio" id="capHeavy" name="carryingCapacity" value="over_500kg">
+                                <span>Over 500 kg</span>
+                            </label>
+                        </div>
+                        <span class="error-message" id="carryingCapacityError"></span>
+                    </div>
+
+                    <!-- E. What can they transport -->
+                    <div class="form-group">
+                        <label>What can you deliver? <span class="required-star">*</span> <span class="field-hint">Select all that apply</span></label>
+                        <div class="goods-grid" id="goodsGrid">
+                            <label class="goods-tag" for="goodsProduce">
+                                <input type="checkbox" id="goodsProduce" name="goods" value="fresh_produce">
+                                <span>🥕 Fresh produce</span>
+                            </label>
+                            <label class="goods-tag" for="goodsGrains">
+                                <input type="checkbox" id="goodsGrains" name="goods" value="grains_cereals">
+                                <span>🌾 Grains &amp; cereals</span>
+                            </label>
+                            <label class="goods-tag" for="goodsRetail">
+                                <input type="checkbox" id="goodsRetail" name="goods" value="retail_stock">
+                                <span>🏪 Retail shop stock</span>
+                            </label>
+                            <label class="goods-tag" for="goodsHousehold">
+                                <input type="checkbox" id="goodsHousehold" name="goods" value="household_goods">
+                                <span>🏠 Household goods</span>
+                            </label>
+                            <label class="goods-tag" for="goodsClothing">
+                                <input type="checkbox" id="goodsClothing" name="goods" value="clothing_textiles">
+                                <span>👔 Clothing &amp; textiles</span>
+                            </label>
+                            <label class="goods-tag" for="goodsElectronics">
+                                <input type="checkbox" id="goodsElectronics" name="goods" value="electronics">
+                                <span>📱 Electronics</span>
+                            </label>
+                            <label class="goods-tag" for="goodsBuilding">
+                                <input type="checkbox" id="goodsBuilding" name="goods" value="building_materials">
+                                <span>🧱 Building materials</span>
+                            </label>
+                            <label class="goods-tag" for="goodsHeavy">
+                                <input type="checkbox" id="goodsHeavy" name="goods" value="heavy_bulky">
+                                <span>⚙️ Heavy / bulky goods</span>
+                            </label>
+                            <label class="goods-tag" for="goodsParcels">
+                                <input type="checkbox" id="goodsParcels" name="goods" value="small_parcels">
+                                <span>📦 Small parcels</span>
+                            </label>
+                            <label class="goods-tag" for="goodsOther">
+                                <input type="checkbox" id="goodsOther" name="goods" value="other">
+                                <span>➕ Other</span>
+                            </label>
+                        </div>
+                        <!-- "Other" goods specify field -->
+                        <div class="form-group hidden" id="goodsOtherGroup">
+                            <label for="goodsOtherSpecify">Please specify the goods <span class="required-star">*</span></label>
+                            <input type="text" id="goodsOtherSpecify" name="goodsOtherSpecify"
+                                placeholder="e.g. Gas cylinders, livestock, fragile items"
+                                maxlength="120">
+                            <span class="error-message" id="goodsOtherSpecifyError"></span>
+                        </div>
+                        <span class="error-message" id="goodsError"></span>
+                    </div>
+
+                    <!-- F. Availability -->
+                    <div class="form-group">
+                        <label>Availability <span class="required-star">*</span></label>
+                        <div class="availability-options" id="availabilityOptions" role="radiogroup" aria-label="Availability">
+                            <label class="avail-pill" for="availFullTime">
+                                <input type="radio" id="availFullTime" name="availability" value="full_time">
+                                <span>Full-time</span>
+                            </label>
+                            <label class="avail-pill" for="availPartTime">
+                                <input type="radio" id="availPartTime" name="availability" value="part_time">
+                                <span>Part-time</span>
+                            </label>
+                            <label class="avail-pill" for="availWeekdays">
+                                <input type="radio" id="availWeekdays" name="availability" value="weekdays">
+                                <span>Weekdays</span>
+                            </label>
+                            <label class="avail-pill" for="availWeekends">
+                                <input type="radio" id="availWeekends" name="availability" value="weekends">
+                                <span>Weekends</span>
+                            </label>
+                            <label class="avail-pill" for="availFlexible">
+                                <input type="radio" id="availFlexible" name="availability" value="flexible">
+                                <span>Flexible / on demand</span>
+                            </label>
+                        </div>
+                        <span class="error-message" id="availabilityError"></span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-ghost" id="backToStep1Btn">← Back</button>
+                    <button type="button" class="btn-primary" id="toStep3Btn">
+                        Continue to Operating Area
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════
+                 STEP 3: Operating Area & Route Preferences
+            ═══════════════════════════════════════════════════ -->
+            <div class="form-step" data-step="3" id="step3">
+                <div class="form-section">
+                    <div class="section-header">
+                        <div class="section-icon">📍</div>
+                        <div>
+                            <h2 class="section-title">Operating Area</h2>
+                            <p class="section-desc">Tell us where you operate and how far you are willing to deliver.</p>
+                        </div>
+                    </div>
+
+                    <!-- Main county and town already collected in step 1 — display as recap -->
+                    <div class="recap-box" id="locationRecap">
+                        <div class="recap-label">Based in:</div>
+                        <div class="recap-value" id="locationRecapValue">—</div>
+                    </div>
+
+                    <!-- Delivery coverage -->
+                    <div class="form-group">
+                        <label>Delivery coverage <span class="required-star">*</span></label>
+                        <div class="coverage-options" id="coverageOptions" role="radiogroup" aria-label="Delivery coverage">
+                            <label class="coverage-pill" for="covLocal">
+                                <input type="radio" id="covLocal" name="deliveryCoverage" value="local">
+                                <span>📍 Within my town / local area</span>
+                            </label>
+                            <label class="coverage-pill" for="covCounty">
+                                <input type="radio" id="covCounty" name="deliveryCoverage" value="county">
+                                <span>🗺️ Across my county</span>
+                            </label>
+                            <label class="coverage-pill" for="covInterCounty">
+                                <input type="radio" id="covInterCounty" name="deliveryCoverage" value="inter_county">
+                                <span>🚀 Between counties</span>
+                            </label>
+                            <label class="coverage-pill" for="covAny">
+                                <input type="radio" id="covAny" name="deliveryCoverage" value="any">
+                                <span>✅ Any route I accept</span>
+                            </label>
+                        </div>
+                        <span class="error-message" id="deliveryCoverageError"></span>
+                    </div>
+
+                    <!-- Route preferences -->
+                    <div class="form-group">
+                        <label>Route preferences <span class="required-star">*</span></label>
+                        <div class="route-options" id="routeOptions" role="radiogroup" aria-label="Route preference">
+                            <label class="route-pill" for="routeInTown">
+                                <input type="radio" id="routeInTown" name="routePreference" value="within_town">
+                                <span>Within my town</span>
+                            </label>
+                            <label class="route-pill" for="routeNearby">
+                                <input type="radio" id="routeNearby" name="routePreference" value="town_to_nearby">
+                                <span>Town to nearby towns</span>
+                            </label>
+                            <label class="route-pill" for="routeAcrossCounty">
+                                <input type="radio" id="routeAcrossCounty" name="routePreference" value="across_county">
+                                <span>Across my county</span>
+                            </label>
+                            <label class="route-pill" for="routeBetweenCounties">
+                                <input type="radio" id="routeBetweenCounties" name="routePreference" value="between_counties">
+                                <span>Between counties</span>
+                            </label>
+                            <label class="route-pill" for="routeAny">
+                                <input type="radio" id="routeAny" name="routePreference" value="any_route">
+                                <span>Any route within my coverage</span>
+                            </label>
+                        </div>
+                        <span class="error-message" id="routePreferenceError"></span>
+                    </div>
+
+                    <!-- Preferred delivery type -->
+                    <div class="form-group">
+                        <label for="deliveryType">Preferred delivery type <span class="required-star">*</span></label>
+                        <select id="deliveryType" name="deliveryType" required>
+                            <option value="">Select delivery type</option>
+                            <option value="single">Single deliveries (one package at a time)</option>
+                            <option value="multiple_stops">Multiple stops (several drop-offs per trip)</option>
+                            <option value="bulk">Bulk deliveries (large loads)</option>
+                            <option value="any">Any type</option>
+                        </select>
+                        <span class="error-message" id="deliveryTypeError"></span>
+                    </div>
+
+                    <!-- Willing to travel outside -->
+                    <div class="form-group">
+                        <label>Willing to travel outside your main area? <span class="required-star">*</span></label>
+                        <div class="travel-outside-options" role="radiogroup">
+                            <label class="travel-pill" for="travelYes">
+                                <input type="radio" id="travelYes" name="travelOutside" value="yes">
+                                <span>✅ Yes</span>
+                            </label>
+                            <label class="travel-pill" for="travelNo">
+                                <input type="radio" id="travelNo" name="travelOutside" value="no">
+                                <span>❌ No</span>
+                            </label>
+                        </div>
+                        <span class="error-message" id="travelOutsideError"></span>
+                    </div>
+
+                    <!-- Additional areas served -->
+                    <div class="form-group">
+                        <label for="additionalAreas">Other towns / areas you serve <span class="optional-tag">Optional</span></label>
+                        <textarea id="additionalAreas" name="additionalAreas" rows="2"
+                            placeholder="e.g. Ruiru, Juja, Ongata Rongai (separate with commas)"
+                            maxlength="300"></textarea>
+                    </div>
+
+                    <!-- Agreement Checkbox -->
+                    <div class="form-group agreement-group">
+                        <label class="agreement-label" for="agreementCheck">
+                            <input type="checkbox" id="agreementCheck" name="agreementCheck" required>
+                            <span class="agreement-text">I certify that all details submitted are accurate. I understand that Stokika delivery operations demand punctuality, safety, and proper care of merchant packages.</span>
+                        </label>
+                        <span class="error-message" id="agreementError"></span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-ghost" id="backToStep2Btn">← Back</button>
+                    <button type="button" class="btn-primary" id="toStep4Btn">
+                        Continue to Account Activation
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ═══════════════════════════════════════════════════
+                 STEP 4: Account Activation (Paywall)
+            ═══════════════════════════════════════════════════ -->
+            <div class="form-step" data-step="4" id="step4">
+
+                <!-- Fee Display -->
+                <div class="fee-display">
+                    <div class="fee-badge">One-Time Account Activation</div>
+                    <h4>Activation Fee</h4>
+                    <div class="fee-amount dynamic-fee-amount">KES 1,050.00</div>
+                    <div class="fee-perks">
+                        <span>✓ Instant Profile Activation</span>
+                        <span>✓ Verified Delivery Partner Badge</span>
+                        <span>✓ Access to Real Delivery Jobs</span>
+                    </div>
+                </div>
+
+                <!-- Payment Method Selector -->
+                <div class="payment-method-selector">
+                    <h4 class="payment-section-title">Choose payment method</h4>
+                    <div class="payment-methods">
+                        <label class="payment-method active" data-method="stkpush" for="payMethodStk">
+                            <input type="radio" id="payMethodStk" name="paymentMethod" value="stkpush" checked>
+                            <div class="method-content">
+                                <div class="method-icon">📱</div>
+                                <div class="method-info">
+                                    <strong>M-Pesa STK Push</strong>
+                                    <span>Prompt goes to your phone</span>
+                                    <span class="method-badge">Instant</span>
+                                </div>
+                            </div>
+                        </label>
+
+                    </div>
+                </div>
+
+                <!-- STK Push Interface -->
+                <div id="stkPushInterface" class="payment-interface active">
+                    <div class="form-group">
+                        <label for="mpesaPhone">M-Pesa phone number <span class="required-star">*</span></label>
+                        <input type="tel" id="mpesaPhone" name="mpesaPhone"
+                            placeholder="e.g. 0712 345 678"
+                            data-sanitize-type="phone"
+                            maxlength="15">
+                        <span class="field-hint">The phone that will receive the M-Pesa PIN prompt</span>
+                        <span class="error-message" id="mpesaPhoneError"></span>
+                    </div>
+
+                    <div id="stkStatusCard" class="payment-status-card hidden">
+                        <div class="status-spinner"></div>
+                        <div class="payment-status-title" id="stkStatusTitle">Initiating payment...</div>
+                        <div class="payment-status-desc" id="stkStatusDesc">Please check your phone for the M-Pesa prompt.</div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-ghost" id="backToStep3Btn">← Back</button>
+                        <button type="button" class="btn-primary btn-pay" id="payWithMpesaBtn">
+                            <span class="pay-icon">📱</span>
+                            Pay <span class="dynamic-fee-amount">KES 1,050.00</span> via M-Pesa
+                        </button>
+                        <button type="button" class="btn-warning hidden" id="retryPaymentBtn">Retry Payment</button>
+                    </div>
+                </div>
+
+
+                <!-- Security Notice -->
+                <div class="security-notice">
+                    <svg viewBox="0 0 24 24" fill="none" stroke-width="2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                    </svg>
+                    <span>All payments are encrypted and processed securely via Safaricom Daraja M-Pesa API.</span>
+                </div>
+
+            </div><!-- /step4 -->
+
+        </form>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="partnerToast" class="partner-toast" role="alert" aria-live="polite"></div>
+
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" crossorigin="anonymous"></script>
+    <!-- Supabase Config -->
+    <script src="js/config/supabase-config.js"></script>
+    <!-- XSS Protection -->
+    <script src="js/security/xss-protection.js"></script>
+    <!-- Toast Notification System -->
+    <script src="js/utils/toast.js"></script>
+    <script src="js/utils/global-toast-init.js"></script>
+    <!-- Delivery Partner Form Controller -->
+    <script src="js/pages/delivery-partner-form.page.js"></script>
+</body>
+
+</html>

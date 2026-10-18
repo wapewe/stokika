@@ -255,9 +255,7 @@ class MpesaPaymentUI {
           <button id="retryPaymentBtn" class="btn btn-secondary">
             <i class="fas fa-redo"></i> Try Again
           </button>
-          <button id="showManualPaymentBtn" class="btn btn-link">
-            <i class="fas fa-hand-holding-usd"></i> Use Manual Payment Method
-          </button>
+
         </div>
       </div>
     `;
@@ -271,10 +269,6 @@ class MpesaPaymentUI {
 
     document.getElementById('retryPaymentBtn')?.addEventListener('click', () => {
       this.onCancel(); // Let parent handle retry
-    });
-
-    document.getElementById('showManualPaymentBtn')?.addEventListener('click', () => {
-      this.showManualPaymentFallback();
     });
 
     // Task 6.4: Auto-trigger status check after 2 seconds
@@ -322,9 +316,6 @@ class MpesaPaymentUI {
             this.manualStatusCheck();
           }
         }, 5000);
-      } else if (data.status === 'callback_missing' || data.manualFallbackRequired) {
-        // Task 6.5: Show manual payment option
-        this.showManualPaymentFallback();
       } else if (data.status === 'failed' || data.status === 'rejected') {
         this.showError(data.message || 'Payment failed', true);
       }
@@ -333,186 +324,6 @@ class MpesaPaymentUI {
       console.error('Manual status check error:', error);
       this.showError('Failed to check payment status. Please try again.', true);
     }
-  }
-
-  /**
-   * Task 6.6: Show manual payment fallback UI
-   */
-  showManualPaymentFallback() {
-    if (!this.currentPayment) return;
-
-    const html = `
-      <div class="payment-state manual-payment-state">
-        <div class="state-icon">
-          <i class="fas fa-hand-holding-usd"></i>
-        </div>
-        <h3>Manual Payment Method</h3>
-        <p>You can complete your payment using M-Pesa Paybill instead:</p>
-
-        <div class="manual-payment-instructions">
-          <div class="instruction-step">
-            <span class="step-number">1</span>
-            <div class="step-content">
-              <strong>Go to M-Pesa Menu</strong>
-              <p>On your phone, go to M-Pesa menu</p>
-            </div>
-          </div>
-
-          <div class="instruction-step">
-            <span class="step-number">2</span>
-            <div class="step-content">
-              <strong>Select Lipa na M-Pesa</strong>
-              <p>Choose "Lipa na M-Pesa" then "Pay Bill"</p>
-            </div>
-          </div>
-
-          <div class="instruction-step">
-            <span class="step-number">3</span>
-            <div class="step-content">
-              <strong>Enter Business Number</strong>
-              <div class="copy-field">
-                <code id="paybillNumber">174379</code>
-                <button class="copy-btn" data-copy="paybillNumber">
-                  <i class="fas fa-copy"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="instruction-step">
-            <span class="step-number">4</span>
-            <div class="step-content">
-              <strong>Enter Account Reference</strong>
-              <div class="copy-field">
-                <code id="accountRef">${this.sanitizeInput(this.currentPayment.merchantRequestId)}</code>
-                <button class="copy-btn" data-copy="accountRef">
-                  <i class="fas fa-copy"></i>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <div class="instruction-step">
-            <span class="step-number">5</span>
-            <div class="step-content">
-              <strong>Enter Amount</strong>
-              <div class="amount-display">
-                KES ${this.currentPayment.amount}
-              </div>
-            </div>
-          </div>
-
-          <div class="instruction-step">
-            <span class="step-number">6</span>
-            <div class="step-content">
-              <strong>Enter your M-Pesa PIN and confirm</strong>
-            </div>
-          </div>
-        </div>
-
-        <div class="verification-info">
-          <i class="fas fa-info-circle"></i>
-          <p>After completing the payment, click the button below. Our team will verify your payment within <strong>15-30 minutes</strong>.</p>
-        </div>
-
-        <div class="manual-payment-actions">
-          <button id="confirmManualPaymentBtn" class="btn btn-primary">
-            <i class="fas fa-check-circle"></i> I've Completed Payment
-          </button>
-          <button id="retrySTKBtn" class="btn btn-link">
-            <i class="fas fa-redo"></i> Try STK Push Again
-          </button>
-        </div>
-      </div>
-    `;
-
-    this.container.innerHTML = html;
-
-    // Bind copy buttons
-    document.querySelectorAll('.copy-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const targetId = e.currentTarget.dataset.copy;
-        this.copyToClipboard(targetId);
-      });
-    });
-
-    // Bind action buttons
-    document.getElementById('confirmManualPaymentBtn')?.addEventListener('click', () => {
-      this.submitManualPaymentConfirmation();
-    });
-
-    document.getElementById('retrySTKBtn')?.addEventListener('click', () => {
-      this.onCancel(); // Let parent handle retry
-    });
-  }
-
-  /**
-   * Task 6.7: Submit manual payment confirmation
-   * 
-   * SECURITY: Server updates status, client just notifies
-   */
-  async submitManualPaymentConfirmation() {
-    if (!this.currentPayment) return;
-
-    try {
-      this.showPaymentProgress('Submitting confirmation...', false);
-
-      // SECURITY: Server-side function updates payment status
-      const { data, error } = await this.supabase
-        .from('stokika_kit_payments')
-        .update({
-          payment_status: 'manual_verification_pending',
-          manual_payment_confirmed_at: new Date().toISOString()
-        })
-        .eq('checkout_request_id', this.currentPayment.checkoutRequestId)
-        .select()
-        .single();
-
-      if (error) throw error;
-
-      // Show confirmation
-      this.showManualPaymentConfirmed(data.id);
-
-    } catch (error) {
-      console.error('Manual payment confirmation error:', error);
-      this.showError('Failed to submit confirmation. Please contact support.', false);
-    }
-  }
-
-  /**
-   * Task 6.7: Show manual payment confirmed state
-   */
-  showManualPaymentConfirmed(paymentId) {
-    const html = `
-      <div class="payment-state success-state">
-        <div class="state-icon">
-          <i class="fas fa-check-circle"></i>
-        </div>
-        <h3>Confirmation Received</h3>
-        <p>Thank you! We've received your manual payment confirmation.</p>
-
-        <div class="reference-info">
-          <strong>Reference Number:</strong>
-          <code>${this.sanitizeInput(paymentId.substring(0, 8))}</code>
-        </div>
-
-        <div class="next-steps">
-          <h4>What happens next?</h4>
-          <ul>
-            <li>Our team will verify your M-Pesa payment</li>
-            <li>Verification typically takes <strong>15-30 minutes</strong></li>
-            <li>You'll receive an SMS confirmation once verified</li>
-            <li>Your account will be activated automatically</li>
-          </ul>
-        </div>
-
-        <div class="support-info">
-          <p>If you don't hear from us within 30 minutes, please contact support with your reference number.</p>
-        </div>
-      </div>
-    `;
-
-    this.container.innerHTML = html;
   }
 
   /**

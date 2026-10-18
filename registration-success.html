@@ -344,25 +344,18 @@
                     <p>Once approved, you will receive an SMS and email notification with your approval status.</p>
                 </div>
             </div>
+
             <div class="timeline-item">
                 <div class="timeline-number">3</div>
                 <div class="timeline-content">
-                    <h4>Stage 3: Starter Kit Payment</h4>
-                    <p>Use your application code to complete your starter kit payment and activate your onboarding kit.</p>
-                </div>
-            </div>
-            <div class="timeline-item">
-                <div class="timeline-number">4</div>
-                <div class="timeline-content">
-                    <h4>Stage 4: Training & Deployment</h4>
-                    <p>Complete your orientation training, receive your starter kit and credentials, and begin field operations.</p>
+                    <h4>Stage 3 Training & Deployment</h4>
+                    <p>Complete your orientation training, receive your starter kit and credentials, and begin operations.</p>
                 </div>
             </div>
         </div>
         
         <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
-            <a href="dalana.html" class="btn-secondary" style="margin-left: 0;">Back to Home</a>
-            <a id="kitPaymentBtn" href="kit-payment.html" class="btn-primary">Proceed to Kit Payment</a>
+            <a href="dalana.html" class="btn-primary" style="margin-left: 0;">Back to Home</a>
         </div>
         
         <p style="margin-top: 2rem; color: #999; font-size: 0.9rem;">
@@ -390,10 +383,6 @@
             
             if (code && code !== 'undefined' && code !== 'null') {
                 document.getElementById('appCode').textContent = code;
-                const kitPaymentBtn = document.getElementById('kitPaymentBtn');
-                if (kitPaymentBtn) {
-                    kitPaymentBtn.href = `kit-payment.html?code=${encodeURIComponent(code)}`;
-                }
                 successContainer.style.display = 'block';
             } else {
                 errorContainer.style.display = 'block';

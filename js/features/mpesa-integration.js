@@ -135,7 +135,7 @@ class MpesaIntegrationClient {
                     status: data.payment_status,
                     mpesaReceiptNumber: data.mpesa_receipt_number,
                     transactionDate: data.transaction_date,
-                    failureReason: data.failure_reason,
+                    failureReason: data.failure_reason, // Already user-friendly from callback
                     createdAt: data.created_at,
                     updatedAt: data.updated_at
                 }
@@ -248,72 +248,6 @@ class MpesaIntegrationClient {
      * 
      * Requirements: 6.3, 6.4
      */
-    async submitManualPayment(verificationData) {
-        try {
-            // Validate inputs
-            const validation = this._validateManualPaymentInput(verificationData);
-            if (!validation.valid) {
-                return {
-                    success: false,
-                    error: 'VALIDATION_ERROR',
-                    message: validation.message
-                };
-            }
-
-            // Call Edge Function verify-kit-manual-payment to verify against database
-            try {
-                const { data: verifyResult, error: fnError } = await this.supabase.functions.invoke('verify-kit-manual-payment', {
-                    body: {
-                        application_code: verificationData.applicationCode,
-                        mpesa_code: verificationData.mpesaCode,
-                        phone_number: verificationData.phoneNumber,
-                        amount: verificationData.amount,
-                        user_type: verificationData.userType
-                    }
-                });
-
-                if (fnError) {
-                    console.error('[MpesaClient] Edge function error:', fnError);
-                    return {
-                        success: false,
-                        error: 'VERIFICATION_ERROR',
-                        message: fnError.message || 'Payment verification failed. Please try again.'
-                    };
-                }
-
-                if (!verifyResult?.success) {
-                    return {
-                        success: false,
-                        error: 'PAYMENT_UNVERIFIED',
-                        message: verifyResult?.error || 'M-Pesa transaction was not found in the database. Please ensure you have completed the Paybill payment.'
-                    };
-                }
-
-                return {
-                    success: true,
-                    verified: true,
-                    message: verifyResult.message || 'Payment verified successfully! Your account is active.',
-                    data: verifyResult.data
-                };
-            } catch (invokeErr) {
-                console.error('[MpesaClient] Verification invoke error:', invokeErr);
-                return {
-                    success: false,
-                    error: 'NETWORK_ERROR',
-                    message: 'Unable to verify payment with server. Please check your internet connection.'
-                };
-            }
-
-        } catch (error) {
-            console.error('Error submitting manual payment:', error);
-            return {
-                success: false,
-                error: 'UNKNOWN_ERROR',
-                message: 'An unexpected error occurred while verifying your payment',
-                details: error.message
-            };
-        }
-    }
 
     /**
      * Validate STK Push input data
@@ -350,61 +284,6 @@ class MpesaIntegrationClient {
         // Validate user type
         if (!['field_agent', 'supervisor', 'vendor'].includes(paymentData.userType)) {
             return { valid: false, message: 'User type must be field_agent, supervisor, or vendor' };
-        }
-
-        return { valid: true };
-    }
-
-    /**
-     * Validate manual payment input data
-     * @private
-     */
-    _validateManualPaymentInput(verificationData) {
-        if (!verificationData) {
-            return { valid: false, message: 'Verification data is required' };
-        }
-
-        // Validate application code
-        if (!verificationData.applicationCode) {
-            return { valid: false, message: 'Application code is required' };
-        }
-
-        // Validate M-Pesa receipt code format (10 alphanumeric characters)
-        if (!verificationData.mpesaCode) {
-            return { valid: false, message: 'M-Pesa receipt code is required' };
-        }
-
-        const receiptRegex = /^[A-Z0-9]{10}$/i;
-        if (!receiptRegex.test(verificationData.mpesaCode)) {
-            return {
-                valid: false,
-                message: 'Invalid M-Pesa receipt code format. Should be 10 alphanumeric characters (e.g., QA12BC3456)'
-            };
-        }
-
-        // Validate phone number
-        if (!verificationData.phoneNumber) {
-            return { valid: false, message: 'Phone number is required' };
-        }
-
-        const phoneRegex = /^254[0-9]{9}$/;
-        if (!phoneRegex.test(verificationData.phoneNumber)) {
-            return {
-                valid: false,
-                message: 'Invalid phone number format. Please use format: 254XXXXXXXXX'
-            };
-        }
-
-        // Validate amount
-        if (!verificationData.amount || typeof verificationData.amount !== 'number') {
-            return { valid: false, message: 'Valid payment amount is required' };
-        }
-
-        if (verificationData.amount < 100 || verificationData.amount > 100000) {
-            return {
-                valid: false,
-                message: 'Payment amount must be between KES 100 and KES 100,000'
-            };
         }
 
         return { valid: true };
