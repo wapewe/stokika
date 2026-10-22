@@ -290,14 +290,14 @@ async function loadAgents(page = 1) {
         updateAgentsPagination();
     } catch (error) {
         console.error('Error loading agents:', error);
-        document.getElementById('agentsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">Error loading data</div>');
+        document.getElementById('agentsTable').innerHTML = XSSProtection.sanitize('<div class="no-data">Error loading data</div>');
     }
     document.getElementById('agentsLoading').style.display = 'none';
 }
 
 function displayAgents(agents, totalCount = 0) {
     if (!agents || agents.length === 0) {
-        document.getElementById('agentsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">No field agent accounts found</div>');
+        document.getElementById('agentsTable').innerHTML = XSSProtection.sanitize('<div class="no-data">No field agent accounts found</div>');
         return;
     }
 
@@ -346,7 +346,7 @@ function displayAgents(agents, totalCount = 0) {
             </tbody>
         </table>
     `;
-    document.getElementById('agentsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(table);
+    document.getElementById('agentsTable').innerHTML = XSSProtection.sanitize(table);
 }
 
 // Load agents by payment status
@@ -385,7 +385,7 @@ async function loadAgentsByPaymentStatus(filter) {
         displayAgentsByPaymentStatus(data || [], filter, tableElement);
     } catch (error) {
         console.error('Error loading agents by payment status:', error);
-        document.getElementById(tableElement).innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">Error loading data</div>');
+        document.getElementById(tableElement).innerHTML = XSSProtection.sanitize('<div class="no-data">Error loading data</div>');
     }
     
     document.getElementById(loadingElement).style.display = 'none';
@@ -394,7 +394,7 @@ async function loadAgentsByPaymentStatus(filter) {
 function displayAgentsByPaymentStatus(agents, filter, tableElement) {
     if (!agents || agents.length === 0) {
         const message = filter === 'paid' ? 'No paid field agents found' : 'No field agents pending payment';
-        document.getElementById(tableElement).innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(`<div class="no-data">${XSSProtection.escapeHtml(message)}</div>`);
+        document.getElementById(tableElement).innerHTML = XSSProtection.sanitize(`<div class="no-data">${XSSProtection.escapeHtml(message)}</div>`);
         return;
     }
     
@@ -461,7 +461,7 @@ function displayAgentsByPaymentStatus(agents, filter, tableElement) {
             </tbody>
         </table>
     `;
-    document.getElementById(tableElement).innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(table);
+    document.getElementById(tableElement).innerHTML = XSSProtection.sanitize(table);
 }
 
 function updateAgentsPagination() {
@@ -671,14 +671,14 @@ async function loadUsers(page = 1) {
         updateUsersPagination();
     } catch (error) {
         console.error('Error loading users:', error);
-        document.getElementById('usersTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">Error loading users: ' + XSSProtection.escapeHtml(error.message) + '</div>');
+        document.getElementById('usersTable').innerHTML = XSSProtection.sanitize('<div class="no-data">Error loading users: ' + XSSProtection.escapeHtml(error.message) + '</div>');
     }
     document.getElementById('usersLoading').style.display = 'none';
 }
 
 function displayUsers(users, totalCount = 0) {
     if (!users || users.length === 0) {
-        document.getElementById('usersTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">No users found</div>');
+        document.getElementById('usersTable').innerHTML = XSSProtection.sanitize('<div class="no-data">No users found</div>');
         return;
     }
 
@@ -796,7 +796,7 @@ function displayUsers(users, totalCount = 0) {
             </div>
         </div>
     `;
-    document.getElementById('usersTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(content);
+    document.getElementById('usersTable').innerHTML = XSSProtection.sanitize(content);
 }
 
 function updateUsersPagination() {
@@ -1263,14 +1263,14 @@ async function loadVendors() {
         displayVendors(data || []);
     } catch (error) {
         console.error('Error loading vendors:', error);
-        document.getElementById('vendorsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">Error loading data</div>');
+        document.getElementById('vendorsTable').innerHTML = XSSProtection.sanitize('<div class="no-data">Error loading data</div>');
     }
     document.getElementById('vendorsLoading').style.display = 'none';
 }
 
 function displayVendors(vendors) {
     if (!vendors || vendors.length === 0) {
-        document.getElementById('vendorsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">No vendor accounts found</div>');
+        document.getElementById('vendorsTable').innerHTML = XSSProtection.sanitize('<div class="no-data">No vendor accounts found</div>');
         return;
     }
     const table = `
@@ -1299,7 +1299,7 @@ function displayVendors(vendors) {
             </tbody>
         </table>
     `;
-    document.getElementById('vendorsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(table);
+    document.getElementById('vendorsTable').innerHTML = XSSProtection.sanitize(table);
 }
 
 async function loadSuppliers() {
@@ -1316,14 +1316,14 @@ async function loadSuppliers() {
         displaySuppliers(data || []);
     } catch (error) {
         console.error('Error loading suppliers:', error);
-        document.getElementById('suppliersTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">Error loading data</div>');
+        document.getElementById('suppliersTable').innerHTML = XSSProtection.sanitize('<div class="no-data">Error loading data</div>');
     }
     document.getElementById('suppliersLoading').style.display = 'none';
 }
 
 function displaySuppliers(suppliers) {
     if (!suppliers || suppliers.length === 0) {
-        document.getElementById('suppliersTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">No supplier accounts found</div>');
+        document.getElementById('suppliersTable').innerHTML = XSSProtection.sanitize('<div class="no-data">No supplier accounts found</div>');
         return;
     }
     const table = `
@@ -1352,7 +1352,7 @@ function displaySuppliers(suppliers) {
             </tbody>
         </table>
     `;
-    document.getElementById('suppliersTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(table);
+    document.getElementById('suppliersTable').innerHTML = XSSProtection.sanitize(table);
 }
 
 async function loadContacts() {
@@ -1364,14 +1364,14 @@ async function loadContacts() {
         displayContacts(data || []);
     } catch (error) {
         console.error('Error loading contacts:', error);
-        document.getElementById('contactsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">Error loading data</div>');
+        document.getElementById('contactsTable').innerHTML = XSSProtection.sanitize('<div class="no-data">Error loading data</div>');
     }
     document.getElementById('contactsLoading').style.display = 'none';
 }
 
 function displayContacts(contacts) {
     if (!contacts || contacts.length === 0) {
-        document.getElementById('contactsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">No contacts found</div>');
+        document.getElementById('contactsTable').innerHTML = XSSProtection.sanitize('<div class="no-data">No contacts found</div>');
         return;
     }
     const table = `
@@ -1402,7 +1402,7 @@ function displayContacts(contacts) {
             </tbody>
         </table>
     `;
-    document.getElementById('contactsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(table);
+    document.getElementById('contactsTable').innerHTML = XSSProtection.sanitize(table);
 }
 
 window.viewAgentDetails = function(agentId) {
@@ -1421,7 +1421,7 @@ window.manageAgent = async function(agentId) {
 
         const modal = document.createElement('div');
         modal.className = 'modal show';
-        modal.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(`
+        modal.innerHTML = XSSProtection.sanitize(`
             <div class="modal-content">
                 <div class="modal-header">
   ...               <h2>Manage Field Agent: ${sanitize(agent.full_name)}</h2>
@@ -1458,13 +1458,13 @@ window.manageAgent = async function(agentId) {
                         <textarea id="agentNotes" rows="3">${sanitize(agent.interview_notes || '')}</textarea>
                     </div>
                     <div style="display:flex;gap:1rem;margin-top:1.5rem">
-                        <button class="btn-submit" onclick="saveAgentStatus('${sanitize(agentId)}')">Save Changes</button>
-                        <button class="btn-action btn-approve" onclick="promoteAgentToSupervisor('${sanitize(agentId)}')">Promote to Supervisor</button>
-                        <button class="btn-action btn-email" onclick="emailAgent('${sanitize(agent.email)}', '${sanitize(agent.full_name)}')">Send Email</button>
+                        <button class="btn-submit" onclick="saveAgentStatus('${agentId}')">Save Changes</button>
+                        <button class="btn-action btn-approve" onclick="promoteAgentToSupervisor('${agentId}')">Promote to Supervisor</button>
+                        <button class="btn-action btn-email" onclick="emailAgent('${agent.email}', '${agent.full_name}')">Send Email</button>
                     </div>
                 </div>
             </div>
-        `;
+        `)
         document.body.appendChild(modal);
     } catch (error) {
         console.error('Error loading agent:', error);
@@ -1606,14 +1606,14 @@ async function loadSupervisors(page = 1) {
         updateSupervisorsPagination();
     } catch (error) {
         console.error('Error loading supervisors:', error);
-        document.getElementById('supervisorsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">Error loading data</div>');
+        document.getElementById('supervisorsTable').innerHTML = XSSProtection.sanitize('<div class="no-data">Error loading data</div>');
     }
     document.getElementById('supervisorsLoading').style.display = 'none';
 }
 
 function displaySupervisors(supervisors, totalCount = 0) {
     if (!supervisors || supervisors.length === 0) {
-        document.getElementById('supervisorsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">No supervisor accounts found</div>');
+        document.getElementById('supervisorsTable').innerHTML = XSSProtection.sanitize('<div class="no-data">No supervisor accounts found</div>');
         return;
     }
 
@@ -1659,7 +1659,7 @@ function displaySupervisors(supervisors, totalCount = 0) {
             </tbody>
         </table>
     `;
-    document.getElementById('supervisorsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(table);
+    document.getElementById('supervisorsTable').innerHTML = XSSProtection.sanitize(table);
 }
 
 // Load supervisors by payment status
@@ -1698,7 +1698,7 @@ async function loadSupervisorsByPaymentStatus(filter) {
         displaySupervisorsByPaymentStatus(data || [], filter, tableElement);
     } catch (error) {
         console.error('Error loading supervisors by payment status:', error);
-        document.getElementById(tableElement).innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">Error loading data</div>');
+        document.getElementById(tableElement).innerHTML = XSSProtection.sanitize('<div class="no-data">Error loading data</div>');
     }
     
     document.getElementById(loadingElement).style.display = 'none';
@@ -1707,7 +1707,7 @@ async function loadSupervisorsByPaymentStatus(filter) {
 function displaySupervisorsByPaymentStatus(supervisors, filter, tableElement) {
     if (!supervisors || supervisors.length === 0) {
         const message = filter === 'paid' ? 'No paid supervisors found' : 'No supervisors pending payment';
-        document.getElementById(tableElement).innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(`<div class="no-data">${XSSProtection.escapeHtml(message)}</div>`);
+        document.getElementById(tableElement).innerHTML = XSSProtection.sanitize(`<div class="no-data">${XSSProtection.escapeHtml(message)}</div>`);
         return;
     }
     
@@ -1774,7 +1774,7 @@ function displaySupervisorsByPaymentStatus(supervisors, filter, tableElement) {
             </tbody>
         </table>
     `;
-    document.getElementById(tableElement).innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(table);
+    document.getElementById(tableElement).innerHTML = XSSProtection.sanitize(table);
 }
 
 function updateSupervisorsPagination() {
@@ -1831,7 +1831,7 @@ window.manageSupervisor = async function(supervisorId) {
 
         const modal = document.createElement('div');
         modal.className = 'modal show';
-        modal.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(`
+        modal.innerHTML = XSSProtection.sanitize(`
             <div class="modal-content">
                 <div class="modal-header">
   ...               <h2>Manage Supervisor: ${sanitize(supervisor.full_name)}</h2>
@@ -1878,7 +1878,7 @@ window.manageSupervisor = async function(supervisorId) {
                     </div>
                 </div>
             </div>
-        `;
+        `)
         document.body.appendChild(modal);
     } catch (error) {
         console.error('Error loading supervisor:', error);
@@ -2105,7 +2105,7 @@ async function loadPerformanceMetrics() {
         if (data) {
             const metricsContainer = document.querySelector('#advanced-tab .stats-grid');
             if (metricsContainer) {
-                metricsContainer.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(`
+                metricsContainer.innerHTML = XSSProtection.sanitize(`
                     <div style="padding: 1rem; background: #f9fafb; border-radius: 8px;">
                         <p style="color: #6b7280; font-size: 0.875rem; margin: 0 0 0.5rem 0;">Database Size</p>
                         <p style="font-size: 1.5rem; font-weight: 600; color: #111827; margin: 0;">${sanitize(data.database_size || 'N/A')}</p>
@@ -2130,7 +2130,7 @@ async function loadPerformanceMetrics() {
                         <p style="color: #6b7280; font-size: 0.875rem; margin: 0 0 0.5rem 0;">Active Agents</p>
                         <p style="font-size: 1.5rem; font-weight: 600; color: #111827; margin: 0;">${sanitize(data.total_agents || 0)}</p>
                     </div>
-                `;
+                `)
             }
         }
     } catch (error) {
@@ -2269,14 +2269,14 @@ window.loadOrders = async function() {
         displayOrders(data || []);
     } catch (error) {
         console.error('Error loading orders:', error);
-        document.getElementById('ordersTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">Error loading orders</div>');
+        document.getElementById('ordersTable').innerHTML = XSSProtection.sanitize('<div class="no-data">Error loading orders</div>');
     }
     document.getElementById('ordersLoading').style.display = 'none';
 }
 
 function displayOrders(orders) {
     if (!orders || orders.length === 0) {
-        document.getElementById('ordersTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">No orders found</div>');
+        document.getElementById('ordersTable').innerHTML = XSSProtection.sanitize('<div class="no-data">No orders found</div>');
         return;
     }
     
@@ -2322,7 +2322,7 @@ function displayOrders(orders) {
             </tbody>
         </table>
     `;
-    document.getElementById('ordersTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(table);
+    document.getElementById('ordersTable').innerHTML = XSSProtection.sanitize(table);
 }
 
 window.processOrder = async function(orderId) {
@@ -2407,14 +2407,14 @@ window.loadPayments = async function() {
         displayPayments(data || []);
     } catch (error) {
         console.error('Error loading payments:', error);
-        document.getElementById('paymentsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">Error loading payments</div>');
+        document.getElementById('paymentsTable').innerHTML = XSSProtection.sanitize('<div class="no-data">Error loading payments</div>');
     }
     document.getElementById('paymentsLoading').style.display = 'none';
 }
 
 function displayPayments(payments) {
     if (!payments || payments.length === 0) {
-        document.getElementById('paymentsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">No payments found</div>');
+        document.getElementById('paymentsTable').innerHTML = XSSProtection.sanitize('<div class="no-data">No payments found</div>');
         return;
     }
     
@@ -2454,7 +2454,7 @@ function displayPayments(payments) {
             </tbody>
         </table>
     `;
-    document.getElementById('paymentsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(table);
+    document.getElementById('paymentsTable').innerHTML = XSSProtection.sanitize(table);
 }
 
 window.verifyPayment = async function(paymentId) {
@@ -2522,7 +2522,7 @@ async function loadGPSTracking() {
     document.getElementById('gpsLoading').style.display = 'block';
     const territoryManager = new TerritoryManager();
     const report = await territoryManager.generateCoverageReport('all');
-    document.getElementById('gpsContent').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(`
+    document.getElementById('gpsContent').innerHTML = XSSProtection.sanitize(`
         <div class="gps-dashboard">
             <h3>Territory Coverage</h3>
          ...<p>GPS tracking and territory management system active</p>
@@ -2532,7 +2532,7 @@ async function loadGPSTracking() {
                 <div class="stat-card"><div class="stat-number">${sanitize(report?.coveragePercentage || 0)}%</div><div class="stat-label">Coverage</div></div>
             </div>
         </div>
-    `;
+    `)
     document.getElementById('gpsLoading').style.display = 'none';
 }
 
@@ -2541,7 +2541,7 @@ async function loadAnalytics() {
     document.getElementById('analyticsLoading').style.display = 'block';
     const analytics = new PredictiveAnalytics();
     const trends = await analytics.analyzeMarketTrends();
-    document.getElementById('analyticsContent').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(`
+    document.getElementById('analyticsContent').innerHTML = XSSProtection.sanitize(`
         <div class="analytics-dashboard">
             <h3>Market Analytics</h3>
      ...    <div class="stats-grid">
@@ -2551,7 +2551,7 @@ async function loadAnalytics() {
                 <div class="stat-card"><div class="stat-number">${sanitize(trends?.marketHealth || 'N/A')}</div><div class="stat-label">Market Health</div></div>
             </div>
         </div>
-    `;
+    `)
     document.getElementById('analyticsLoading').style.display = 'none';
 }
 
@@ -2578,14 +2578,14 @@ async function loadApplications() {
         displayApplications(allApplications);
     } catch (error) {
         console.error('Error loading applications:', error);
-        document.getElementById('applicationsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">Error loading applications</div>');
+        document.getElementById('applicationsTable').innerHTML = XSSProtection.sanitize('<div class="no-data">Error loading applications</div>');
     }
     document.getElementById('applicationsLoading').style.display = 'none';
 }
 
 function displayApplications(applications) {
     if (!applications || applications.length === 0) {
-        document.getElementById('applicationsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">No applications found</div>');
+        document.getElementById('applicationsTable').innerHTML = XSSProtection.sanitize('<div class="no-data">No applications found</div>');
         return;
     }
     
@@ -2629,7 +2629,7 @@ function displayApplications(applications) {
             </tbody>
         </table>
     `;
-    document.getElementById('applicationsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(table);
+    document.getElementById('applicationsTable').innerHTML = XSSProtection.sanitize(table);
 }
 
 window.viewApplication = async function(type, id) {
@@ -2658,7 +2658,7 @@ window.viewApplication = async function(type, id) {
         
         const modal = document.createElement('div');
         modal.className = 'modal show';
-        modal.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(`
+        modal.innerHTML = XSSProtection.sanitize(`
             <div class="modal-content">
                 <div class="modal-header">
   ...               <h2>Application Details - ${sanitize(type.replace('_', ' ').toUpperCase())}</h2>
@@ -2689,7 +2689,7 @@ window.viewApplication = async function(type, id) {
                     <button class="btn-submit" onclick="this.closest('.modal').remove()">Close</button>
                 </div>
             </div>
-        `;
+        `);
         document.body.appendChild(modal);
     } catch (error) {
         console.error('Error loading application:', error);
@@ -2760,7 +2760,7 @@ async function loadOnboarding() {
         </div>
     `;
     
-    document.getElementById('admin-onboarding-content').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(content);
+    document.getElementById('admin-onboarding-content').innerHTML = XSSProtection.sanitize(content);
     await loadOnboardingStats();
     await loadAgentApplications();
     await loadSupervisorApplications();
@@ -2816,7 +2816,7 @@ async function loadAgentApplications(page = 1) {
         if (error) throw error;
         
         if (!data || data.length === 0) {
-            document.getElementById('agentApplicationsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">No pending applications</div>');
+            document.getElementById('agentApplicationsTable').innerHTML = XSSProtection.sanitize('<div class="no-data">No pending applications</div>');
             return;
         }
 
@@ -2857,10 +2857,10 @@ async function loadAgentApplications(page = 1) {
                 <button class="btn-pagination" onclick="window.loadAgentApplications(${currentAgentAppsPage + 1})" ${currentAgentAppsPage >= totalAgentAppsPages ? 'disabled' : ''}>Next</button>
             </div>
         `;
-        document.getElementById('agentApplicationsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(table);
+        document.getElementById('agentApplicationsTable').innerHTML = XSSProtection.sanitize(table);
     } catch (error) {
         console.error('Error loading agent applications:', error);
-        document.getElementById('agentApplicationsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">Error loading data</div>');
+        document.getElementById('agentApplicationsTable').innerHTML = XSSProtection.sanitize('<div class="no-data">Error loading data</div>');
     }
 }
 
@@ -2890,7 +2890,7 @@ async function loadSupervisorApplications(page = 1) {
         if (error) throw error;
         
         if (!data || data.length === 0) {
-            document.getElementById('supervisorApplicationsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">No pending applications</div>');
+            document.getElementById('supervisorApplicationsTable').innerHTML = XSSProtection.sanitize('<div class="no-data">No pending applications</div>');
             return;
         }
 
@@ -2931,10 +2931,10 @@ async function loadSupervisorApplications(page = 1) {
                 <button class="btn-pagination" onclick="window.loadSupervisorApplications(${currentSupervisorAppsPage + 1})" ${currentSupervisorAppsPage >= totalSupervisorAppsPages ? 'disabled' : ''}>Next</button>
             </div>
         `;
-        document.getElementById('supervisorApplicationsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(table);
+        document.getElementById('supervisorApplicationsTable').innerHTML = XSSProtection.sanitize(table);
     } catch (error) {
         console.error('Error loading supervisor applications:', error);
-        document.getElementById('supervisorApplicationsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">Error loading data</div>');
+        document.getElementById('supervisorApplicationsTable').innerHTML = XSSProtection.sanitize('<div class="no-data">Error loading data</div>');
     }
 }
 
@@ -3074,7 +3074,7 @@ async function loadOngoingOnboarding(page = 1) {
         if (error) throw error;
         
         if (!data || data.length === 0) {
-            document.getElementById('ongoingOnboardingTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">No ongoing onboarding processes</div>');
+            document.getElementById('ongoingOnboardingTable').innerHTML = XSSProtection.sanitize('<div class="no-data">No ongoing onboarding processes</div>');
             return;
         }
 
@@ -3113,10 +3113,10 @@ async function loadOngoingOnboarding(page = 1) {
                 <button class="btn-pagination" onclick="window.loadOngoingOnboarding(${currentOnboardingPage + 1})" ${currentOnboardingPage >= totalOnboardingPages ? 'disabled' : ''}>Next</button>
             </div>
         `;
-        document.getElementById('ongoingOnboardingTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(table);
+        document.getElementById('ongoingOnboardingTable').innerHTML = XSSProtection.sanitize(table);
     } catch (error) {
         console.error('Error loading ongoing onboarding:', error);
-        document.getElementById('ongoingOnboardingTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<div class="no-data">Error loading data</div>');
+        document.getElementById('ongoingOnboardingTable').innerHTML = XSSProtection.sanitize('<div class="no-data">Error loading data</div>');
     }
 }
 
@@ -3139,7 +3139,7 @@ window.viewOnboardingSteps = async function(userId) {
         const modal = document.createElement('div');
         modal.className = 'modal show';
         modal.style.maxWidth = '900px';
-        modal.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(`
+        modal.innerHTML = XSSProtection.sanitize(`
             <div class="modal-content">
                 <div class="modal-header">
   ...               <h2>📋 Comprehensive Onboarding: ${sanitize(user.data.name)}</h2>
@@ -3293,7 +3293,7 @@ window.viewOnboardingSteps = async function(userId) {
                     <button class="btn-submit" onclick="this.closest('.modal').remove()">Close</button>
                 </div>
             </div>
-        `;
+        `);
         document.body.appendChild(modal);
     } catch (error) {
         console.error('Error loading onboarding details:', error);
@@ -3312,7 +3312,7 @@ window.manageComprehensiveOnboarding = async function(userId) {
         const modal = document.createElement('div');
         modal.className = 'modal show';
         modal.style.maxWidth = '800px';
-        modal.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(`
+        modal.innerHTML = XSSProtection.sanitize(`
             <div class="modal-content">
                 <div class="modal-header">
   ...               <h2>Manage Onboarding: ${sanitize(user.name)}</h2>
@@ -3394,7 +3394,7 @@ window.manageComprehensiveOnboarding = async function(userId) {
                     <button class="btn-action btn-view" onclick="this.closest('.modal').remove()">Cancel</button>
                 </div>
             </div>
-        `;
+        `);
         document.body.appendChild(modal);
     } catch (error) {
         console.error('Error loading onboarding management:', error);
@@ -3646,7 +3646,7 @@ window.sendKitPaymentLink = async function(applicationIdOrCode) {
         // Show modal with link
         const modal = document.createElement('div');
         modal.className = 'modal show';
-        modal.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(`
+        modal.innerHTML = XSSProtection.sanitize(`
             <div class="modal-content">
                 <div class="modal-header">
   ...               <h2>Kit Payment Link Generated</h2>
@@ -3673,7 +3673,7 @@ window.sendKitPaymentLink = async function(applicationIdOrCode) {
                     <button class="btn-submit" onclick="this.closest('.modal').remove()">Close</button>
                 </div>
             </div>
-        `;
+        `)
         document.body.appendChild(modal);
     } catch (error) {
         console.error('Error generating payment link:', error);
@@ -3711,7 +3711,7 @@ window.manageOnboardingSteps = async function(userId) {
 
         const modal = document.createElement('div');
         modal.className = 'modal show';
-        modal.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(`
+        modal.innerHTML = XSSProtection.sanitize(`
             <div class="modal-content">
                 <div class="modal-header">
   ...               <h2>Manage Onboarding: ${sanitize(user.name)}</h2>
@@ -3745,7 +3745,7 @@ window.manageOnboardingSteps = async function(userId) {
                     <button class="btn-action btn-view" onclick="this.closest('.modal').remove()">Cancel</button>
                 </div>
             </div>
-        `;
+        `)
         document.body.appendChild(modal);
     } catch (error) {
         console.error('Error loading user:', error);
@@ -3788,7 +3788,7 @@ window.showKitPaymentModal = function(name, email, phone, userType, password, ki
     const modal = document.createElement('div');
     modal.className = 'modal show';
     modal.id = 'kitPaymentModal';
-    modal.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(`
+    modal.innerHTML = XSSProtection.sanitize(`
         <div class="modal-content">
             <div class="modal-header">
           ...   <h2>💼 Stokika Kit Payment Required</h2>
@@ -3860,7 +3860,7 @@ window.showKitPaymentModal = function(name, email, phone, userType, password, ki
                 <button class="btn-action btn-view" onclick="this.closest('.modal').remove()">Cancel</button>
             </div>
         </div>
-    `;
+    `);
     document.body.appendChild(modal);
     
     // Add event listener for payment method change
@@ -4393,3 +4393,7 @@ if (document.readyState === 'loading') {
 } else {
     initializeEventListeners();
 }
+
+
+
+

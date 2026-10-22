@@ -151,17 +151,17 @@ class BulkOperations {
             
             resultsSection.innerHTML = XSSProtection.sanitize(`
                 <div class="import-summary">
-                    <h3>Import Complete<...>
-                    <p>✅ Successfully imported: ${sanitize(results.success)}</p>
-                    <p>❌ Failed records: ${sanitize(results.failed)}</p>
-                    ${sanitize(results.errors.length > 0 ? `)
+                    <h3>Import Complete</h3>
+                    <p>✅ Successfully imported: ${results.success}</p>
+                    <p>❌ Failed records: ${results.failed}</p>
+                    ${results.errors.length > 0 ? `
                         <details>
                             <summary>View Errors</summary>
-                            <ul>${results.errors.map(err => `<li>${err)}</li>`).join('')}</ul>
+                            <ul>${results.errors.map(err => `<li>${err}</li>`).join('')}</ul>
                         </details>
                     ` : ''}
                 </div>
-            `;
+            `);
             resultsSection.style.display = 'block';
             
         } catch (error) {

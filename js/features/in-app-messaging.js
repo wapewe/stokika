@@ -80,7 +80,7 @@ class InAppMessaging {
                         </div>
                     </div>
                 </div>
-            `;
+            `);
 
             this.attachEventListeners();
             await this.loadConversations();
@@ -112,7 +112,7 @@ class InAppMessaging {
     async loadConversations() {
         try {
             if (!this.currentUserId) {
-                document.getElementById('conversationsList').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<p>Please log in to view messages</p>');
+                document.getElementById('conversationsList').innerHTML = XSSProtection.sanitize('<p>Please log in to view messages</p>');
                 return;
             }
 
@@ -140,12 +140,12 @@ class InAppMessaging {
         if (conversations.length === 0) {
             container.innerHTML = XSSProtection.sanitize(`
                 <div class="no-conversations">
-                    <p>No conversation...et</p>
+                    <p>No conversations yet</p>
                     <button class="btn-primary" onclick="window.inAppMessaging.showNewMessageModal()">
                         Start a conversation
                     </button>
                 </div>
-            `;
+            `);
             return;
         }
 
@@ -177,7 +177,7 @@ class InAppMessaging {
                     ${unreadCount > 0 ? `<div class="unread-badge">${unreadCount}</div>` : ''}
                 </div>
             `;
-        }).join('');
+        }).join(''));
     }
 
     getAvatarForUserType(userType) {
@@ -264,7 +264,7 @@ class InAppMessaging {
                     <p>No messages in this ...versation</p>
                     <p>Send a message to get started!</p>
                 </div>
-            `;
+            `)
             return;
         }
 
@@ -288,7 +288,7 @@ class InAppMessaging {
                     ` : ''}
                 </div>
             `;
-        }).join('');
+        }).join(''));
 
         // Scroll to bottom
         container.scrollTop = container.scrollHeight;
@@ -368,7 +368,7 @@ class InAppMessaging {
                     <button type="submit" class="btn-submit">Send Message</button>
                 </form>
             </div>
-        `;
+        `)
 
         document.body.appendChild(modal);
         modal.style.display = 'block';

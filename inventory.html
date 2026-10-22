@@ -7,8 +7,8 @@
     <!-- Static CSP Meta Tag -->
     <meta http-equiv="Content-Security-Policy" 
           content="default-src 'self'; 
-                   script-src 'self' https://cdn.jsdelivr.net; 
-                   style-src 'self' https://fonts.googleapis.com; 
+                   script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; 
+                   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; 
                    font-src 'self' https://fonts.gstatic.com; 
                    connect-src 'self' https://*.supabase.co; 
                    img-src 'self' data: https:; base-uri 'self'; 
@@ -24,7 +24,9 @@
     
     <link rel="stylesheet" href="css/inventory.css">
     <link rel="stylesheet" href="css/inventory-extra.css">
+    <link rel="stylesheet" href="css/inventory-modern.css">
     <link rel="stylesheet" href="css/toast.css">
+    <script src="js/auth-check.js"></script>
 </head>
 <body>
     <div class="bg-gradient"></div>
@@ -33,7 +35,7 @@
         <aside class="sidebar">
             <div class="logo">
                 <a href="https://www.stokika.com" target="_blank" rel="noopener noreferrer">
-                    <img src="assets/logos/logo.png.png" alt="Stokika" class="logo-img" id="dashboardLogo">
+                    <img src="assets/logos/logo.png" alt="Stokika" class="logo-img" id="dashboardLogo">
                 </a>
             </div>
             <nav class="sidebar-nav">
@@ -285,10 +287,12 @@
         </main>
     </div>
 
-    <!-- CDN Scripts with SRI -->
+    <!-- CDN Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
             crossorigin="anonymous"></script>
+    
+    <!-- Initialize Supabase first -->
+    <script src="js/supabase-config.js"></script>
     
     <!-- Core Scripts -->
     <script src="js/features/vendor-shop-branding.js"></script>
@@ -308,75 +312,7 @@
     <script src="js/security/csrf-protection.js"></script>
     
     <!-- Inventory Shop Manager Module -->
-    <script type="module">
-        import { showShopSection, hideDashboard, loadShopData, toggleShopStatus, viewShopOrders, initDashboardData } from './js/features/inventory-shop-manager.js';
-        
-        // Make functions available globally for the page
-        window.inventoryShop = {
-            showShopSection,
-            hideDashboard,
-            loadShopData,
-            toggleShopStatus,
-            viewShopOrders
-        };
-        
-        // Setup event listeners on page load
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Initialize dashboard data
-            await initDashboardData();
-            
-            // Setup shop section navigation
-            const shopNavItem = document.getElementById('shopNavItem');
-            if (shopNavItem) {
-                shopNavItem.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    showShopSection();
-                });
-            }
-            
-            // Setup manage shop button
-            const manageShopBtn = document.getElementById('manageShopBtn');
-            if (manageShopBtn) {
-                manageShopBtn.addEventListener('click', showShopSection);
-            }
-            
-            // Setup back to dashboard button
-            const backToDashboardBtn = document.getElementById('backToDashboardBtn');
-            if (backToDashboardBtn) {
-                backToDashboardBtn.addEventListener('click', hideDashboard);
-            }
-            
-            // Setup shop action buttons
-            const shopProfileBtn = document.getElementById('shopProfileBtn');
-            if (shopProfileBtn && typeof openShopProfileModal === 'function') {
-                shopProfileBtn.addEventListener('click', openShopProfileModal);
-            }
-            
-            const shopBrandingBtn = document.getElementById('shopBrandingBtn');
-            if (shopBrandingBtn && typeof openShopBrandingModal === 'function') {
-                shopBrandingBtn.addEventListener('click', openShopBrandingModal);
-            }
-            
-            const addDropshipProductBtn = document.getElementById('addDropshipProductBtn');
-            if (addDropshipProductBtn && typeof openDropshipProductModal === 'function') {
-                addDropshipProductBtn.addEventListener('click', openDropshipProductModal);
-            }
-            
-            const viewShopOrdersBtn = document.getElementById('viewShopOrdersBtn');
-            if (viewShopOrdersBtn) {
-                viewShopOrdersBtn.addEventListener('click', viewShopOrders);
-            }
-            
-            // Setup settings button
-            const settingsNavItem = document.getElementById('settingsNavItem');
-            if (settingsNavItem && typeof openSettingsModal === 'function') {
-                settingsNavItem.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    openSettingsModal();
-                });
-            }
-        });
-    </script>
+    <script type="module" src="js/pages/inventory-init.js"></script>
     <!-- Toast Notification System -->
     <script src="js/utils/toast.js"></script>
     <script src="js/utils/global-toast-init.js"></script>

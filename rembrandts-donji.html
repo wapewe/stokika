@@ -25,7 +25,7 @@
     <div class="login-container">
         <div class="logo">
             <a href="https://www.stokika.com" target="_blank" rel="noopener noreferrer">
-                <img src="assets/logos/logo.png.png" alt="Stokika Logo">
+                <img src="assets/logos/logo.png" alt="Stokika Logo">
             </a>
         </div>
         <h1>Admin Login</h1>
@@ -33,14 +33,14 @@
         
         <div id="errorMessage" class="error-message"></div>
         
-        <form id="adminLoginForm" data-sanitize="true">
+        <form id="adminLoginForm" data-sanitize="true" onsubmit="return false;">
             <div class="form-group">
                 <label for="email">Email</label>
-                <input type="email" id="email" name="email" data-sanitize-type="email" required>
+                <input type="email" id="email" name="email" data-sanitize-type="email" required autocomplete="email">
             </div>
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" data-sanitize-type="string" minlength="12" required>
+                <input type="password" id="password" name="password" data-sanitize-type="string" minlength="12" required autocomplete="current-password">
             </div>
             <button type="submit" class="btn-login" id="loginBtn">Login</button>
         </form>
@@ -50,14 +50,13 @@
         </div>
     </div>
 
-    <!-- CDN Scripts with SRI -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
-            crossorigin="anonymous"></script>
+    <!-- CDN Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <!-- Application Scripts -->
     <script src="js/core/config-loader.js"></script>
     <script src="js/core/setup.js"></script>
+    <script src="js/core/supabase-config.js"></script>
     
     <!-- Security Scripts -->
     <script src="js/security/xss-protection.js"></script>

@@ -376,7 +376,7 @@ async function openVendorProductModal(productId = null) {
                 </div>
             </form>
         </div>
-    `;
+    `);
 
     document.body.appendChild(modal);
 
@@ -515,3 +515,4 @@ if (typeof window !== 'undefined') {
     window.updateVendorOrderStatus = updateVendorOrderStatus;
     window.loadVendorSalesReport = loadVendorSalesReport;
 }
+

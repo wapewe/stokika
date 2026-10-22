@@ -42,10 +42,3 @@ verify_jwt = false
 
 [functions.mpesa-status-query]
 verify_jwt = false
-
-[functions.manual-payment-verify]
-verify_jwt = false
-
-[functions.verify-kit-manual-payment]
-verify_jwt = false
-

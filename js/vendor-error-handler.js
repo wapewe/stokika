@@ -476,7 +476,7 @@ function showContactSupportInfo() {
                 </button>
             </div>
         </div>
-    `;
+    `);
     
     document.body.insertAdjacentHTML('beforeend', supportHtml);
     
@@ -506,3 +506,4 @@ window.VendorErrorHandler = {
 };
 
 console.log('✅ VendorErrorHandler module loaded');
+

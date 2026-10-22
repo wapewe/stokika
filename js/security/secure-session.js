@@ -311,7 +311,9 @@ function migrateFromLocalStorage() {
     console.warn('⚠️ MIGRATION: Moving from localStorage to secure httpOnly cookies');
     console.warn('⚠️ Please ensure users re-authenticate after this update');
     
+    // DISABLED: Don't clear localStorage for now - admin login needs it
     // Clear old localStorage data
+    /*
     const keysToRemove = [
         'session_token',
         'user_data',
@@ -328,11 +330,15 @@ function migrateFromLocalStorage() {
             localStorage.removeItem(key);
         }
     });
+    */
 }
 
+// DISABLED: Don't run migration automatically
 // Run migration on load
+/*
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', migrateFromLocalStorage);
 } else {
     migrateFromLocalStorage();
 }
+*/

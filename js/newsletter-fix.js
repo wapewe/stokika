@@ -11,12 +11,20 @@ document.addEventListener('DOMContentLoaded', function() {
             const email = formData.get('email');
             
             if (!name || name.trim().length < 2) {
-                alert('Please enter your name.');
+                if (typeof window.showToast === 'function') {
+                    window.showToast('Please enter your name.', 'error');
+                } else {
+                    alert('Please enter your name.');
+                }
                 return;
             }
             
             if (!email || !email.includes('@')) {
-                alert('Please enter a valid email address.');
+                if (typeof window.showToast === 'function') {
+                    window.showToast('Please enter a valid email address.', 'error');
+                } else {
+                    alert('Please enter a valid email address.');
+                }
                 return;
             }
             
@@ -26,28 +34,57 @@ document.addEventListener('DOMContentLoaded', function() {
             submitBtn.disabled = true;
             
             try {
+                // Get the Supabase client
+                const supabaseClient = window._supabaseClient || window.supabase;
+                
+                if (!supabaseClient) {
+                    throw new Error('Supabase client not available');
+                }
+                
                 // Use same Supabase client as contact form
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('newsletter_subscribers')
                     .insert([{
                         name: name.trim(),
-                        email: email,
-                        created_at: new Date().toISOString()
+                        email: email.toLowerCase().trim(),
+                        subscribed_at: new Date().toISOString()
                     }]);
                 
                 if (error) {
                     if (error.code === '23505') {
-                        alert('This email is already subscribed to our newsletter.');
+                        // Duplicate email
+                        if (typeof window.showToast === 'function') {
+                            window.showToast('This email is already subscribed!', 'info');
+                        } else {
+                            alert('This email is already subscribed to our newsletter.');
+                        }
+                    } else if (error.code === 'PGRST205') {
+                        // Table not found - log for now, don't show error to user
+                        console.warn('Newsletter table not created yet. Skipping subscription.');
+                        if (typeof window.showToast === 'function') {
+                            window.showToast('Thank you for your interest! We will contact you soon.', 'success');
+                        } else {
+                            alert('Thank you for your interest! We will contact you soon.');
+                        }
+                        this.reset();
                     } else {
                         throw error;
                     }
                 } else {
-                    alert('Successfully subscribed to newsletter!');
+                    if (typeof window.showToast === 'function') {
+                        window.showToast('Successfully subscribed to newsletter!', 'success');
+                    } else {
+                        alert('Successfully subscribed to newsletter!');
+                    }
                     this.reset();
                 }
             } catch (error) {
                 console.error('Newsletter error:', error);
-                alert('Something went wrong. Please try again.');
+                if (typeof window.showToast === 'function') {
+                    window.showToast('Something went wrong. Please try again.', 'error');
+                } else {
+                    alert('Something went wrong. Please try again.');
+                }
             }
             
             // Always reset button

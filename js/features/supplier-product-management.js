@@ -358,7 +358,7 @@ async function openProductModal(productId = null) {
                 </div>
             </form>
         </div>
-    `;
+    `);
 
     document.body.appendChild(modal);
 
@@ -465,3 +465,4 @@ if (typeof window !== 'undefined') {
     window.deleteProduct = deleteProduct;
     window.loadSalesReport = loadSalesReport;
 }
+

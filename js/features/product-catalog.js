@@ -65,7 +65,7 @@ class ProductCatalog {
                         </div>
                     </div>
                 </div>
-            `;
+            `);
 
             this.attachEventListeners();
             await this.loadCategories();
@@ -146,7 +146,7 @@ class ProductCatalog {
         if (!grid) return;
 
         if (products.length === 0) {
-            grid.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(<div class="no-products">No products found</div>';
+            grid.innerHTML = XSSProtection.sanitize('<div class="no-products">No products found</div>');
             return;
         }
 
@@ -177,7 +177,7 @@ class ProductCatalog {
                     </div>
                 </div>
             </div>
-        `).join('');
+        `).join(''));
     }
 
     async addToCart(productId) {
@@ -255,7 +255,7 @@ class ProductCatalog {
         if (!cartContainer) return;
 
         if (this.cart.length === 0) {
-            cartContainer.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(<p class="empty-cart">Your cart is empty</p>';
+            cartContainer.innerHTML = XSSProtection.sanitize('<p class="empty-cart">Your cart is empty</p>');
             if (cartTotal) cartTotal.textContent = '0';
             if (checkoutBtn) checkoutBtn.disabled = true;
             return;
@@ -270,7 +270,7 @@ class ProductCatalog {
                     <p>KES ${item.price.toLocaleString()} each</p>
                 </div>
                 <div class="item-controls">
-                    <button onclick="window.productCatalog.updateCartQuantity('${item.product_id}', ${item.quantity - sanitize(1)})">-</button>
+                    <button onclick="window.productCatalog.updateCartQuantity('${item.product_id}', ${item.quantity - 1})">-</button>
                     <span>${item.quantity}</span>
                     <button onclick="window.productCatalog.updateCartQuantity('${item.product_id}', ${item.quantity + 1})">+</button>
                     <button class="btn-remove" onclick="window.productCatalog.removeFromCart('${item.product_id}')">×</button>
@@ -279,7 +279,7 @@ class ProductCatalog {
                     KES ${(item.price * item.quantity).toLocaleString()}
                 </div>
             </div>
-        `).join('');
+        `).join(''));
 
         if (cartTotal) cartTotal.textContent = total.toLocaleString();
         if (checkoutBtn) checkoutBtn.disabled = false;
@@ -384,7 +384,7 @@ class ProductCatalog {
                     <button type="submit" class="btn-submit">Add Product</button>
                 </form>
             </div>
-        `;
+        `)
 
         document.body.appendChild(modal);
         modal.style.display = 'block';

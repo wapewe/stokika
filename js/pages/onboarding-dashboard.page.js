@@ -138,7 +138,7 @@ async function initializeOnboarding() {
                         </a>
                     </div>
                 </div>
-            `;
+            `);
             return;
         }
 

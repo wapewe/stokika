@@ -21,11 +21,47 @@
   ];
 
   const PRODUCT_CATEGORIES = [
-    'Fresh Produce', 'Grains & Cereals', 'Dairy Products', 'Meat & Poultry',
-    'Household Items', 'Electronics', 'Clothing & Textiles', 'Building Materials',
-    'Stationery & Office Supplies', 'Beauty & Personal Care',
-    'Pharmaceuticals & Health', 'Agricultural Inputs', 'Automotive Parts',
-    'Food & Beverages', 'Other'
+    'Fresh Produce',
+    'Grains & Cereals',
+    'Dairy Products',
+    'Meat & Poultry',
+    'Seafood & Fish',
+    'Bakery & Bread',
+    'Beverages',
+    'Snacks & Confectionery',
+    'Household Items',
+    'Cleaning Supplies',
+    'Personal Care & Hygiene',
+    'Electronics',
+    'Mobile Phones & Accessories',
+    'Computers & Laptops',
+    'Clothing & Textiles',
+    'Footwear',
+    'Bags & Accessories',
+    'Building Materials',
+    'Hardware & Tools',
+    'Plumbing & Electrical',
+    'Stationery & Office Supplies',
+    'Books & Educational Materials',
+    'Beauty & Cosmetics',
+    'Pharmaceuticals & Health',
+    'Medical Equipment',
+    'Agricultural Inputs',
+    'Seeds & Fertilizers',
+    'Livestock & Poultry',
+    'Automotive Parts',
+    'Motorcycle Parts',
+    'Furniture & Home Decor',
+    'Kitchen & Dining',
+    'Bedding & Linen',
+    'Baby Products',
+    'Toys & Games',
+    'Sports & Fitness Equipment',
+    'Jewelry & Watches',
+    'Pet Supplies',
+    'Industrial Supplies',
+    'Packaging Materials',
+    'Other'
   ];
 
   const UNITS_OF_MEASURE = [
@@ -43,6 +79,7 @@
       // Step 1
       businessName: '',
       supplierType: '',
+      otherSupplierType: '',
       businessRegistrationStatus: '',
       registrationNumber: '',
       yearsInBusiness: '',
@@ -103,8 +140,8 @@
 
     console.log('[Supplier Reg V2] Initializing...');
 
-    // Load draft from localStorage
-    loadDraft();
+    // DO NOT load draft on initialization - start fresh every time
+    // loadDraft(); // REMOVED - we want a fresh start
 
     // Setup components
     setupNavigationButtons();
@@ -117,13 +154,13 @@
     setupConditionalFields();
     setupModalEvents();
 
-    // Render initial state
-    renderStep(state.currentStep);
+    // Render initial state - always start at step 1
+    renderStep(1);
     updateProgressIndicator();
     updateNavigationButtons();
     populateStaticOptions();
 
-    console.log('[Supplier Reg V2] Initialized');
+    console.log('[Supplier Reg V2] Initialized - fresh form ready');
   }
 
   // ============================================================================
@@ -223,20 +260,26 @@
   }
 
   function updateProgressIndicator() {
+    // Query all progress steps within the supplier modal specifically
+    const allProgressSteps = document.querySelectorAll('#supplierRegistrationModal .progress-step');
+    
     for (let i = 1; i <= state.totalSteps; i++) {
-      const progressStep = document.querySelector(`.progress-step[data-step="${i}"]`);
+      const progressStep = document.querySelector(`#supplierRegistrationModal .progress-step[data-step="${i}"]`);
       if (!progressStep) continue;
 
+      // Remove all state classes first
+      progressStep.classList.remove('active', 'completed');
+
+      // Apply appropriate class based on step position
       if (i < state.currentStep) {
         progressStep.classList.add('completed');
-        progressStep.classList.remove('active');
       } else if (i === state.currentStep) {
         progressStep.classList.add('active');
-        progressStep.classList.remove('completed');
-      } else {
-        progressStep.classList.remove('active', 'completed');
       }
+      // Steps after current step remain without active/completed class
     }
+
+    console.log('[Supplier Reg V2] Progress indicator updated - current step:', state.currentStep);
   }
 
   function updateNavigationButtons() {
@@ -306,6 +349,7 @@
       case 1:
         state.formData.businessName = form.querySelector('#sr-businessName')?.value || '';
         state.formData.supplierType = form.querySelector('#sr-supplierType')?.value || '';
+        state.formData.otherSupplierType = form.querySelector('#sr-otherSupplierType')?.value || '';
         state.formData.businessRegistrationStatus = form.querySelector('#sr-businessRegStatus')?.value || '';
         state.formData.registrationNumber = form.querySelector('#sr-regNumber')?.value || '';
         state.formData.yearsInBusiness = form.querySelector('#sr-yearsInBusiness')?.value || '';
@@ -424,16 +468,21 @@
             container.className = 'form-group';
             container.innerHTML = `
               <label for="sr-otherCategory">Specify Category <span class="required">*</span></label>
-              <input type="text" id="sr-otherCategory" placeholder="Enter custom category name">
+              <input type="text" id="sr-otherCategory" placeholder="Enter custom category name" required>
             `;
-            pCategorySelect.closest('.form-group').after(container);
+            // Insert after the category dropdown's form-group
+            this.closest('.form-group').insertAdjacentElement('afterend', container);
           } else {
             otherCategoryContainer.style.display = 'block';
           }
         } else {
-          // Hide other category input
+          // Hide other category input when any other option is selected
           if (otherCategoryContainer) {
             otherCategoryContainer.style.display = 'none';
+            const otherInput = document.getElementById('sr-otherCategory');
+            if (otherInput) {
+              otherInput.value = ''; // Clear the value
+            }
           }
         }
       });
@@ -532,6 +581,52 @@
     if (state.validationErrors.categories) {
       delete state.validationErrors.categories;
       clearFieldError('categories');
+    }
+
+    // Show/hide "Other" specification field
+    const otherCategorySpecContainer = document.getElementById('sr-otherCategorySpecContainer');
+    if (state.formData.categories.includes('Other')) {
+      // Create container if it doesn't exist
+      if (!otherCategorySpecContainer) {
+        const container = document.createElement('div');
+        container.id = 'sr-otherCategorySpecContainer';
+        container.className = 'form-group';
+        container.innerHTML = `
+          <label for="sr-otherCategorySpec">Specify Other Category <span class="required">*</span></label>
+          <input type="text" id="sr-otherCategorySpec" placeholder="Enter custom category name" />
+          <p class="form-hint">Please describe the product category you deal in</p>
+        `;
+        // Insert after the categories multi-select's form-group
+        const categoriesFormGroup = document.getElementById('sr-categoriesSelect').closest('.form-group');
+        categoriesFormGroup.insertAdjacentElement('afterend', container);
+        
+        // Add input listener to clear validation error
+        const otherInput = document.getElementById('sr-otherCategorySpec');
+        if (otherInput) {
+          otherInput.addEventListener('input', () => {
+            if (state.validationErrors.otherCategorySpec) {
+              delete state.validationErrors.otherCategorySpec;
+              clearFieldError('otherCategorySpec');
+            }
+          });
+        }
+      } else {
+        otherCategorySpecContainer.style.display = 'block';
+      }
+    } else {
+      // Hide and clear other category specification when "Other" is deselected
+      if (otherCategorySpecContainer) {
+        otherCategorySpecContainer.style.display = 'none';
+        const otherInput = document.getElementById('sr-otherCategorySpec');
+        if (otherInput) {
+          otherInput.value = ''; // Clear the value
+        }
+        // Clear validation error
+        if (state.validationErrors.otherCategorySpec) {
+          delete state.validationErrors.otherCategorySpec;
+          clearFieldError('otherCategorySpec');
+        }
+      }
     }
 
     // Update product category dropdown
@@ -913,7 +1008,31 @@
     state.editingProductIndex = index;
 
     document.getElementById('sr-pName').value = product.productName;
-    document.getElementById('sr-pCategory').value = product.category;
+    
+    // Check if the product category exists in the predefined list
+    const categoryExists = PRODUCT_CATEGORIES.includes(product.category);
+    
+    if (categoryExists) {
+      document.getElementById('sr-pCategory').value = product.category;
+    } else {
+      // Custom category - select "Other" and populate the custom input
+      document.getElementById('sr-pCategory').value = 'Other';
+      
+      // Trigger the change event to show the custom category input
+      const pCategorySelect = document.getElementById('sr-pCategory');
+      if (pCategorySelect) {
+        pCategorySelect.dispatchEvent(new Event('change'));
+      }
+      
+      // Set the custom category value
+      setTimeout(() => {
+        const otherCategoryInput = document.getElementById('sr-otherCategory');
+        if (otherCategoryInput) {
+          otherCategoryInput.value = product.category;
+        }
+      }, 50);
+    }
+    
     document.getElementById('sr-pSku').value = product.sku || '';
     document.getElementById('sr-pUnit').value = product.unitOfMeasure;
     document.getElementById('sr-pPrice').value = product.unitPrice;
@@ -1063,6 +1182,22 @@
   // ============================================================================
 
   function setupConditionalFields() {
+    // Supplier Type "Other" specification
+    const supplierTypeSelect = document.getElementById('sr-supplierType');
+    const otherSupplierTypeContainer = document.getElementById('sr-otherSupplierTypeContainer');
+
+    if (supplierTypeSelect && otherSupplierTypeContainer) {
+      supplierTypeSelect.addEventListener('change', () => {
+        if (supplierTypeSelect.value === 'other') {
+          otherSupplierTypeContainer.style.display = 'block';
+        } else {
+          otherSupplierTypeContainer.style.display = 'none';
+          // Clear the field when deselected
+          document.getElementById('sr-otherSupplierType').value = '';
+        }
+      });
+    }
+
     // Registration number field visibility
     const businessRegStatusSelect = document.getElementById('sr-businessRegStatus');
     const regNumberGroup = document.getElementById('sr-regNumberGroup');
@@ -1121,6 +1256,16 @@
    * Called after loading draft to ensure hidden fields are shown if needed
    */
   function updateConditionalFieldVisibility() {
+    // Supplier type "Other" specification
+    const supplierTypeSelect = document.getElementById('sr-supplierType');
+    const otherSupplierTypeContainer = document.getElementById('sr-otherSupplierTypeContainer');
+    if (supplierTypeSelect && otherSupplierTypeContainer && state.formData.supplierType) {
+      supplierTypeSelect.value = state.formData.supplierType;
+      if (state.formData.supplierType === 'other') {
+        otherSupplierTypeContainer.style.display = 'block';
+      }
+    }
+
     // Registration number field
     const businessRegStatusSelect = document.getElementById('sr-businessRegStatus');
     const regNumberGroup = document.getElementById('sr-regNumberGroup');
@@ -1262,6 +1407,15 @@
       case 1:
         if (!state.formData.businessName?.trim()) errors.businessName = 'Business name is required';
         if (!state.formData.supplierType) errors.supplierType = 'Supplier type is required';
+        
+        // Check if "Other" is selected in supplier type and validate specification
+        if (state.formData.supplierType === 'other') {
+          const otherSupplierType = document.getElementById('sr-otherSupplierType')?.value.trim();
+          if (!otherSupplierType) {
+            errors.otherSupplierType = 'Please specify your supplier type';
+          }
+        }
+        
         if (!state.formData.businessRegistrationStatus) errors.businessRegistrationStatus = 'Registration status is required';
         if (!state.formData.yearsInBusiness) errors.yearsInBusiness = 'Years in business is required';
         if (!state.formData.mainBusinessLocation?.trim()) errors.mainBusinessLocation = 'Main business location is required';
@@ -1272,6 +1426,15 @@
 
       case 2:
         if (state.formData.categories.length === 0) errors.categories = 'Select at least one category';
+        
+        // Check if "Other" is selected in categories and validate specification
+        if (state.formData.categories.includes('Other')) {
+          const otherCategorySpec = document.getElementById('sr-otherCategorySpec')?.value.trim();
+          if (!otherCategorySpec) {
+            errors.otherCategorySpec = 'Please specify the other category';
+          }
+        }
+        
         if (state.formData.products.length === 0) errors.products = 'Add at least one product';
         break;
 
@@ -1357,6 +1520,21 @@
             }
             errorMsg.textContent = state.validationErrors[fieldName];
           }
+        }
+        return;
+      }
+
+      if (fieldName === 'otherCategorySpec') {
+        const container = document.getElementById('sr-otherCategorySpecContainer');
+        if (container) {
+          container.classList.add('error');
+          let errorMsg = container.querySelector('.error-message');
+          if (!errorMsg) {
+            errorMsg = document.createElement('div');
+            errorMsg.className = 'error-message';
+            container.appendChild(errorMsg);
+          }
+          errorMsg.textContent = state.validationErrors[fieldName];
         }
         return;
       }
@@ -1460,6 +1638,16 @@
       return;
     }
 
+    if (fieldName === 'otherCategorySpec') {
+      const container = document.getElementById('sr-otherCategorySpecContainer');
+      if (container) {
+        container.classList.remove('error');
+        const errorMsg = container.querySelector('.error-message');
+        if (errorMsg) errorMsg.remove();
+      }
+      return;
+    }
+
     if (fieldName === 'products') {
       const container = document.getElementById('sr-productList');
       if (container) {
@@ -1469,6 +1657,16 @@
           const errorMsg = parentFormGroup.querySelector('.error-message');
           if (errorMsg) errorMsg.remove();
         }
+      }
+      return;
+    }
+
+    if (fieldName === 'otherCategorySpec') {
+      const container = document.getElementById('sr-otherCategorySpecContainer');
+      if (container) {
+        container.classList.remove('error');
+        const errorMsg = container.querySelector('.error-message');
+        if (errorMsg) errorMsg.remove();
       }
       return;
     }
@@ -1536,10 +1734,11 @@
     // Build payload
     const payload = {
       companyName: state.formData.businessName,
-      supplierType: state.formData.supplierType,
+      supplierType: state.formData.supplierType === 'other' && state.formData.otherSupplierType 
+        ? state.formData.otherSupplierType 
+        : state.formData.supplierType,
       businessRegistrationStatus: state.formData.businessRegistrationStatus,
       registrationNumber: state.formData.registrationNumber,
-      yearsInBusiness: state.formData.yearsInBusiness,
       mainBusinessLocation: state.formData.mainBusinessLocation,
       contactPerson: state.formData.contactPerson,
       phone: state.formData.phoneNumber,
@@ -1584,12 +1783,13 @@
     showLoadingSpinner();
 
     try {
-      // Check if window.supabase exists
-      if (typeof window.supabase === 'undefined' || !window.supabase.functions) {
+      // Check if Supabase client exists
+      const supabaseClient = window._supabaseClient || window.supabase;
+      if (!supabaseClient) {
         throw new Error('Supabase client not available');
       }
 
-      const { data, error } = await window.supabase.functions.invoke('supplier-registration-submit', {
+      const { data, error } = await supabaseClient.functions.invoke('supplier-registration-submit', {
         body: payload
       });
 
@@ -1600,9 +1800,15 @@
       }
 
       if (data && data.success) {
-        showToastIfAvailable('Registration submitted successfully! We will contact you shortly.', 'success');
-        clearDraft();
-        closeModal();
+        // Success! Clear everything and redirect
+        showToastIfAvailable('Registration submitted successfully!', 'success');
+        clearDraft(); // Clear localStorage draft
+        clearAllFormData(); // Clear form state
+        
+        // Redirect to success page after a short delay
+        setTimeout(() => {
+          window.location.href = 'supplier-registration-success.html';
+        }, 1500);
       } else {
         throw new Error(data?.message || 'Registration failed');
       }
@@ -1655,12 +1861,13 @@
       });
     }
 
-    // Restore draft on modal open
-    // Assumes modal is shown by toggling display or adding class
+    // Clear form when modal opens instead of loading draft
     const observer = new MutationObserver(() => {
       if (modal.style.display === 'flex' || modal.classList.contains('active')) {
-        loadDraft();
-        renderStep(state.currentStep);
+        // Clear draft and reset form to start fresh
+        clearDraft();
+        clearAllFormData();
+        console.log('[Supplier Reg V2] Modal opened - fresh form ready');
       }
     });
 
@@ -1674,6 +1881,11 @@
     if (modal) {
       modal.style.display = 'none';
       modal.classList.remove('active');
+      
+      // Clear form when closing
+      clearDraft();
+      clearAllFormData();
+      console.log('[Supplier Reg V2] Modal closed and form cleared');
     }
   }
 
@@ -1725,6 +1937,152 @@
     } catch (e) {
       console.warn('Failed to clear draft from localStorage:', e);
     }
+  }
+
+  function clearAllFormData() {
+    // Reset the entire form state to initial values
+    state.currentStep = 1;
+    state.formData = {
+      // Step 1
+      businessName: '',
+      supplierType: '',
+      otherSupplierType: '',
+      businessRegistrationStatus: '',
+      registrationNumber: '',
+      yearsInBusiness: '',
+      mainBusinessLocation: '',
+      contactPerson: '',
+      phoneNumber: '',
+      emailAddress: '',
+      altContactName: '',
+      altContactPhone: '',
+      
+      // Step 2
+      categories: [],
+      products: [],
+      
+      // Step 3
+      stockLocationCounty: '',
+      stockLocationTown: '',
+      warehouseAddress: '',
+      countiesServed: [],
+      townsServed: '',
+      deliveryCapability: '',
+      deliveryMethod: [],
+      deliveryLeadTime: '',
+      deliveryChargeMethod: '',
+      minimumOrderForDelivery: '',
+      
+      // Step 4
+      minimumOrderValue: '',
+      maximumOrderValue: '',
+      fulfillmentLeadTime: '',
+      paymentMethods: [],
+      preferredPaymentMethod: '',
+      deferredPayment: '',
+      deferredPeriods: [],
+      deferredPaymentTerms: '',
+      preferredContactMethod: '',
+      
+      // Step 5
+      documents: [],
+      certifications: [],
+      termsAccepted: false
+    };
+    state.editingProductIndex = null;
+    state.editingDocumentIndex = null;
+    state.validationErrors = {};
+    
+    // Clear all form inputs in the DOM
+    clearFormInputs();
+    
+    // Navigate back to step 1
+    renderStep(1);
+    updateProgressIndicator();
+    updateNavigationButtons();
+    
+    console.log('[Supplier Reg V2] Form data cleared and reset to step 1');
+  }
+
+  function clearFormInputs() {
+    // Clear all text inputs, textareas, and selects
+    const form = document.getElementById('supplierRegistrationForm');
+    if (!form) return;
+
+    // Clear text inputs and textareas
+    form.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], input[type="number"], textarea, select').forEach(input => {
+      if (input.type === 'select-one') {
+        input.selectedIndex = 0;
+      } else {
+        input.value = '';
+      }
+    });
+
+    // Uncheck all checkboxes and radio buttons
+    form.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(input => {
+      input.checked = false;
+    });
+
+    // Clear product list
+    const productList = document.getElementById('sr-productList');
+    if (productList) {
+      productList.innerHTML = '';
+    }
+
+    // Clear document list
+    const documentList = document.getElementById('sr-documentList');
+    if (documentList) {
+      documentList.innerHTML = '';
+    }
+
+    // Clear categories chips
+    const categoriesChips = document.querySelector('#sr-categoriesSelect .sms-chips');
+    if (categoriesChips) {
+      categoriesChips.innerHTML = '';
+    }
+
+    // Reset categories options (remove selected class)
+    const categoriesOptions = document.querySelectorAll('#sr-categoriesSelect .sms-option');
+    categoriesOptions.forEach(opt => opt.classList.remove('selected'));
+
+    // Clear counties chips
+    const countiesChips = document.querySelector('#sr-countiesServedSelect .sms-chips');
+    if (countiesChips) {
+      countiesChips.innerHTML = '';
+    }
+
+    // Reset counties options (remove selected class)
+    const countiesOptions = document.querySelectorAll('#sr-countiesServedSelect .sms-option');
+    countiesOptions.forEach(opt => opt.classList.remove('selected'));
+
+    // Update county badge
+    updateCountyBadge();
+
+    // Clear any validation errors
+    clearValidationErrors();
+
+    // Hide conditional fields
+    const regNumberGroup = document.getElementById('sr-regNumberGroup');
+    if (regNumberGroup) regNumberGroup.style.display = 'none';
+
+    const deliveryDetails = document.getElementById('sr-deliveryDetails');
+    if (deliveryDetails) deliveryDetails.style.display = 'none';
+
+    const deferredDetails = document.getElementById('sr-deferredDetails');
+    if (deferredDetails) deferredDetails.style.display = 'none';
+
+    // Hide "Other" category specification fields if they exist
+    const otherCategorySpecContainer = document.getElementById('sr-otherCategorySpecContainer');
+    if (otherCategorySpecContainer) {
+      otherCategorySpecContainer.style.display = 'none';
+    }
+
+    const otherCategoryContainer = document.getElementById('sr-otherCategoryContainer');
+    if (otherCategoryContainer) {
+      otherCategoryContainer.style.display = 'none';
+    }
+
+    console.log('[Supplier Reg V2] Form inputs cleared from DOM');
   }
 
   // ============================================================================

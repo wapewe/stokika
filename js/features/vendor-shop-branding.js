@@ -323,7 +323,7 @@ async function openShopProfileModal() {
                 </div>
             </form>
         </div>
-    `;
+    `);
 
     document.body.appendChild(modal);
 
@@ -402,7 +402,7 @@ async function openShopBrandingModal() {
                 </div>
             </form>
         </div>
-    `;
+    `);
 
     document.body.appendChild(modal);
 
@@ -462,7 +462,7 @@ async function openDropshipBrowserModal() {
                 <button type="button" onclick="this.closest('.modal-overlay').remove()" class="btn-secondary">Close</button>
             </div>
         </div>
-    `;
+    `);
 
     document.body.appendChild(modal);
 
@@ -518,7 +518,7 @@ async function addSupplierProductToDropship(supplierProductId, supplierId) {
                 </div>
             </form>
         </div>
-    `;
+    `);
 
     document.body.appendChild(pricingModal);
 
@@ -597,7 +597,7 @@ async function openDropshipProductModal() {
                 </div>
             </form>
         </div>
-    `;
+    `);
 
     document.body.appendChild(modal);
 
@@ -725,7 +725,7 @@ async function editDropshipPricing(productId) {
                 </div>
             </form>
         </div>
-    `;
+    `);
 
     document.body.appendChild(modal);
 
@@ -769,3 +769,4 @@ if (typeof window !== 'undefined') {
     window.editDropshipPricing = editDropshipPricing;
     window.removeDropshipProduct = removeDropshipProduct;
 }
+

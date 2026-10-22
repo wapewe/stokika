@@ -9,23 +9,30 @@
                    style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
                    font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
                    connect-src 'self' https://*.supabase.co;
-                   img-src 'self' data: https:;base-uri 'self';
+                   img-src 'self' data: https:;
+                   base-uri 'self';
                    form-action 'self';">
     <title>Vendor Dashboard - Stokika</title>
     <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" 
+          rel="stylesheet" 
+          integrity="sha384-zM7qmLDXsv7G43sbK2VNrYGye2a5RuU56GHc3OZBpSLeQ4MVC+kkxdOzkOEjKo48"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" 
+          integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" 
+          crossorigin="anonymous" 
+          referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="css/vendor-dashboard.css">
     <link rel="stylesheet" href="css/toast.css">
 </head>
-<body>
+<body data-protected data-allowed-roles="vendor">
     <div class="vendor-layout">
 
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-logo">
                 <a href="https://www.stokika.com" target="_blank" rel="noopener noreferrer">
-                    <img src="assets/logos/logo.png.png" alt="Stokika">
+                    <img src="assets/logos/logo.png" alt="Stokika">
                 </a>
             </div>
             <nav class="sidebar-nav">
@@ -201,9 +208,7 @@
         </div><!-- /main-content -->
     </div><!-- /vendor-layout -->
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
-            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
     <script src="js/core/config-loader.js"></script>
     <script src="js/security/xss-protection.js"></script>
     <script src="js/security/secure-session.js"></script>

@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Security-Policy"
           content="default-src 'self';
                    script-src 'self' https://cdn.jsdelivr.net;
-                   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
+                   style-src 'self' https://fonts.googleapis.com https://cdnjs.cloudflare.com;
                    font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com;
                    connect-src 'self' https://*.supabase.co;
                    img-src 'self' data: https:;
@@ -14,94 +14,155 @@
                    form-action 'self';">
     <title>Stock Request - Stokika</title>
     <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" 
+          rel="stylesheet"
+          integrity="sha384-zM7qmLDXsv7G43sbK2VNrYGye2a5RuU56GHc3OZBpSLeQ4MVC+kkxdOzkOEjKo48"
+          crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous">
     <link rel="stylesheet" href="css/stock-request.css">
     <link rel="stylesheet" href="css/toast.css">
 </head>
-<body>
-    <div class="header">
-        <h1><i class="fas fa-box"></i> New Stock Request</h1>
-        <button id="backBtn" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Back to Dashboard
-        </button>
-    </div>
-
-    <div class="container">
-        <!-- Eligibility Info (populated by JS) -->
-        <div id="eligibilityInfo"></div>
-
-        <form id="stockRequestForm">
-            <!-- Supplier Selection -->
-            <div class="card">
-                <h2>Supplier Information</h2>
-                <div class="form-group">
-                    <label for="supplier_id">Supplier ID *</label>
-                    <input type="text" 
-                           id="supplier_id" 
-                           name="supplier_id" 
-                           placeholder="Enter supplier UUID" 
-                           required>
-                    <small>Enter the UUID of the supplier you wish to order from</small>
-                </div>
-                <div class="form-group">
-                    <label for="delivery_date">Requested Delivery Date</label>
-                    <input type="date" 
-                           id="delivery_date" 
-                           name="delivery_date">
-                </div>
+<body data-protected data-allowed-roles="vendor">
+    <!-- Brand Header -->
+    <header class="brand-header">
+        <div class="header-container">
+            <div class="brand-logo">
+                <a href="https://www.stokika.com" target="_blank" rel="noopener noreferrer">
+                    <img src="assets/logos/logo.png" alt="Stokika" class="logo-img">
+                </a>
             </div>
+            <button id="backBtn" class="btn-back">
+                <i class="fas fa-arrow-left"></i> 
+                <span>Back to Dashboard</span>
+            </button>
+        </div>
+    </header>
 
-            <!-- Items Section -->
-            <div class="card">
-                <div class="card-header">
-                    <h2>Order Items</h2>
-                    <button type="button" id="addItemBtn" class="btn btn-secondary">
-                        <i class="fas fa-plus"></i> Add Item
+    <!-- Main Content -->
+    <main class="main-wrapper">
+        <div class="page-header">
+            <div class="header-icon">
+                <i class="fas fa-box"></i>
+            </div>
+            <div class="header-content">
+                <h1 class="page-title">New Stock Request</h1>
+                <p class="page-subtitle">Order inventory from your trusted suppliers</p>
+            </div>
+        </div>
+
+        <div class="container">
+            <!-- Eligibility Info (populated by JS) -->
+            <div id="eligibilityInfo"></div>
+
+            <form id="stockRequestForm">
+                <!-- Supplier Selection -->
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <h2 class="card-title">Supplier Information</h2>
+                    <div class="form-group">
+                        <label for="supplier_id">
+                            <i class="fas fa-building"></i>
+                            Supplier ID *
+                        </label>
+                        <input type="text" 
+                               id="supplier_id" 
+                               name="supplier_id" 
+                               placeholder="Enter supplier UUID" 
+                               required>
+                        <small class="form-help">Enter the UUID of the supplier you wish to order from</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="delivery_date">
+                            <i class="fas fa-calendar-alt"></i>
+                            Requested Delivery Date
+                        </label>
+                        <input type="date" 
+                               id="delivery_date" 
+                               name="delivery_date">
+                    </div>
+                </div>
+
+                <!-- Items Section -->
+                <div class="card">
+                    <div class="card-header-section">
+                        <div class="card-header-left">
+                            <div class="card-icon">
+                                <i class="fas fa-list"></i>
+                            </div>
+                            <h2 class="card-title">Order Items</h2>
+                        </div>
+                        <button type="button" id="addItemBtn" class="btn-add-item">
+                            <i class="fas fa-plus-circle"></i> 
+                            <span>Add Item</span>
+                        </button>
+                    </div>
+
+                    <div id="requestItems" class="items-container">
+                        <!-- Items will be added here by JavaScript -->
+                    </div>
+
+                    <div class="total-section">
+                        <div class="total-label">
+                            <i class="fas fa-calculator"></i>
+                            Total Amount
+                        </div>
+                        <div class="total-amount" id="totalAmount">KES 0.00</div>
+                    </div>
+
+                    <div id="remainingCreditWarning" class="credit-warning"></div>
+                </div>
+
+                <!-- Additional Notes -->
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-sticky-note"></i>
+                    </div>
+                    <h2 class="card-title">Additional Notes</h2>
+                    <div class="form-group">
+                        <label for="notes">
+                            <i class="fas fa-comment-dots"></i>
+                            Notes (Optional)
+                        </label>
+                        <textarea id="notes" 
+                                  name="notes" 
+                                  rows="4" 
+                                  placeholder="Add any special instructions or notes..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="form-actions">
+                    <button type="button" id="cancelBtn" class="btn-cancel">
+                        <i class="fas fa-times-circle"></i>
+                        <span>Cancel</span>
+                    </button>
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Submit Request</span>
                     </button>
                 </div>
+            </form>
+        </div>
+    </main>
 
-                <div id="requestItems">
-                    <!-- Items will be added here by JavaScript -->
-                </div>
-
-                <div class="total-section">
-                    <span class="label">Total Amount:</span>
-                    <span class="amount" id="totalAmount">KES 0.00</span>
-                </div>
-
-                <div id="remainingCreditWarning"></div>
-            </div>
-
-            <!-- Additional Notes -->
-            <div class="card">
-                <h2>Additional Notes</h2>
-                <div class="form-group">
-                    <label for="notes">Notes (Optional)</label>
-                    <textarea id="notes" 
-                              name="notes" 
-                              rows="4" 
-                              placeholder="Add any special instructions or notes..."></textarea>
-                </div>
-            </div>
-
-            <!-- Form Actions -->
-            <div class="form-actions">
-                <button type="button" id="cancelBtn" class="btn btn-secondary" onclick="window.location.href='vendor-dashboard.html'">
-                    Cancel
-                </button>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-paper-plane"></i> Submit Request
-                </button>
-            </div>
-        </form>
-    </div>
-
-    <!-- Load Supabase config before the app to avoid "process is not defined" error -->
-    <script src="js/config/supabase-config.js"></script>
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
+    
+    <!-- Core Configuration -->
+    <script src="js/core/config-loader.js"></script>
+    
+    <!-- Security Modules -->
+    <script src="js/security/xss-protection.js"></script>
+    <script src="js/security/secure-session.js"></script>
+    <script src="js/security/csrf-protection.js"></script>
+    
     <!-- Toast Notification System -->
     <script src="js/utils/toast.js"></script>
     <script src="js/utils/global-toast-init.js"></script>
-    <script type="module" src="dist/stock-request.js"></script>
+    
+    <!-- Page Module -->
+    <script src="js/pages/stock-request.page.js"></script>
 </body>
 </html>

@@ -1,30 +1,79 @@
 class VendorDashboard {
     constructor() {
-        this.supabase = window.supabase;
+        this.supabase = null;
         this.vendorId = null;
         this.shopProfile = null;
     }
 
     async init() {
         try {
-            await this.checkAuth();
+            // Wait for SecureSession to be available
+            if (!window.SecureSession) {
+                throw new Error('SecureSession not available');
+            }
+
+            // Initialize SecureSession and check authentication
+            const isAuthenticated = await window.SecureSession.init();
+            
+            if (!isAuthenticated) {
+                console.log('❌ Not authenticated, redirecting to signin');
+                window.location.href = 'signin.html';
+                return;
+            }
+
+            const sessionData = window.SecureSession.sessionData;
+            
+            // Check if user is a vendor
+            if (sessionData?.userRole !== 'vendor') {
+                console.log('❌ Not a vendor, access denied');
+                window.showToast?.('Access denied. Vendor privileges required.', 'error');
+                setTimeout(() => {
+                    window.location.href = 'signin.html';
+                }, 2000);
+                return;
+            }
+
+            this.vendorId = sessionData.userId;
+            
+            // Initialize Supabase
+            await this.initSupabase();
+            
+            // Load dashboard data
             await this.loadDashboardData();
             this.setupTabs();
             this.setupForms();
+            
+            // Display vendor email
+            const emailEl = document.getElementById('vendorEmail');
+            if (emailEl && sessionData.userData?.email) {
+                emailEl.textContent = sessionData.userData.email;
+            }
         } catch (err) {
             console.error('Dashboard init error:', err);
             this.showAlert('Failed to load dashboard. Please refresh.', 'error');
         }
     }
 
-    async checkAuth() {
-        const { data: { session } } = await this.supabase.auth.getSession();
-        if (!session) {
-            window.location.href = 'signin.html';
-            return;
+    async initSupabase() {
+        if (!window.ConfigLoader) {
+            throw new Error('ConfigLoader not available');
         }
-        this.vendorId = session.user.id;
-        document.getElementById('vendorEmail').textContent = session.user.email || '';
+
+        const config = await window.ConfigLoader.loadConfig();
+        
+        if (!window.supabase) {
+            throw new Error('Supabase library not loaded');
+        }
+
+        this.supabase = window.supabase.createClient(
+            config.supabaseUrl,
+            config.supabaseAnonKey
+        );
+    }
+
+    async checkAuth() {
+        // This method is kept for compatibility but authentication is now handled in init()
+        return true;
     }
 
     async loadDashboardData() {
@@ -181,8 +230,15 @@ class VendorDashboard {
         const logoutBtn = document.getElementById('logoutBtn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', async () => {
-                await this.supabase.auth.signOut();
-                window.location.href = 'signin.html';
+                try {
+                    if (window.SecureSession) {
+                        await window.SecureSession.destroy();
+                    }
+                    window.location.href = 'signin.html';
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    window.location.href = 'signin.html';
+                }
             });
         }
     }

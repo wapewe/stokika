@@ -10,12 +10,21 @@ class ActivityLogger {
     }
 
     async init() {
-        if (window.supabase && window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
-            // Reuse shared client if available, avoid creating duplicate GoTrueClient instances
-            this.supabase = window._sharedSupabaseClient || window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
-            if (!window._sharedSupabaseClient) window._sharedSupabaseClient = this.supabase;
+        if (window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
+            // Reuse the global Supabase client to avoid multiple GoTrueClient instances
+            this.supabase = window._supabaseClient || window._sharedSupabaseClient;
+            
+            // If no client exists yet, create one and store it globally
+            if (!this.supabase && window.supabase) {
+                this.supabase = window.supabase.createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+                window._sharedSupabaseClient = this.supabase;
+            }
+            
             this.currentUser = (typeof AuthManager !== 'undefined') ? AuthManager?.currentUser : null;
-            this.setupAutoLogging();
+            
+            if (this.supabase) {
+                this.setupAutoLogging();
+            }
         }
     }
 
@@ -90,7 +99,9 @@ class ActivityLogger {
             }
         }
 
-        this.logActivity('form_submit', 'form', form.id || form.className, null, null, {
+        // Don't pass form ID as entity_id since database expects UUID
+        // Instead, pass it in details object
+        this.logActivity('form_submit', 'form', null, null, null, {
             form_id: form.id,
             form_class: form.className,
             fields: Object.keys(data)
@@ -98,7 +109,9 @@ class ActivityLogger {
     }
 
     logButtonClick(button) {
-        this.logActivity('button_click', 'button', button.id, null, null, {
+        // Don't pass button ID as entity_id since database expects UUID
+        // Instead, pass all button info in details object
+        this.logActivity('button_click', 'button', null, null, null, {
             button_text: button.textContent?.trim().substring(0, 50),
             button_id: button.id,
             button_class: button.className
@@ -455,7 +468,7 @@ class ActivityLogger {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `${filename}_${new Date().toISOString().split('T')[0]}.csv`;
+        link.download = `${filename}_${new Date().toISOString().split('T')[0]}.csv`);
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);

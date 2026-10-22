@@ -297,7 +297,7 @@ class OfflineManager {
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             z-index: 10000;
             animation: slideIn 0.3s ease;
-        `;
+        `);
         
         document.body.appendChild(notification);
         setTimeout(() => notification.remove(), 3000);
@@ -313,3 +313,4 @@ class OfflineManager {
 
 // Initialize offline manager
 window.offlineManager = new OfflineManager();
+

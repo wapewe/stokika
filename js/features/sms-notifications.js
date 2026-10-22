@@ -112,7 +112,7 @@ class SMSNotifications {
                         </div>
                     </div>
                 </div>
-            `;
+            `);
 
             this.attachEventListeners();
             await this.loadSMSStats();
@@ -176,7 +176,7 @@ class SMSNotifications {
             if (!templatesGrid) return;
 
             if (!templates || templates.length === 0) {
-                templatesGrid.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<p>No SMS templates found</p>');
+                templatesGrid.innerHTML = XSSProtection.sanitize('<p>No SMS templates found</p>');
                 return;
             }
 
@@ -192,7 +192,7 @@ class SMSNotifications {
                         <button class="btn-small" onclick="window.smsNotifications.editTemplate('${template.id}')">Edit</button>
                     </div>
                 </div>
-            `).join('');
+            `).join(''));
         } catch (error) {
             console.error('Error loading templates:', error);
         }
@@ -231,7 +231,7 @@ class SMSNotifications {
                     <button type="submit" class="btn-submit">Send SMS</button>
                 </form>
             </div>
-        `;
+        `)
 
         document.body.appendChild(modal);
         modal.style.display = 'block';
@@ -297,7 +297,7 @@ class SMSNotifications {
                     <button type="submit" class="btn-submit">Send Bulk SMS</button>
                 </form>
             </div>
-        `;
+        `)
 
         document.body.appendChild(modal);
         modal.style.display = 'block';
@@ -562,7 +562,7 @@ class SMSNotifications {
             if (!historyTable) return;
 
             if (!smsLogs || smsLogs.length === 0) {
-                historyTable.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<p>No SMS history found</p>');
+                historyTable.innerHTML = XSSProtection.sanitize('<p>No SMS history found</p>');
                 return;
             }
 
@@ -578,13 +578,13 @@ class SMSNotifications {
                         </tr>
                     </thead>
                     <tbody>
-                        ${sanitize(smsLogs.map(log => `
+                        ${smsLogs.map(log => `
                             <tr>
-                                <td>${new Date(log.created_at).toLocaleString())}</td>
-                                <td>${sanitize(log.recipient_phone)}</td>
-                                <td class="message-preview">${sanitize(log.message_text.substring(0, 50))}${sanitize(log.message_text.length > 50 ? '...' : '')}</td>
-                                <td><span class="status-badge status-${sanitize(log.status)}">${sanitize(log.status)}</span></td>
-                                <td>KES ${sanitize(log.cost || '2.00')}</td>
+                                <td>${new Date(log.created_at).toLocaleString()}</td>
+                                <td>${log.recipient_phone}</td>
+                                <td class="message-preview">${log.message_text.substring(0, 50)}${log.message_text.length > 50 ? '...' : ''}</td>
+                                <td><span class="status-badge status-${log.status}">${log.status}</span></td>
+                                <td>KES ${log.cost || '2.00'}</td>
                             </tr>
                         `).join('')}
                     </tbody>

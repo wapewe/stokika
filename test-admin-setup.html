@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Admin Setup - Stokika</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 { color: #333; }
+        .test-result {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .info { background: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .step { margin: 20px 0; padding: 15px; background: #f8f9fa; border-left: 4px solid #007bff; }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Admin Setup Test Suite</h1>
+        <p>This page tests the admin setup functionality step by step.</p>
+        
+        <div class="step">
+            <h3>Step 1: Check Supabase Configuration</h3>
+            <button onclick="testSupabaseConfig()">Test Config</button>
+            <div id="config-result"></div>
+        </div>
+
+        <div class="step">
+            <h3>Step 2: Check Database Functions</h3>
+            <button onclick="testDatabaseFunctions()">Test Functions</button>
+            <div id="functions-result"></div>
+        </div>
+
+        <div class="step">
+            <h3>Step 3: Check if Admin Exists</h3>
+            <button onclick="checkAdminExists()">Check Admin</button>
+            <div id="admin-check-result"></div>
+        </div>
+
+        <div class="step">
+            <h3>Step 4: Create Admin User (if not exists)</h3>
+            <button onclick="createAdmin()" id="create-btn">Create Admin</button>
+            <div id="create-result"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/core/config-loader.js"></script>
+    <script src="js/core/supabase-config.js"></script>
+    <script>
+        function showResult(elementId, message, type) {
+            const el = document.getElementById(elementId);
+            el.className = `test-result ${type}`;
+            el.textContent = message;
+        }
+
+        async function waitForSupabase() {
+            return new Promise((resolve) => {
+                if (window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
+                    resolve();
+                } else {
+                    window.addEventListener('supabase-config-loaded', () => resolve());
+                }
+            });
+        }
+
+        async function testSupabaseConfig() {
+            try {
+                showResult('config-result', '⏳ Loading configuration...', 'info');
+                await waitForSupabase();
+                const client = initSupabase();
+                
+                if (client && window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
+                    showResult('config-result', 
+                        `✅ SUCCESS\n` +
+                        `URL: ${window.SUPABASE_URL}\n` +
+                        `Client initialized: Yes`, 
+                        'success'
+                    );
+                } else {
+                    showResult('config-result', '❌ Failed to initialize Supabase client', 'error');
+                }
+            } catch (error) {
+                showResult('config-result', `❌ ERROR: ${error.message}`, 'error');
+            }
+        }
+
+        async function testDatabaseFunctions() {
+            try {
+                showResult('functions-result', '⏳ Testing database functions...', 'info');
+                await waitForSupabase();
+                const client = initSupabase();
+                
+                // Test if insert_admin_profile function exists
+                const { data, error } = await client.rpc('insert_admin_profile', {
+                    p_user_id: '00000000-0000-0000-0000-000000000000',
+                    p_email: 'test@test.com',
+                    p_full_name: 'Test User',
+                    p_phone_number: '254700000000'
+                });
+
+                if (error) {
+                    if (error.message.includes('does not exist')) {
+                        showResult('functions-result', 
+                            `❌ FUNCTION NOT FOUND\n` +
+                            `The insert_admin_profile function doesn't exist.\n` +
+                            `Please run the migration: 20261020130000_create_admin_setup_function.sql`, 
+                            'error'
+                        );
+                    } else if (error.message.includes('Admin user already exists')) {
+                        showResult('functions-result', 
+                            `✅ FUNCTION EXISTS\n` +
+                            `Function responded correctly (admin already exists check works)`, 
+                            'success'
+                        );
+                    } else {
+                        showResult('functions-result', 
+                            `✅ FUNCTION EXISTS\n` +
+                            `Function exists and responded: ${error.message}`, 
+                            'success'
+                        );
+                    }
+                } else {
+                    showResult('functions-result', 
+                        `✅ FUNCTION EXISTS AND WORKS\n` +
+                        `Response: ${JSON.stringify(data, null, 2)}`, 
+                        'success'
+                    );
+                }
+            } catch (error) {
+                showResult('functions-result', `❌ ERROR: ${error.message}`, 'error');
+            }
+        }
+
+        async function checkAdminExists() {
+            try {
+                showResult('admin-check-result', '⏳ Checking for existing admin...', 'info');
+                await waitForSupabase();
+                const client = initSupabase();
+                
+                const { data, error } = await client
+                    .from('profiles')
+                    .select('email, full_name, user_roles!inner(role_name)')
+                    .eq('user_roles.role_name', 'admin');
+                
+                if (error) {
+                    showResult('admin-check-result', 
+                        `❌ DATABASE ERROR\n${error.message}`, 
+                        'error'
+                    );
+                } else if (data && data.length > 0) {
+                    showResult('admin-check-result', 
+                        `✅ ADMIN EXISTS\n` +
+                        `Email: ${data[0].email}\n` +
+                        `Name: ${data[0].full_name}\n` +
+                        `Count: ${data.length} admin(s) found`, 
+                        'success'
+                    );
+                    document.getElementById('create-btn').disabled = true;
+                    document.getElementById('create-btn').textContent = 'Admin Already Exists';
+                } else {
+                    showResult('admin-check-result', 
+                        `ℹ️ NO ADMIN FOUND\n` +
+                        `You can proceed to create the first admin user.`, 
+                        'info'
+                    );
+                }
+            } catch (error) {
+                showResult('admin-check-result', `❌ ERROR: ${error.message}`, 'error');
+            }
+        }
+
+        async function createAdmin() {
+            const btn = document.getElementById('create-btn');
+            btn.disabled = true;
+            btn.textContent = 'Creating...';
+            
+            try {
+                showResult('create-result', '⏳ Step 1: Creating auth user...', 'info');
+                await waitForSupabase();
+                const client = initSupabase();
+                
+                const adminEmail = 'krieta8@gmail.com';
+                const adminPassword = '@123456789Rb!';
+                const adminName = 'System Administrator';
+                const adminPhone = '254700000000';
+
+                // Step 1: Create auth user
+                const { data: signUpData, error: signUpError } = await client.auth.signUp({
+                    email: adminEmail,
+                    password: adminPassword,
+                    options: {
+                        data: { full_name: adminName }
+                    }
+                });
+
+                let userId;
+                
+                if (signUpError) {
+                    if (signUpError.message.includes('already registered') || 
+                        signUpError.message.includes('already exists')) {
+                        showResult('create-result', '⏳ User exists, signing in...', 'info');
+                        
+                        const { data: signInData, error: signInError } = await client.auth.signInWithPassword({
+                            email: adminEmail,
+                            password: adminPassword
+                        });
+                        
+                        if (signInError) throw new Error(`Sign-in failed: ${signInError.message}`);
+                        userId = signInData.user.id;
+                    } else {
+                        throw signUpError;
+                    }
+                } else {
+                    userId = signUpData.user.id;
+                }
+
+                showResult('create-result', `⏳ Step 2: Creating admin profile...\nUser ID: ${userId}`, 'info');
+
+                // Step 2: Insert admin profile
+                const { data: profileData, error: profileError } = await client.rpc('insert_admin_profile', {
+                    p_user_id: userId,
+                    p_email: adminEmail,
+                    p_full_name: adminName,
+                    p_phone_number: adminPhone
+                });
+
+                if (profileError) {
+                    throw new Error(`Profile creation failed: ${profileError.message}`);
+                }
+
+                if (profileData && !profileData.success) {
+                    throw new Error(profileData.error || 'Profile creation returned error');
+                }
+
+                showResult('create-result', 
+                    `✅ SUCCESS!\n` +
+                    `Admin user created successfully.\n\n` +
+                    `Email: ${adminEmail}\n` +
+                    `Password: ${adminPassword}\n` +
+                    `User ID: ${userId}\n\n` +
+                    `You can now login at: rembrandts-donji.html`, 
+                    'success'
+                );
+
+            } catch (error) {
+                showResult('create-result', 
+                    `❌ CREATION FAILED\n${error.message}\n\n` +
+                    `Check the browser console for more details.`, 
+                    'error'
+                );
+                console.error('Admin creation error:', error);
+                btn.disabled = false;
+                btn.textContent = 'Create Admin';
+            }
+        }
+
+        // Auto-run config test on load
+        window.addEventListener('load', () => {
+            setTimeout(() => testSupabaseConfig(), 1000);
+        });
+    </script>
+</body>
+</html>

@@ -123,7 +123,7 @@ function showAddItemModal() {
                 </div>
             </form>
         </div>
-    `;
+    `);
     
     document.body.appendChild(modal);
     
@@ -188,3 +188,4 @@ window.deleteItem = async function(itemId) {
         await loadInventory();
     }
 };
+

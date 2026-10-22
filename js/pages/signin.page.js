@@ -1,11 +1,7 @@
 /**
  * Sign In Page Module
  * Handles authentication flow for signin.html
- * ES6 Module - Use with type="module"
  */
-
-import { initSupabase, getSupabaseClient } from '../core/supabase-client.js';
-import { InputSanitizer } from '../security/input-sanitizer.js';
 
 // State management
 let isSubmitting = false;
@@ -16,11 +12,27 @@ let isSubmitting = false;
  */
 async function initSignInPage() {
   try {
-    // Initialize Supabase client
-    await initSupabase();
+    // Wait for Supabase to be available
+    if (!window.supabase) {
+      throw new Error('Supabase library not loaded');
+    }
+
+    // Wait for ConfigLoader
+    if (!window.ConfigLoader) {
+      throw new Error('ConfigLoader not available');
+    }
+
+    // Initialize Supabase client through ConfigLoader
+    const config = await window.ConfigLoader.loadConfig();
+    window.supabaseClient = window.supabase.createClient(
+      config.supabaseUrl,
+      config.supabaseAnonKey
+    );
     
-    // Initialize input sanitizer for the login form
-    InputSanitizer.initForm('#loginForm');
+    // Initialize input sanitizer for the login form if available
+    if (window.InputSanitizer) {
+      window.InputSanitizer.initForm('#loginForm');
+    }
     
     // Setup form handlers
     setupFormHandlers();

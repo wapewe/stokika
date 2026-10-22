@@ -10,20 +10,41 @@ class SecureAuth {
     }
 
     async init() {
-        // Wait for config to load
-        await this.waitForConfig();
-        this.supabase = initSupabase();
-        if (this.supabase) {
+        try {
+            // Wait for config to load
+            await this.waitForConfig();
+            
+            // Initialize Supabase client
+            if (window.supabase && window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
+                this.supabase = window.supabase.createClient(
+                    window.SUPABASE_URL,
+                    window.SUPABASE_ANON_KEY
+                );
+                console.log('✅ SecureAuth: Supabase initialized');
+            } else {
+                console.error('❌ SecureAuth: Supabase not available');
+                return;
+            }
+            
+            // Check existing session
             await this.checkSession();
+            
+            // Setup session monitoring
             this.setupSessionMonitoring();
+        } catch (error) {
+            console.error('❌ SecureAuth initialization failed:', error);
         }
     }
 
     async waitForConfig() {
         let attempts = 0;
-        while (!window.SUPABASE_URL && attempts < 50) {
+        while ((!window.SUPABASE_URL || !window.supabase) && attempts < 50) {
             await new Promise(resolve => setTimeout(resolve, 100));
             attempts++;
+        }
+        
+        if (!window.SUPABASE_URL || !window.supabase) {
+            console.warn('⚠️ SecureAuth: Timed out waiting for config');
         }
     }
 
@@ -347,15 +368,38 @@ class SecureAuth {
 
     // Redirect to dashboard
     redirectToDashboard(role) {
+        // Block admin login from signin.html - admins must use rembrandts-donji.html
+        if (role === 'admin') {
+            console.warn('❌ Admin login blocked from signin page');
+            if (window.showToast) {
+                window.showToast('Admin users must sign in from the admin portal', 'error');
+            } else {
+                alert('Admin users must sign in from the admin portal');
+            }
+            setTimeout(() => {
+                window.location.href = 'rembrandts-donji.html';
+            }, 2000);
+            return;
+        }
+
         const dashboards = {
-            admin: '/admin',
-            field_agent: '/agent',
-            supervisor: '/supervisor',
-            vendor: '/inventory',
-            supplier: '/supplier'
+            field_agent: 'agent-dashboard.html',
+            supervisor: 'supervisor-dashboard.html',
+            vendor: 'vendor-dashboard.html',
+            supplier: 'supplier.html',
+            delivery_partner: 'delivery-partner-dashboard.html'
         };
         
-        window.location.href = dashboards[role] || '/inventory';
+        const dashboard = dashboards[role];
+        
+        if (!dashboard) {
+            console.error(`Unknown role: ${role}, redirecting to home`);
+            window.location.href = 'dalana.html';
+            return;
+        }
+        
+        console.log(`✅ Redirecting ${role} to ${dashboard}`);
+        window.location.href = dashboard;
     }
 
     getCurrentUser() {

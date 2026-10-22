@@ -500,7 +500,7 @@ class OnboardingDashboardUI {
                     </div>
                 </div>
             </div>
-        `;
+        `);
         document.body.appendChild(modal);
     }
 

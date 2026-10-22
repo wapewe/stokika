@@ -700,7 +700,7 @@ class OnboardingDashboard {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `onboarding_report_${report.period.start}_${report.period.end}.json`;
+        a.download = `onboarding_report_${report.period.start}_${report.period.end}.json`);
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);

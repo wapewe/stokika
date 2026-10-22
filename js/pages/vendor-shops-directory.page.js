@@ -40,7 +40,7 @@ async function loadVendorShops() {
                     <h3>No Active Shops Yet</h3>
                     <p>Be the first vendor to create your shop!</p>
                     <a href="vendor-dashboard.html" class="cta-btn" style="margin-top:20px;">Create Your Shop</a>
-                </div>`;
+                </div>`);
             return;
         }
 
@@ -123,3 +123,4 @@ if (document.readyState === 'loading') {
 } else {
     initPage();
 }
+

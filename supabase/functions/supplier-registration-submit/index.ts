@@ -15,7 +15,6 @@ interface SupplierRegistrationPayload {
   supplierType: string
   businessRegistrationStatus: string
   registrationNumber?: string
-  yearsInBusiness: string
   mainBusinessLocation: string
   contactPerson: string
   phone: string
@@ -88,6 +87,12 @@ serve(async (req) => {
     // Parse request body
     const payload: SupplierRegistrationPayload = await req.json()
 
+    // Normalize phone number to database format (254XXXXXXXXX)
+    const normalizedPhone = normalizePhoneNumber(payload.phone)
+    const normalizedAltPhone = payload.alternativeContactPhone 
+      ? normalizePhoneNumber(payload.alternativeContactPhone) 
+      : null
+
     // Validate required fields
     const validationErrors = validatePayload(payload)
     if (validationErrors.length > 0) {
@@ -97,11 +102,11 @@ serve(async (req) => {
       )
     }
 
-    // Check for duplicate phone/email
+    // Check for duplicate phone/email (using normalized phone)
     const { data: existingSupplier } = await supabase
       .from('suppliers')
       .select('id')
-      .or(`phone.eq.${payload.phone},email.eq.${payload.email}`)
+      .or(`contact_phone.eq.${normalizedPhone},contact_email.eq.${payload.email}`)
       .single()
 
     if (existingSupplier) {
@@ -115,22 +120,21 @@ serve(async (req) => {
     }
 
     // Begin transaction (using Postgres transaction via RPC or sequential inserts with error rollback)
-    // Insert supplier
+    // Insert supplier (profile_id is null for unauthenticated registration, will be linked during verification)
     const { data: supplier, error: supplierError } = await supabase
       .from('suppliers')
       .insert({
-        company_name: payload.companyName,
+        profile_id: null, // Null for unauthenticated registration - linked later during verification
+        business_name: payload.companyName,
         contact_person: payload.contactPerson,
-        phone: payload.phone,
-        email: payload.email || null,
+        contact_phone: normalizedPhone, // Use normalized phone
+        contact_email: payload.email || null,
         supplier_type: payload.supplierType,
         business_registration_status: payload.businessRegistrationStatus,
         registration_number: payload.registrationNumber || null,
-        years_in_business: payload.yearsInBusiness,
         main_business_location: payload.mainBusinessLocation,
         alternative_contact_name: payload.alternativeContactName || null,
-        alternative_contact_phone: payload.alternativeContactPhone || null,
-        categories: payload.categories,
+        alternative_contact_phone: normalizedAltPhone, // Use normalized alt phone
         stock_location_county: payload.stockLocationCounty,
         stock_location_town: payload.stockLocationTown,
         warehouse_address: payload.warehouseAddress,
@@ -142,8 +146,6 @@ serve(async (req) => {
         minimum_order_value: payload.minimumOrderValue,
         maximum_order_value: payload.maximumOrderValue,
         fulfillment_lead_time: payload.fulfillmentLeadTime,
-        payment_terms: payload.paymentMethods.join(', '),
-        preferred_payment_method: payload.preferredPaymentMethod,
         accepts_deferred_payment: payload.acceptsDeferredPayment,
         deferred_payment_terms: payload.acceptsDeferredPayment 
           ? JSON.stringify({ 
@@ -152,7 +154,6 @@ serve(async (req) => {
             })
           : null,
         preferred_contact_method: payload.preferredContactMethod,
-        status: 'pending',
         verification_status: 'pending',
       })
       .select('id')
@@ -289,9 +290,6 @@ function validatePayload(payload: SupplierRegistrationPayload): Array<{field: st
   if (!payload.businessRegistrationStatus) {
     errors.push({ field: 'businessRegistrationStatus', message: 'Business registration status is required' })
   }
-  if (!payload.yearsInBusiness) {
-    errors.push({ field: 'yearsInBusiness', message: 'Years in business is required' })
-  }
   if (!payload.mainBusinessLocation?.trim()) {
     errors.push({ field: 'mainBusinessLocation', message: 'Main business location is required' })
   }
@@ -350,4 +348,34 @@ function validatePayload(payload: SupplierRegistrationPayload): Array<{field: st
   }
 
   return errors
+}
+
+/**
+ * Normalize phone number to database format: 254XXXXXXXXX
+ * Accepts: 0712345678, +254712345678, 254712345678
+ * Returns: 254712345678
+ */
+function normalizePhoneNumber(phone: string): string {
+  if (!phone) return phone
+  
+  // Remove all non-digit characters except leading +
+  let cleaned = phone.replace(/[^\d+]/g, '')
+  
+  // Remove leading + if present
+  if (cleaned.startsWith('+')) {
+    cleaned = cleaned.substring(1)
+  }
+  
+  // Convert 0XXXXXXXXX to 254XXXXXXXXX
+  if (cleaned.startsWith('0') && cleaned.length === 10) {
+    return '254' + cleaned.substring(1)
+  }
+  
+  // Already in 254XXXXXXXXX format
+  if (cleaned.startsWith('254') && cleaned.length === 12) {
+    return cleaned
+  }
+  
+  // Return as-is if format is unexpected (will fail validation)
+  return cleaned
 }

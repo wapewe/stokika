@@ -246,7 +246,7 @@ class AdminSettings {
             if (!container) return;
             
             if (!data || data.length === 0) {
-                container.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(<p style="text-align:center;color:#6b7280;padding:2rem;">No audit logs found</p>';
+                container.innerHTML = XSSProtection.sanitize('<p style="text-align:center;color:#6b7280;padding:2rem;">No audit logs found</p>');
                 return;
             }
             
@@ -267,7 +267,7 @@ class AdminSettings {
             console.error('Error loading audit logs:', error);
             const container = document.getElementById('auditLogsTable');
             if (container) {
-                container.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(<p style="color:#ef4444;padding:1rem;">Error loading audit logs: ' + error.message + '</p>';
+                container.innerHTML = XSSProtection.sanitize('<p style="color:#ef4444;padding:1rem;">Error loading audit logs: ' + error.message + '</p>');
             }
         }
     }

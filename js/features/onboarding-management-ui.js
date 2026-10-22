@@ -171,7 +171,7 @@ class OnboardingManagementUI {
                         </div>
                     </div>
                 </div>
-            `;
+            `);
 
             this.attachEventListeners();
             await this.loadOnboardingStats();
@@ -284,7 +284,7 @@ class OnboardingManagementUI {
         if (!container) return;
 
         if (!data || data.length === 0) {
-            container.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<p>No onboarding data available</p>');
+            container.innerHTML = XSSProtection.sanitize('<p>No onboarding data available</p>');
             return;
         }
 
@@ -300,21 +300,21 @@ class OnboardingManagementUI {
                     </tr>
                 </thead>
                 <tbody>
-                    ${sanitize(data.map(item => `
+                    ${data.map(item => `
                         <tr>
-                            <td>${item.full_name)}</td>
-                            <td>${sanitize(item.type)}</td>
-                            <td><span class="status-badge status-${sanitize(item.approval_status)}">${sanitize(item.approval_status)}</span></td>
-                            <td>${sanitize(new Date(item.created_at).toLocaleDateString())}</td>
+                            <td>${item.full_name}</td>
+                            <td>${item.type}</td>
+                            <td><span class="status-badge status-${item.approval_status}">${item.approval_status}</span></td>
+                            <td>${new Date(item.created_at).toLocaleDateString()}</td>
                             <td>
                                 <div class="progress-bar">
-                                    <div class="progress-fill" style="width: ${sanitize(this.calculateProgress(item.approval_status))}%"></div>
+                                    <div class="progress-fill" style="width: ${this.calculateProgress(item.approval_status)}%"></div>
                                 </div>
-                                <span>${sanitize(this.calculateProgress(item.approval_status))}%</span>
+                                <span>${this.calculateProgress(item.approval_status)}%</span>
                             </td>
                             <td>
-                                <button class="btn-small" onclick="window.onboardingUI.viewOnboardingDetails('${sanitize(item.id)}', '${sanitize(item.type)}')">View</button>
-                                <button class="btn-small" onclick="window.onboardingUI.updateOnboardingStatus('${sanitize(item.id)}', '${sanitize(item.type)}')">Update</button>
+                                <button class="btn-small" onclick="window.onboardingUI.viewOnboardingDetails('${item.id}', '${item.type}')">View</button>
+                                <button class="btn-small" onclick="window.onboardingUI.updateOnboardingStatus('${item.id}', '${item.type}')">Update</button>
                             </td>
                         </tr>
                     `).join('')}
@@ -391,7 +391,7 @@ class OnboardingManagementUI {
         if (!container) return;
 
         if (!data || data.length === 0) {
-            container.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<p>No onboarding data available</p>');
+            container.innerHTML = XSSProtection.sanitize('<p>No onboarding data available</p>');
             return;
         }
 
@@ -541,7 +541,7 @@ class OnboardingManagementUI {
                     <button type="submit" class="btn-submit">Create Process</button>
                 </form>
             </div>
-        `;
+        `)
 
         document.body.appendChild(modal);
         modal.style.display = 'block';
@@ -603,7 +603,7 @@ class OnboardingManagementUI {
                     </button>
                 </div>
             </div>
-        `;
+        `)
 
         document.body.appendChild(modal);
         modal.style.display = 'block';

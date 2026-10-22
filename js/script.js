@@ -605,56 +605,7 @@ contactForm?.addEventListener('submit', async (e) => {
     }
 });
 
-// Newsletter Form Submission
-const newsletterForm = document.getElementById('newsletterForm');
-newsletterForm?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    const formData = new FormData(newsletterForm);
-    const email = formData.get('email');
-    
-    if (!email || !email.includes('@')) {
-        alert('Please enter a valid email address.');
-        return;
-    }
-    
-    const submitBtn = newsletterForm.querySelector('button[type="submit"]');
-    const originalText = submitBtn.textContent;
-    submitBtn.textContent = 'Subscribing...';
-    submitBtn.disabled = true;
-    
-    try {
-        // Use existing Supabase client
-        const client = window._supabaseClient || window.supabase;
-        if (!client) {
-            throw new Error('Supabase not initialized. Please check your configuration.');
-        }
-        
-        const { data: result, error } = await client
-            .from('newsletter_subscribers')
-            .insert([{
-                email: email,
-                created_at: new Date().toISOString()
-            }]);
-        
-        if (error) {
-            if (error.code === '23505') { // Unique constraint violation
-                alert('This email is already subscribed to our newsletter.');
-            } else {
-                throw error;
-            }
-        } else {
-            alert('Successfully subscribed to newsletter!');
-            newsletterForm.reset();
-        }
-    } catch (error) {
-        alert('Something went wrong. Please try again.');
-        console.error('Error:', error);
-    } finally {
-        submitBtn.textContent = originalText;
-        submitBtn.disabled = false;
-    }
-});
+// Newsletter Form Submission is handled by newsletter-fix.js
 
 // Back to Top Button
 const backToTopBtn = document.getElementById('backToTop');

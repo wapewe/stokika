@@ -116,7 +116,7 @@ class LoyaltyProgram {
                         </div>
                     </div>
                 </div>
-            `;
+            `);
 
             this.attachEventListeners();
             await this.loadLoyaltyData();
@@ -237,7 +237,7 @@ class LoyaltyProgram {
                     ${!this.loyaltyData || this.loyaltyData.points_balance < reward.points ? 'Not Enough Points' : 'Redeem'}
                 </button>
             </div>
-        `).join('');
+        `).join(''));
     }
 
     showGuestMessage() {
@@ -251,7 +251,7 @@ class LoyaltyProgram {
                         Sign In / Register
                     </button>
                 </div>
-            `;
+            `)
         }
     }
 
@@ -285,7 +285,7 @@ class LoyaltyProgram {
                     </button>
                 </div>
             </div>
-        `;
+        `)
 
         document.body.appendChild(modal);
         modal.style.display = 'block';
@@ -412,7 +412,7 @@ class LoyaltyProgram {
             if (!historyTable) return;
 
             if (!transactions || transactions.length === 0) {
-                historyTable.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<p>No transaction history found</p>');
+                historyTable.innerHTML = XSSProtection.sanitize('<p>No transaction history found</p>');
                 return;
             }
 
@@ -473,7 +473,7 @@ class LoyaltyProgram {
                     </div>
                 </div>
             </div>
-        `;
+        `)
 
         document.body.appendChild(modal);
         modal.style.display = 'block';

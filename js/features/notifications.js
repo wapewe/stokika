@@ -138,7 +138,7 @@ class NotificationSystem {
                     </div>
                 `).join('')}
             </div>
-        `;
+        `);
         
         document.body.appendChild(panel);
         
@@ -154,3 +154,4 @@ class NotificationSystem {
 }
 
 const notificationSystem = new NotificationSystem();
+

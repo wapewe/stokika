@@ -24,7 +24,7 @@ function initializeMpesaDashboard() {
 // Main load function called from admin.js
 async function loadMpesaTransactions() {
     if (!mpesaSupabase && !initializeMpesaDashboard()) {
-        document.getElementById('mpesaTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(<div class="no-data">Failed to initialize dashboard</div>';
+        document.getElementById('mpesaTable').innerHTML = XSSProtection.sanitize('<div class="no-data">Failed to initialize dashboard</div>');
         return;
     }
 
@@ -180,7 +180,7 @@ function displayMpesaStats(stats) {
         </div>
     `;
 
-    document.getElementById('mpesaStatsOverview').innerHTML = XSSProtection.sanitize(statsHTML;
+    document.getElementById('mpesaStatsOverview').innerHTML = XSSProtection.sanitize(statsHTML);
 }
 
 // Load transaction list with filters
@@ -238,7 +238,7 @@ async function loadMpesaTransactionList(silent = false) {
         displayMpesaTransactions(filteredData);
     } catch (error) {
         console.error('Error loading M-Pesa transactions:', error);
-        document.getElementById('mpesaTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(<div class="no-data">Error loading transactions</div>';
+        document.getElementById('mpesaTable').innerHTML = XSSProtection.sanitize('<div class="no-data">Error loading transactions</div>');
     } finally {
         if (!silent) {
             document.getElementById('mpesaLoading').style.display = 'none';
@@ -249,7 +249,7 @@ async function loadMpesaTransactionList(silent = false) {
 // Display transactions in table
 function displayMpesaTransactions(transactions) {
     if (!transactions || transactions.length === 0) {
-        document.getElementById('mpesaTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(<div class="no-data">No transactions found</div>';
+        document.getElementById('mpesaTable').innerHTML = XSSProtection.sanitize('<div class="no-data">No transactions found</div>');
         return;
     }
 
@@ -297,7 +297,7 @@ function displayMpesaTransactions(transactions) {
         </table>
     `;
 
-    document.getElementById('mpesaTable').innerHTML = XSSProtection.sanitize(tableHTML;
+    document.getElementById('mpesaTable').innerHTML = XSSProtection.sanitize(tableHTML);
 }
 
 // Set up real-time updates
@@ -1597,7 +1597,7 @@ async function showReconciliationReport() {
                     </div>
                 </div>
             </div>
-        `;
+        `);
         document.body.insertAdjacentHTML('beforeend', XSSProtection.sanitize(loadingHTML));
 
         // Load data
@@ -2053,3 +2053,4 @@ window.performManualMatch = performManualMatch;
 window.cancelManualMatch = cancelManualMatch;
 window.queryPaymentStatus = queryPaymentStatus;
 window.markAsInvestigate = markAsInvestigate;
+

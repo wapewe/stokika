@@ -22,10 +22,9 @@
     <title>Sign In - Stokika</title>
     <link rel="icon" type="image/x-icon" href="assets/logos/favicon.ico.png">
     
-    <!-- Google Fonts with SRI -->
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" 
           rel="stylesheet"
-          integrity="sha384-zM7qmLDXsv7G43sbK2VNrYGye2a5RuU56GHc3OZBpSLeQ4MVC+kkxdOzkOEjKo48"
           crossorigin="anonymous">
     
     <!-- Page Styles -->
@@ -36,7 +35,7 @@
     <div class="login-container">
         <div class="logo">
             <a href="https://www.stokika.com" target="_blank" rel="noopener noreferrer">
-                <img src="assets/logos/logo.png.png" alt="Stokika Logo">
+                <img src="assets/logos/logo.png" alt="Stokika Logo">
             </a>
         </div>
         <h1>Sign In</h1>
@@ -51,6 +50,7 @@
                 <select id="userRole" name="userRole" required data-sanitize-type="string">
                     <option value="vendor">Vendor</option>
                     <option value="supplier">Supplier</option>
+                    <option value="delivery_partner">Delivery Partner</option>
                     <option value="supervisor">Supervisor</option>
                     <option value="field_agent">Field Agent</option>
                 </select>
@@ -79,10 +79,8 @@
         </div>
     </div>
 
-    <!-- Supabase CDN with SRI -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"
-            integrity="sha384-WgXwGL6fUsYJWNaKJgVbrJKGRQwc1vieh2oy4kw9nXqpNDz3tdSsqEYUgeHD/NuF"
-            crossorigin="anonymous"></script>
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" crossorigin="anonymous"></script>
     
     <!-- Core Configuration (load before page module) -->
     <script src="js/core/config-loader.js"></script>
@@ -94,8 +92,8 @@
     <script src="js/security/csrf-protection.js"></script>
     <script src="js/auth/secure-auth.js"></script>
     
-    <!-- Page Module (ES6 Module) - Handles all page logic -->
-    <script src="js/pages/signin.page.js" type="module"></script>
+    <!-- Page Module - Handles all page logic -->
+    <script src="js/pages/signin.page.js"></script>
     <!-- Toast Notification System -->
     <script src="js/utils/toast.js"></script>
     <script src="js/utils/global-toast-init.js"></script>

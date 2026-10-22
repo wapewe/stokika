@@ -630,7 +630,7 @@ class DashboardFeaturesIntegration {
                 const helpButton = document.createElement('button');
                 helpButton.className = 'contextual-help';
                 helpButton.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(<i class="fas fa-question-circle"></i>';
-                helpButton.title = `Get help with ${trigger.topic}`;
+                helpButton.title = `Get help with ${trigger.topic}`);
                 helpButton.onclick = () => {
                     this.features.helpSupport?.openDocs?.();
                     document.dispatchEvent(new CustomEvent('helpOpened', {
