@@ -2208,24 +2208,46 @@ window.logoutAdmin = async function() {
 
 // Check authentication
 async function checkAuth() {
+    console.log('🔵 DASHBOARD: checkAuth() called');
+    
     try {
+        // Check localStorage whitelist FIRST - bypass all Supabase timing issues
+        const ADMIN_EMAILS = ['krieta8@gmail.com', 'sponyomjaka@gmail.com'];
+        const storedWhitelisted = localStorage.getItem('admin_whitelisted');
+        const storedEmail = localStorage.getItem('admin_email');
+        
+        if (storedWhitelisted === 'true' && storedEmail && ADMIN_EMAILS.includes(storedEmail)) {
+            console.log('✅ DASHBOARD: Admin whitelisted via localStorage - ALLOWING ACCESS');
+            console.log('   - Stored email:', storedEmail);
+            return true;
+        }
+        
+        console.log('🔵 DASHBOARD: No localStorage whitelist found, checking session...');
+        
         const { data: { session } } = await adminSupabase.auth.getSession();
         
-        // TEMPORARY: Check whitelist first - matches rembrandts-auth-guard.js
-        const ADMIN_EMAILS = ['krieta8@gmail.com'];
+        console.log('🔵 DASHBOARD: Session check result:', {
+            hasSession: !!session,
+            userEmail: session?.user?.email
+        });
+        
+        // Check whitelist and set localStorage flags
         if (session?.user?.email && ADMIN_EMAILS.includes(session.user.email)) {
-            console.log('✅ Dashboard: Admin verified via whitelist');
+            console.log('✅ DASHBOARD: Admin verified via whitelist - ALLOWING ACCESS');
+            console.log('   - Setting localStorage flags for future checks');
+            localStorage.setItem('admin_whitelisted', 'true');
+            localStorage.setItem('admin_email', session.user.email);
             return true;
         }
         
         if (!session) {
-            console.log('Dashboard: No session found');
+            console.log('❌ DASHBOARD: No session found, redirecting to login');
             window.location.href = 'rembrandts-donji.html';
             return false;
         }
         return true;
     } catch (error) {
-        console.error('Auth check error:', error);
+        console.error('❌ DASHBOARD: Auth check error:', error);
         window.location.href = 'rembrandts-donji.html';
         return false;
     }
