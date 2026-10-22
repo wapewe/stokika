@@ -2210,7 +2210,16 @@ window.logoutAdmin = async function() {
 async function checkAuth() {
     try {
         const { data: { session } } = await adminSupabase.auth.getSession();
+        
+        // TEMPORARY: Check whitelist first - matches rembrandts-auth-guard.js
+        const ADMIN_EMAILS = ['krieta8@gmail.com'];
+        if (session?.user?.email && ADMIN_EMAILS.includes(session.user.email)) {
+            console.log('✅ Dashboard: Admin verified via whitelist');
+            return true;
+        }
+        
         if (!session) {
+            console.log('Dashboard: No session found');
             window.location.href = 'rembrandts-donji.html';
             return false;
         }
