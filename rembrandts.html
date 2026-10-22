@@ -624,33 +624,38 @@
             integrity="sha384-e6nUZLBkQ86NJ6TVVKAeSaK8jWa3NhkYWZFomE39AvDbQWeie9PlQqM3pmYW5d1g"
             crossorigin="anonymous"></script>
     
+    <!-- Security Scripts (must load FIRST before anything uses them) -->
+    <script src="js/security/xss-protection.js?v=1.0.1"></script>
+    <script src="js/security/secure-session.js?v=1.0.1"></script>
+    <script src="js/security/csrf-protection.js?v=1.0.1"></script>
+    <script src="js/security/input-sanitizer.js?v=1.0.1"></script>
+    
+    <!-- Toast Notification System (needed by feature modules) -->
+    <script src="js/utils/toast.js?v=1.0.1"></script>
+    <script src="js/utils/global-toast-init.js?v=1.0.1"></script>
+    
     <!-- Application Scripts -->
-    <script src="js/core/config-loader.js"></script>
-    <script src="js/auth/rembrandts-auth-guard.js"></script>
-    <script src="js/pages/revenue-dashboard.page.js"></script>
-    <script src="js/features/comprehensive-onboarding.js"></script>
-    <script src="js/pages/rembrandts-settings.page.js"></script>
-    <script src="js/features/bulk-operations.js"></script>
-    <script src="js/features/delivery-tracking.js"></script>
-    <script src="js/features/product-catalog.js"></script>
-    <script src="js/features/loyalty-program.js"></script>
-    <script src="js/features/sms-notifications.js"></script>
-    <script src="js/features/in-app-messaging.js"></script>
-    <script src="js/pages/financial-dashboard.page.js"></script>
-    <script src="js/features/onboarding-management-ui.js"></script>
-    <script src="js/pages/mpesa-admin-dashboard.page.js"></script>
+    <script src="js/core/config-loader.js?v=1.0.1"></script>
+    <script src="js/core/supabase-config.js?v=1.0.1"></script>
+    <script src="js/auth/rembrandts-auth-guard.js?v=1.0.1"></script>
+    <script src="js/pages/revenue-dashboard.page.js?v=1.0.1"></script>
+    <script src="js/features/comprehensive-onboarding.js?v=1.0.1"></script>
+    <script src="js/pages/rembrandts-settings.page.js?v=1.0.1"></script>
+    <script src="js/features/bulk-operations.js?v=1.0.1"></script>
+    <script src="js/features/gps-tracking.js?v=1.0.1"></script>
+    <script src="js/features/predictive-analytics.js?v=1.0.1"></script>
+    <script src="js/features/delivery-tracking.js?v=1.0.1"></script>
+    <script src="js/features/product-catalog.js?v=1.0.1"></script>
+    <script src="js/features/loyalty-program.js?v=1.0.1"></script>
+    <script src="js/features/sms-notifications.js?v=1.0.1"></script>
+    <script src="js/features/in-app-messaging.js?v=1.0.1"></script>
+    <script src="js/pages/financial-dashboard.page.js?v=1.0.1"></script>
+    <script src="js/features/onboarding-management-ui.js?v=1.0.1"></script>
+    <script src="js/pages/mpesa-admin-dashboard.page.js?v=1.0.1"></script>
+    <script src="js/features/payment-timeout-config.js?v=1.0.1"></script>
+    <script src="js/features/manual-payment-verification.js?v=1.0.1"></script>
     
-    <!-- Security Scripts (must load before page scripts) -->
-    <script src="js/security/xss-protection.js"></script>
-    <script src="js/security/secure-session.js"></script>
-    <script src="js/security/csrf-protection.js"></script>
-    <script src="js/security/input-sanitizer.js"></script>
-    
-    <!-- Page Scripts (load after security) -->
-    <script src="js/features/payment-timeout-config.js"></script>
-    <script src="js/pages/rembrandts.page.js"></script>
-    <!-- Toast Notification System -->
-    <script src="js/utils/toast.js"></script>
-    <script src="js/utils/global-toast-init.js"></script>
+    <!-- Page Scripts (load after everything else) -->
+    <script src="js/pages/rembrandts.page.js?v=1.0.1"></script>
 </body>
 </html>

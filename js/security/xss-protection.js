@@ -20,6 +20,14 @@ const XSSProtection = {
     },
 
     /**
+     * Sanitize text content (alias for escapeHtml for backward compatibility)
+     * Use this for ANY user-generated content before rendering
+     */
+    sanitize(str) {
+        return this.escapeHtml(str);
+    },
+
+    /**
      * Escape HTML attributes
      */
     escapeAttr(str) {

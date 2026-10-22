@@ -53,6 +53,11 @@ class PaymentTimeoutConfig {
             const loadingEl = document.getElementById('timeoutConfigLoading');
             if (loadingEl) loadingEl.style.display = 'block';
 
+            // Check if supabase is initialized
+            if (!this.supabase) {
+                throw new Error('PaymentTimeoutConfig must be initialized with initialize() before use');
+            }
+
             // Get the access token
             const { data: { session } } = await this.supabase.auth.getSession();
             if (!session) {
@@ -168,6 +173,11 @@ class PaymentTimeoutConfig {
             btnSave.disabled = true;
             btnSave.textContent = 'Saving...';
 
+            // Check if supabase is initialized
+            if (!this.supabase) {
+                throw new Error('PaymentTimeoutConfig must be initialized with initialize() before use');
+            }
+
             const { data: { session } } = await this.supabase.auth.getSession();
             if (!session) {
                 throw new Error('Not authenticated');
@@ -214,6 +224,11 @@ class PaymentTimeoutConfig {
         try {
             const loadingEl = document.getElementById('timeoutMetricsLoading');
             if (loadingEl) loadingEl.style.display = 'block';
+
+            // Check if supabase is initialized
+            if (!this.supabase) {
+                throw new Error('PaymentTimeoutConfig must be initialized with initialize() before use');
+            }
 
             // Calculate date range based on selected period
             const now = new Date();

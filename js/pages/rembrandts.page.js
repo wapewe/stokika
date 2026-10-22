@@ -1,4 +1,26 @@
 // Admin Dashboard JavaScript
+
+// Global utility function for user messages
+function showUserMessage(message, type = 'info') {
+    if (window.toast) {
+        switch(type) {
+            case 'error':
+                window.toast.error(message);
+                break;
+            case 'success':
+                window.toast.success(message);
+                break;
+            case 'warning':
+                window.toast.warning(message);
+                break;
+            default:
+                window.toast.info(message);
+        }
+    } else {
+        console.log(`[${type.toUpperCase()}] ${message}`);
+    }
+}
+
 let selectedAgents = new Set();
 let currentAgents = [];
 let currentSupervisors = [];
@@ -2520,19 +2542,8 @@ window.viewPayment = async function(paymentId) {
 // GPS Tracking functions
 async function loadGPSTracking() {
     document.getElementById('gpsLoading').style.display = 'block';
-    const territoryManager = new TerritoryManager();
-    const report = await territoryManager.generateCoverageReport('all');
-    document.getElementById('gpsContent').innerHTML = XSSProtection.sanitize(`
-        <div class="gps-dashboard">
-            <h3>Territory Coverage</h3>
-         ...<p>GPS tracking and territory management system active</p>
-            <div class="stats-grid">
-                <div class="stat-card"><div class="stat-number">${sanitize(report?.totalAgents || 0)}</div><div class="stat-label">Active Agents</div></div>
-                <div class="stat-card"><div class="stat-number">${sanitize(report?.totalVendors || 0)}</div><div class="stat-label">Vendors</div></div>
-                <div class="stat-card"><div class="stat-number">${sanitize(report?.coveragePercentage || 0)}%</div><div class="stat-label">Coverage</div></div>
-            </div>
-        </div>
-    `)
+    const gpsTracker = new GPSTracker();
+    await gpsTracker.init();
     document.getElementById('gpsLoading').style.display = 'none';
 }
 
@@ -2670,13 +2681,13 @@ window.viewApplication = async function(type, id) {
                     <p><strong>Email:</strong> ${sanitize(data.email || 'N/A')}</p>
                     <p><strong>Phone:</strong> ${sanitize(data.phone || 'N/A')}</p>
                     <p><strong>County:</strong> ${sanitize(data.county || 'N/A')}</p>
-                    ${sanitize(data.sub_county ? `<p><strong>Sub-County:</strong> ${data.sub_county)}</p>` : ''}
-                    ${data.town ? `<p><strong>Town:</strong> ${data.town}</p>` : ''}
-                    ${data.center ? `<p><strong>Center:</strong> ${data.center}</p>` : ''}
-                    ${data.business_reg_number ? `<p><strong>Business Reg:</strong> ${data.business_reg_number}</p>` : ''}
-                    ${data.business_kra_pin ? `<p><strong>Business KRA PIN:</strong> ${data.business_kra_pin}</p>` : ''}
-                    ${data.kra_pin ? `<p><strong>KRA PIN:</strong> ${data.kra_pin}</p>` : ''}
-                    ${data.id_number ? `<p><strong>ID Number:</strong> ${data.id_number}</p>` : ''}
+                    ${data.sub_county ? `<p><strong>Sub-County:</strong> ${sanitize(data.sub_county)}</p>` : ''}
+                    ${data.town ? `<p><strong>Town:</strong> ${sanitize(data.town)}</p>` : ''}
+                    ${data.center ? `<p><strong>Center:</strong> ${sanitize(data.center)}</p>` : ''}
+                    ${data.business_reg_number ? `<p><strong>Business Reg:</strong> ${sanitize(data.business_reg_number)}</p>` : ''}
+                    ${data.business_kra_pin ? `<p><strong>Business KRA PIN:</strong> ${sanitize(data.business_kra_pin)}</p>` : ''}
+                    ${data.kra_pin ? `<p><strong>KRA PIN:</strong> ${sanitize(data.kra_pin)}</p>` : ''}
+                    ${data.id_number ? `<p><strong>ID Number:</strong> ${sanitize(data.id_number)}</p>` : ''}
                 </div>
                 <div class="detail-section">
                     <h3>Application Status</h3>
@@ -3161,10 +3172,10 @@ window.viewOnboardingSteps = async function(userId) {
                     </div>
                 </div>
 
-                ${sanitize(kitPayment ? `
+                ${kitPayment ? `
                 <div class="detail-section">
                     <h3>💼 Stokika Kit Payment</h3>
-                    <div style="padding: 1rem; background: ${kitPayment.payment_status === 'verified' ? '#f0fdf4' : kitPayment.payment_status === 'rejected' ? '#fef2f2' : '#fffbeb')}; border-left: 4px solid ${sanitize(kitPayment.payment_status === 'verified' ? '#10b981' : kitPayment.payment_status === 'rejected' ? '#ef4444' : '#f59e0b')}; border-radius: 4px;">
+                    <div style="padding: 1rem; background: ${kitPayment.payment_status === 'verified' ? '#f0fdf4' : kitPayment.payment_status === 'rejected' ? '#fef2f2' : '#fffbeb'}; border-left: 4px solid ${kitPayment.payment_status === 'verified' ? '#10b981' : kitPayment.payment_status === 'rejected' ? '#ef4444' : '#f59e0b'}; border-radius: 4px;">
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
                             <strong>Amount: KES ${sanitize(kitPayment.kit_amount.toLocaleString())}</strong>
                             <span class="status-badge status-${sanitize(kitPayment.payment_status)}">${sanitize(kitPayment.payment_status)}</span>
@@ -3321,14 +3332,14 @@ window.manageComprehensiveOnboarding = async function(userId) {
                 
                 <div class="detail-section">
                     <h3>Update Onboarding Steps</h3>
-                    ${sanitize(steps.map(step => `
+                    ${steps.map(step => `
                         <div style="margin-bottom: 1rem; padding: 1rem; background: #f9fafb; border-radius: 4px;">
-                            <label style="display: block; margin-bottom: 0.5rem;"><strong>${step.step_name.replace(/_/g, ' ').toUpperCase())}</strong></label>
+                            <label style="display: block; margin-bottom: 0.5rem;"><strong>${sanitize(step.step_name.replace(/_/g, ' ').toUpperCase())}</strong></label>
                             <select id="step_${sanitize(step.step_name)}" class="form-control" style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px;">
-                                <option value="pending" ${sanitize(step.status === 'pending' ? 'selected' : '')}>Pending</option>
-                                <option value="in_progress" ${sanitize(step.status === 'in_progress' ? 'selected' : '')}>In Progress</option>
-                                <option value="completed" ${sanitize(step.status === 'completed' ? 'selected' : '')}>Completed</option>
-                                <option value="skipped" ${sanitize(step.status === 'skipped' ? 'selected' : '')}>Skipped</option>
+                                <option value="pending" ${step.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                <option value="in_progress" ${step.status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+                                <option value="completed" ${step.status === 'completed' ? 'selected' : ''}>Completed</option>
+                                <option value="skipped" ${step.status === 'skipped' ? 'selected' : ''}>Skipped</option>
                             </select>
                         </div>
                     `).join('')}
@@ -3803,9 +3814,9 @@ window.showKitPaymentModal = function(name, email, phone, userType, password, ki
                 
                 <h3>What's Included:</h3>
                 <ul style="list-style: none; padding: 0;">
-                    ${sanitize(kitConfig.kit_items.map(item => `
+                    ${kitConfig.kit_items.map(item => `
                         <li style="padding: 0.5rem 0; border-bottom: 1px solid #e5e7eb;">
-                            <span style="color: #10b981; margin-right: 0.5rem;">✓</span>${item)}
+                            <span style="color: #10b981; margin-right: 0.5rem;">✓</span>${sanitize(item)}
                         </li>
                     `).join('')}
                 </ul>
