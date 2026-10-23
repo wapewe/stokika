@@ -3,85 +3,426 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="refresh" content="0;url=dalana">
-    <title>Stokika - Welcome</title>
-    <link rel="icon" type="image/png" href="assets/images/stokika-logo.png">
+    <meta http-equiv="refresh" content="15;url=dalana">
+    <meta name="description" content="Stokika - Empowering suppliers, vendors, and delivery partners across Kenya with seamless stock management and distribution solutions.">
+    <title>Stokika - Empowering Supply Chains Across Kenya</title>
+    <link rel="icon" type="image/png" href="assets/logos/favicon.ico.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --stokika-green: #2EBD5A;
+            --stokika-yellow: #FFD24D;
+            --stokika-dark-green: #1a8a3d;
+            --stokika-light-green: #5cd687;
+            --bg-dark: #0f1419;
+            --text-light: #ffffff;
+            --text-muted: rgba(255, 255, 255, 0.7);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-light);
+            overflow-x: hidden;
+            position: relative;
             min-height: 100vh;
-            color: white;
         }
-        .container {
-            text-align: center;
+
+        /* Animated background gradient */
+        .bg-gradient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(ellipse at top, rgba(46, 189, 90, 0.15) 0%, transparent 50%),
+                        radial-gradient(ellipse at bottom right, rgba(255, 210, 77, 0.1) 0%, transparent 50%);
+            z-index: 0;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.8; }
+        }
+
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--stokika-green);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .particle:nth-child(2n) {
+            background: var(--stokika-yellow);
+            animation-duration: 25s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            25% {
+                transform: translate(100px, -100px) scale(1.5);
+            }
+            50% {
+                transform: translate(-50px, -200px) scale(1);
+            }
+            75% {
+                transform: translate(50px, -100px) scale(0.8);
+            }
+        }
+
+        /* Main container */
+        .landing-container {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
             padding: 2rem;
+            text-align: center;
         }
+
+        /* Logo with blinking pulse animation */
+        .logo-container {
+            margin-bottom: 3rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
         .logo {
-            width: 150px;
-            height: 150px;
-            margin-bottom: 2rem;
-            animation: fadeIn 0.5s ease-in;
+            width: 400px;
+            max-width: 90vw;
+            height: auto;
+            filter: drop-shadow(0 20px 40px rgba(46, 189, 90, 0.3));
+            animation: logoPulse 3s ease-in-out infinite;
         }
-        h1 {
+
+        @keyframes logoPulse {
+            0%, 100% {
+                transform: scale(1);
+                filter: drop-shadow(0 20px 40px rgba(46, 189, 90, 0.3));
+            }
+            50% {
+                transform: scale(1.05);
+                filter: drop-shadow(0 25px 50px rgba(46, 189, 90, 0.5)) 
+                        drop-shadow(0 0 30px rgba(255, 210, 77, 0.3));
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Headline */
+        .headline {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--stokika-green) 0%, var(--stokika-yellow) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 1s ease-out 0.3s both;
+            line-height: 1.2;
+        }
+
+        .subheadline {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: var(--text-muted);
+            margin-bottom: 3rem;
+            max-width: 700px;
+            animation: fadeInUp 1s ease-out 0.6s both;
+            line-height: 1.6;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Features grid */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 3rem auto;
+            animation: fadeInUp 1s ease-out 0.9s both;
+        }
+
+        .feature {
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(46, 189, 90, 0.2);
+            border-radius: 16px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .feature:hover {
+            background: rgba(46, 189, 90, 0.05);
+            border-color: var(--stokika-green);
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
             font-size: 2.5rem;
             margin-bottom: 1rem;
-            animation: fadeIn 0.7s ease-in;
         }
-        p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            animation: fadeIn 0.9s ease-in;
+
+        .feature-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--stokika-green);
+            margin-bottom: 0.5rem;
         }
-        .loader {
+
+        .feature-text {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* Progress bar */
+        .progress-container {
+            margin-top: 3rem;
+            width: 100%;
+            max-width: 500px;
+            animation: fadeInUp 1s ease-out 1.2s both;
+        }
+
+        .progress-label {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .countdown {
+            font-weight: 600;
+            color: var(--stokika-yellow);
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--stokika-green), var(--stokika-yellow));
+            border-radius: 10px;
+            width: 0%;
+            animation: progressFill 15s linear forwards;
+            box-shadow: 0 0 20px rgba(46, 189, 90, 0.5);
+        }
+
+        @keyframes progressFill {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+
+        /* Skip link */
+        .skip-link {
             margin-top: 2rem;
+            animation: fadeInUp 1s ease-out 1.5s both;
+        }
+
+        .skip-link a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            transition: all 0.3s ease;
             display: inline-block;
-            width: 50px;
-            height: 50px;
-            border: 4px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .skip-link a:hover {
+            color: var(--stokika-green);
+            border-color: var(--stokika-green);
+            background: rgba(46, 189, 90, 0.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .headline {
+                font-size: 2rem;
+            }
+
+            .subheadline {
+                font-size: 1.1rem;
+                margin-bottom: 2rem;
+            }
+
+            .logo {
+                width: 280px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+        }
+
+        /* Loading spinner (subtle) */
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(46, 189, 90, 0.2);
+            border-top-color: var(--stokika-green);
             border-radius: 50%;
-            border-top-color: white;
             animation: spin 1s linear infinite;
+            margin-left: 0.5rem;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+
         @keyframes spin {
             to { transform: rotate(360deg); }
-        }
-        .fallback {
-            margin-top: 2rem;
-            opacity: 0.8;
-            font-size: 0.9rem;
-        }
-        .fallback a {
-            color: white;
-            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <img src="assets/images/stokika-logo.png" alt="Stokika Logo" class="logo" onerror="this.style.display='none'">
-        <h1>Welcome to Stokika</h1>
-        <p>Redirecting you to supplier registration...</p>
-        <div class="loader"></div>
-        <p class="fallback">
-            If you are not redirected automatically, 
-            <a href="dalana">click here</a>
-        </p>
+    <!-- Animated background -->
+    <div class="bg-gradient"></div>
+
+    <!-- Floating particles -->
+    <div class="particles">
+        <div class="particle" style="top: 10%; left: 20%;"></div>
+        <div class="particle" style="top: 30%; left: 80%;"></div>
+        <div class="particle" style="top: 60%; left: 10%;"></div>
+        <div class="particle" style="top: 80%; left: 70%;"></div>
+        <div class="particle" style="top: 40%; left: 50%;"></div>
+        <div class="particle" style="top: 70%; left: 30%;"></div>
     </div>
+
+    <!-- Main content -->
+    <div class="landing-container">
+        <!-- Logo with pulse animation -->
+        <div class="logo-container">
+            <img src="assets/logos/logo-dark.png" alt="Stokika Logo" class="logo">
+        </div>
+
+        <!-- Headline -->
+        <h1 class="headline">Empowering Supply Chains Across Kenya</h1>
+        <p class="subheadline">
+            Connecting suppliers, vendors, and delivery partners with seamless 
+            stock management and distribution solutions.
+        </p>
+
+        <!-- Feature highlights -->
+        <div class="features">
+            <div class="feature">
+                <div class="feature-icon">📦</div>
+                <div class="feature-title">Suppliers</div>
+                <div class="feature-text">Register your products and reach vendors nationwide</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🏪</div>
+                <div class="feature-title">Vendors</div>
+                <div class="feature-text">Stock your shop with quality products effortlessly</div>
+            </div>
+            <div class="feature">
+                <div class="feature-icon">🚚</div>
+                <div class="feature-title">Delivery Partners</div>
+                <div class="feature-text">Earn by delivering products in your area</div>
+            </div>
+        </div>
+
+        <!-- Progress bar with countdown -->
+        <div class="progress-container">
+            <div class="progress-label">
+                <span>Loading your experience</span>
+                <span class="countdown" id="countdown">15s</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill"></div>
+            </div>
+        </div>
+
+        <!-- Skip link -->
+        <div class="skip-link">
+            <a href="dalana">Skip intro and enter now →</a>
+        </div>
+    </div>
+
     <script>
-        // Immediate redirect (fallback if meta refresh fails)
+        // Countdown timer
+        let timeLeft = 15;
+        const countdownElement = document.getElementById('countdown');
+        
+        const countdownInterval = setInterval(() => {
+            timeLeft--;
+            countdownElement.textContent = timeLeft + 's';
+            
+            if (timeLeft <= 0) {
+                clearInterval(countdownInterval);
+                countdownElement.textContent = 'Redirecting...';
+            }
+        }, 1000);
+
+        // Auto-redirect after 15 seconds
         setTimeout(function() {
             window.location.href = 'dalana';
-        }, 100);
+        }, 15000);
+
+        // Create additional floating particles dynamically
+        const particlesContainer = document.querySelector('.particles');
+        for (let i = 0; i < 8; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 5 + 's';
+            particlesContainer.appendChild(particle);
+        }
     </script>
 </body>
 </html>
