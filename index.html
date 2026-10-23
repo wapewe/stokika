@@ -22,15 +22,15 @@
             --stokika-yellow: #FFD24D;
             --stokika-dark-green: #1a8a3d;
             --stokika-light-green: #5cd687;
-            --bg-dark: #0f1419;
-            --text-light: #ffffff;
-            --text-muted: rgba(255, 255, 255, 0.7);
+            --bg-white: #ffffff;
+            --text-dark: #1a202c;
+            --text-muted: #4a5568;
         }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-light);
+            background: var(--bg-white);
+            color: var(--text-dark);
             overflow-x: hidden;
             position: relative;
             min-height: 100vh;
@@ -43,8 +43,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: radial-gradient(ellipse at top, rgba(46, 189, 90, 0.15) 0%, transparent 50%),
-                        radial-gradient(ellipse at bottom right, rgba(255, 210, 77, 0.1) 0%, transparent 50%);
+            background: radial-gradient(ellipse at top, rgba(46, 189, 90, 0.08) 0%, transparent 50%),
+                        radial-gradient(ellipse at bottom right, rgba(255, 210, 77, 0.06) 0%, transparent 50%);
             z-index: 0;
             animation: gradientShift 15s ease infinite;
         }
@@ -150,7 +150,7 @@
             font-size: 3rem;
             font-weight: 800;
             margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--stokika-green) 0%, var(--stokika-yellow) 100%);
+            background: linear-gradient(135deg, var(--stokika-green) 0%, var(--stokika-dark-green) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -191,7 +191,7 @@
 
         .feature {
             padding: 1.5rem;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(46, 189, 90, 0.03);
             border: 1px solid rgba(46, 189, 90, 0.2);
             border-radius: 16px;
             backdrop-filter: blur(10px);
@@ -199,9 +199,10 @@
         }
 
         .feature:hover {
-            background: rgba(46, 189, 90, 0.05);
+            background: rgba(46, 189, 90, 0.08);
             border-color: var(--stokika-green);
             transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(46, 189, 90, 0.15);
         }
 
         .feature-icon {
@@ -248,7 +249,7 @@
         .progress-bar {
             width: 100%;
             height: 6px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(0, 0, 0, 0.08);
             border-radius: 10px;
             overflow: hidden;
             position: relative;
@@ -279,7 +280,7 @@
             text-decoration: none;
             font-size: 0.9rem;
             padding: 0.5rem 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(0, 0, 0, 0.15);
             border-radius: 8px;
             transition: all 0.3s ease;
             display: inline-block;

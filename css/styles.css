@@ -3013,17 +3013,21 @@ section {
 
 /* Who We Serve */
 .who-we-serve-section {
-    background: #000000;
+    background: linear-gradient(135deg, #f0fdf4 0%, #ffffff 50%, #fffbeb 100%);
     position: relative;
     overflow: hidden;
+    padding: 100px 0;
 }
 
 .who-we-serve-section .section-title {
-    color: white;
+    color: #1a8a3d;
+    font-size: 3rem;
+    font-weight: 800;
 }
 
 .who-we-serve-section .section-subtitle {
-    color: rgba(255, 255, 255, 0.8);
+    color: #4a5568;
+    font-size: 1.2rem;
 }
 
 .audience-grid {
@@ -3039,12 +3043,13 @@ section {
     backdrop-filter: blur(10px);
     padding: 2.5rem;
     border-radius: 24px;
-    border: 1px solid rgba(226, 232, 240, 0.6);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    border: 2px solid rgba(46, 189, 90, 0.1);
+    box-shadow: 0 4px 20px rgba(46, 189, 90, 0.08);
     text-align: center;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
+    z-index: 1;
 }
 
 .audience-card::before {
@@ -3054,15 +3059,15 @@ section {
     left: 0;
     right: 0;
     height: 4px;
-    background: var(--gradient-1);
+    background: linear-gradient(90deg, var(--stokika-green), var(--stokika-yellow));
     transform: scaleX(0);
     transition: transform 0.4s ease;
 }
 
 .audience-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
-    border-color: rgba(16, 185, 129, 0.4);
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 25px 50px rgba(46, 189, 90, 0.15);
+    border-color: rgba(46, 189, 90, 0.4);
 }
 
 .audience-card:hover::before {
@@ -3144,7 +3149,7 @@ section {
     height: 100%;
     top: 0;
     left: 0;
-    z-index: 10;
+    z-index: 0;
     overflow: hidden;
     pointer-events: none;
 }
@@ -3152,20 +3157,20 @@ section {
 .who-we-serve-bubbles span {
     position: absolute;
     border-radius: 50%;
-    opacity: 0.3;
-    filter: blur(2px);
+    opacity: 0.15;
+    filter: blur(40px);
 }
 
-.serve-bubble-1 { width: 80px; height: 80px; background: #000000; left: 10%; top: 20%; animation: smoothBounce1 20s infinite ease-in-out; }
-.serve-bubble-2 { width: 60px; height: 60px; background: #ff0000; left: 80%; top: 70%; animation: smoothBounce2 18s infinite ease-in-out; }
-.serve-bubble-3 { width: 100px; height: 100px; background: #0000ff; left: 30%; top: 50%; animation: smoothBounce3 22s infinite ease-in-out; }
-.serve-bubble-4 { width: 70px; height: 70px; background: #ffff00; left: 70%; top: 30%; animation: smoothBounce4 19s infinite ease-in-out; }
-.serve-bubble-5 { width: 90px; height: 90px; background: #ffffff; left: 50%; top: 80%; animation: smoothBounce5 21s infinite ease-in-out; }
-.serve-bubble-6 { width: 50px; height: 50px; background: #00ff00; left: 20%; top: 60%; animation: smoothBounce6 17s infinite ease-in-out; }
-.serve-bubble-7 { width: 110px; height: 110px; background: #000000; left: 90%; top: 40%; animation: smoothBounce7 23s infinite ease-in-out; }
-.serve-bubble-8 { width: 65px; height: 65px; background: #ff0000; left: 40%; top: 10%; animation: smoothBounce8 16s infinite ease-in-out; }
-.serve-bubble-9 { width: 85px; height: 85px; background: #0000ff; left: 60%; top: 90%; animation: smoothBounce9 24s infinite ease-in-out; }
-.serve-bubble-10 { width: 75px; height: 75px; background: #00ff00; left: 15%; top: 35%; animation: smoothBounce10 25s infinite ease-in-out; }
+.serve-bubble-1 { width: 200px; height: 200px; background: #2EBD5A; left: 10%; top: 20%; animation: smoothBounce1 20s infinite ease-in-out; }
+.serve-bubble-2 { width: 150px; height: 150px; background: #FFD24D; left: 80%; top: 70%; animation: smoothBounce2 18s infinite ease-in-out; }
+.serve-bubble-3 { width: 250px; height: 250px; background: #2EBD5A; left: 30%; top: 50%; animation: smoothBounce3 22s infinite ease-in-out; }
+.serve-bubble-4 { width: 180px; height: 180px; background: #FFD24D; left: 70%; top: 30%; animation: smoothBounce4 19s infinite ease-in-out; }
+.serve-bubble-5 { width: 220px; height: 220px; background: #5cd687; left: 50%; top: 80%; animation: smoothBounce5 21s infinite ease-in-out; }
+.serve-bubble-6 { width: 130px; height: 130px; background: #2EBD5A; left: 20%; top: 60%; animation: smoothBounce6 17s infinite ease-in-out; }
+.serve-bubble-7 { width: 280px; height: 280px; background: #FFD24D; left: 90%; top: 40%; animation: smoothBounce7 23s infinite ease-in-out; }
+.serve-bubble-8 { width: 160px; height: 160px; background: #2EBD5A; left: 40%; top: 10%; animation: smoothBounce8 16s infinite ease-in-out; }
+.serve-bubble-9 { width: 210px; height: 210px; background: #5cd687; left: 60%; top: 90%; animation: smoothBounce9 24s infinite ease-in-out; }
+.serve-bubble-10 { width: 190px; height: 190px; background: #FFD24D; left: 15%; top: 35%; animation: smoothBounce10 25s infinite ease-in-out; }
 
 @keyframes smoothBounce1 {
     0%, 100% { transform: translate(0, 0); }
