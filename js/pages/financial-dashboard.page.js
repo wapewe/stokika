@@ -170,11 +170,11 @@ class FinancialDashboard {
     }
 
     updateFinancialStats(metrics) {
-        document.getElementById('totalRevenue').textContent = `KES ${metrics.totalRevenue.toLocaleString()}`;
-        document.getElementById('totalOrders').textContent = metrics.totalOrders.toLocaleString();
-        document.getElementById('totalCommissions').textContent = `KES ${metrics.totalCommissions.toLocaleString()}`;
-        document.getElementById('netProfit').textContent = `KES ${metrics.netProfit.toLocaleString()}`;
-        document.getElementById('profitMargin').textContent = `${metrics.profitMargin.toFixed(1)}%`;
+        window.SafeDOM.setText('totalRevenue', `KES ${metrics.totalRevenue.toLocaleString()}`);
+        window.SafeDOM.setText('totalOrders', metrics.totalOrders.toLocaleString());
+        window.SafeDOM.setText('totalCommissions', `KES ${metrics.totalCommissions.toLocaleString()}`);
+        window.SafeDOM.setText('netProfit', `KES ${metrics.netProfit.toLocaleString()}`);
+        window.SafeDOM.setText('profitMargin', `${metrics.profitMargin.toFixed(1)}%`);
     }
 
     createCharts(orders, payments) {
@@ -425,9 +425,11 @@ class FinancialDashboard {
 }
 
 // Initialize financial dashboard
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     if (document.getElementById('financialContent')) {
+        // Wait for Supabase config to be ready
+        await window.ConfigLoader.loadConfig();
         window.financialDashboard = new FinancialDashboard();
-        window.financialDashboard.init();
+        await window.financialDashboard.init();
     }
 });

@@ -1597,8 +1597,8 @@ async function showReconciliationReport() {
                     </div>
                 </div>
             </div>
-        `);
-        document.body.insertAdjacentHTML('beforeend', XSSProtection.sanitize(loadingHTML));
+        `;
+        document.body.insertAdjacentHTML('beforeend', loadingHTML);
 
         // Load data
         const [summary, unmatched, orphaned] = await Promise.all([

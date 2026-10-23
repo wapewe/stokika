@@ -295,7 +295,9 @@ window.importProducts = function() {
 };
 
 // Initialize bulk operations
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+    // Wait for Supabase config to be ready
+    await window.ConfigLoader.loadConfig();
     window.bulkOps = new BulkOperations();
-    window.bulkOps.init();
+    await window.bulkOps.init();
 });

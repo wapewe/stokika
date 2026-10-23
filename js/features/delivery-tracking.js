@@ -77,29 +77,32 @@ class DeliveryTracker {
         try {
             const today = new Date().toISOString().split('T')[0];
             
-            const { data: activeDeliveries } = await this.supabase
-                .from('deliveries')
-                .select('id')
-                .in('status', ['assigned', 'picked_up', 'in_transit']);
+            const activeResult = await window.SafeSupabase.query(
+                () => this.supabase.from('deliveries').select('id').in('status', ['assigned', 'picked_up', 'in_transit']),
+                { defaultValue: [] }
+            );
 
-            const { data: todayDeliveries } = await this.supabase
-                .from('deliveries')
-                .select('id')
-                .gte('created_at', today);
+            const todayResult = await window.SafeSupabase.query(
+                () => this.supabase.from('deliveries').select('id').gte('created_at', today),
+                { defaultValue: [] }
+            );
 
-            const { data: completedToday } = await this.supabase
-                .from('deliveries')
-                .select('id')
-                .eq('status', 'delivered')
-                .gte('actual_delivery', today);
+            const completedResult = await window.SafeSupabase.query(
+                () => this.supabase.from('deliveries').select('id').eq('status', 'delivered').gte('actual_delivery', today),
+                { defaultValue: [] }
+            );
 
-            const completionRate = todayDeliveries?.length > 0 
-                ? Math.round((completedToday?.length || 0) / todayDeliveries.length * 100)
+            const activeDeliveries = activeResult.data || [];
+            const todayDeliveries = todayResult.data || [];
+            const completedToday = completedResult.data || [];
+
+            const completionRate = todayDeliveries.length > 0 
+                ? Math.round((completedToday.length || 0) / todayDeliveries.length * 100)
                 : 0;
 
-            document.getElementById('activeDeliveriesCount').textContent = activeDeliveries?.length || 0;
-            document.getElementById('todayDeliveriesCount').textContent = todayDeliveries?.length || 0;
-            document.getElementById('completionRate').textContent = `${completionRate}%`;
+            window.SafeDOM.setText('activeDeliveriesCount', activeDeliveries.length || 0);
+            window.SafeDOM.setText('todayDeliveriesCount', todayDeliveries.length || 0);
+            window.SafeDOM.setText('completionRate', `${completionRate}%`);
         } catch (error) {
             console.error('Error loading delivery stats:', error);
         }
@@ -109,21 +112,34 @@ class DeliveryTracker {
         try {
             const statusFilter = document.getElementById('deliveryStatusFilter')?.value || '';
             
-            let query = this.supabase
-                .from('deliveries')
-                .select(`
-                    *,
-                    orders (id, total_amount, product_name),
-                    vendors (business_name, users(name)),
-                    field_agents (full_name)
-                `)
-                .order('created_at', { ascending: false });
+            let queryBuilder = () => {
+                let q = this.supabase
+                    .from('deliveries')
+                    .select(`
+                        *,
+                        orders (id, total_amount, product_name),
+                        vendors (business_name, users(name)),
+                        field_agents (full_name)
+                    `)
+                    .order('created_at', { ascending: false });
 
-            if (statusFilter) {
-                query = query.eq('status', statusFilter);
+                if (statusFilter) {
+                    q = q.eq('status', statusFilter);
+                }
+                return q;
+            };
+
+            const result = await window.SafeSupabase.query(queryBuilder, {
+                defaultValue: [],
+                fallbackMessage: 'Delivery tracking feature coming soon'
+            });
+
+            const deliveries = result.data || [];
+
+            if (result.handled) {
+                window.SafeDOM.showPlaceholder('deliveriesTable', result.message, '🚚');
+                return;
             }
-
-            const { data: deliveries } = await query;
 
             const tableHtml = `
                 <table class="data-table">
@@ -139,7 +155,7 @@ class DeliveryTracker {
                         </tr>
                     </thead>
                     <tbody>
-                        ${deliveries?.map(delivery => `
+                        ${deliveries.length > 0 ? deliveries.map(delivery => `
                             <tr>
                                 <td><strong>${delivery.tracking_code || 'N/A'}</strong></td>
                                 <td>${delivery.orders?.product_name || 'N/A'}<br>
@@ -153,14 +169,15 @@ class DeliveryTracker {
                                     <button class="btn-small" onclick="updateDeliveryStatus('${delivery.id}')">Update</button>
                                 </td>
                             </tr>
-                        `).join('') || '<tr><td colspan="7">No deliveries found</td></tr>'}
+                        `).join('') : '<tr><td colspan="7">No deliveries found</td></tr>'}
                     </tbody>
                 </table>
             `;
 
-            document.getElementById('deliveriesTable').innerHTML = XSSProtection.sanitize(tableHtml);
+            window.SafeDOM.setHTML('deliveriesTable', XSSProtection.sanitize(tableHtml));
         } catch (error) {
             console.error('Error loading deliveries table:', error);
+            window.SafeDOM.showError('deliveriesTable', 'Unable to load deliveries');
         }
     }
 
@@ -280,9 +297,11 @@ window.createDelivery = async function() {
 };
 
 // Initialize when DOM is ready
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     if (document.getElementById('deliveryContent')) {
+        // Wait for Supabase config to be ready
+        await window.ConfigLoader.loadConfig();
         window.deliveryTracker = new DeliveryTracker();
-        window.deliveryTracker.init();
+        await window.deliveryTracker.init();
     }
 });

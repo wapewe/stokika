@@ -1865,3 +1865,206 @@ body {
 .revenue-dashboard.loading .revenue-detail {
     animation: pulse 1.5s ease-in-out infinite;
 }
+
+
+/* ============================================
+   Delivery Partners Management Styles
+   ============================================ */
+
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.badge-individual { background-color: #dbeafe; color: #1e40af; }
+.badge-business { background-color: #fef3c7; color: #92400e; }
+.badge-fleet { background-color: #ede9fe; color: #5b21b6; }
+.badge-coverage { background-color: #d1fae5; color: #065f46; }
+.badge-success { background-color: #d1fae5; color: #065f46; }
+.badge-warning { background-color: #fef3c7; color: #92400e; }
+
+/* ============================================
+   Geographic Directory Styles
+   ============================================ */
+
+.geo-nav-tabs {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+}
+
+.geo-tab-btn {
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: none;
+    color: #6b7280;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.geo-tab-btn.active {
+    color: #10b981;
+    border-bottom-color: #10b981;
+}
+
+.geo-tab-btn:hover {
+    color: #059669;
+}
+
+.geo-summary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.geo-summary h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+}
+
+.geo-summary p {
+    margin: 0;
+    opacity: 0.9;
+}
+
+.geo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.location-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.location-card:hover {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.location-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #f3f4f6;
+}
+
+.location-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #1f2937;
+}
+
+.location-total {
+    background: #10b981;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.location-stakeholders {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.stakeholder-count {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    background: #f9fafb;
+    border-radius: 0.375rem;
+}
+
+.stakeholder-icon {
+    font-size: 1.5rem;
+}
+
+.stakeholder-label {
+    flex: 1;
+    font-weight: 500;
+    text-transform: capitalize;
+    color: #374151;
+}
+
+.stakeholder-number {
+    background: #e5e7eb;
+    color: #1f2937;
+    padding: 0.25rem 0.625rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.location-actions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.location-actions .btn-small {
+    flex: 1;
+}
+
+.stakeholder-section {
+    margin-bottom: 2rem;
+}
+
+.stakeholder-section h3 {
+    color: #1f2937;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+/* Modal location details styling */
+.modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+#locationDetailsContent .data-table {
+    font-size: 0.875rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .geo-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .geo-nav-tabs {
+        flex-wrap: wrap;
+    }
+
+    .geo-tab-btn {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+    }
+
+    .location-actions {
+        flex-direction: column;
+    }
+}

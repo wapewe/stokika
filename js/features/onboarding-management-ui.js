@@ -237,7 +237,7 @@ class OnboardingManagementUI {
         try {
             const today = new Date().toISOString().split('T')[0];
 
-            // Mock data for demonstration
+            // Mock data for demonstration since tables may not exist yet
             const stats = {
                 activeOnboarding: 45,
                 completedToday: 12,
@@ -245,10 +245,10 @@ class OnboardingManagementUI {
                 avgCompletionTime: '2.5 days'
             };
 
-            document.getElementById('activeOnboarding').textContent = stats.activeOnboarding;
-            document.getElementById('completedToday').textContent = stats.completedToday;
-            document.getElementById('completionRate').textContent = `${stats.completionRate}%`;
-            document.getElementById('avgCompletionTime').textContent = stats.avgCompletionTime;
+            window.SafeDOM.setText('activeOnboarding', stats.activeOnboarding);
+            window.SafeDOM.setText('completedToday', stats.completedToday);
+            window.SafeDOM.setText('completionRate', `${stats.completionRate}%`);
+            window.SafeDOM.setText('avgCompletionTime', stats.avgCompletionTime);
         } catch (error) {
             console.error('Error loading onboarding stats:', error);
         }
@@ -256,26 +256,36 @@ class OnboardingManagementUI {
 
     async loadOverviewData() {
         try {
-            const { data: fieldAgents } = await this.supabase
-                .from('field_agents')
-                .select('id, full_name, approval_status, created_at')
-                .order('created_at', { ascending: false })
-                .limit(10);
+            const fieldAgentsResult = await window.SafeSupabase.query(
+                () => this.supabase
+                    .from('field_agents')
+                    .select('id, full_name, approval_status, created_at')
+                    .order('created_at', { ascending: false })
+                    .limit(10),
+                { defaultValue: [] }
+            );
 
-            const { data: supervisors } = await this.supabase
-                .from('supervisors')
-                .select('id, full_name, approval_status, created_at')
-                .order('created_at', { ascending: false })
-                .limit(10);
+            const supervisorsResult = await window.SafeSupabase.query(
+                () => this.supabase
+                    .from('supervisors')
+                    .select('id, full_name, approval_status, created_at')
+                    .order('created_at', { ascending: false })
+                    .limit(10),
+                { defaultValue: [] }
+            );
+
+            const fieldAgents = fieldAgentsResult.data || [];
+            const supervisors = supervisorsResult.data || [];
 
             const overviewData = [
-                ...(fieldAgents?.map(agent => ({ ...agent, type: 'Field Agent' })) || []),
-                ...(supervisors?.map(supervisor => ({ ...supervisor, type: 'Supervisor' })) || [])
+                ...fieldAgents.map(agent => ({ ...agent, type: 'Field Agent' })),
+                ...supervisors.map(supervisor => ({ ...supervisor, type: 'Supervisor' }))
             ].sort((a, b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 20);
 
             this.renderOverviewTable(overviewData);
         } catch (error) {
             console.error('Error loading overview data:', error);
+            window.SafeDOM.showError('overviewTable', 'Unable to load onboarding data');
         }
     }
 
@@ -320,7 +330,7 @@ class OnboardingManagementUI {
                     `).join('')}
                 </tbody>
             </table>
-        `;
+        `);
     }
 
     calculateProgress(status) {
@@ -398,10 +408,11 @@ class OnboardingManagementUI {
         const nameField = type === 'vendor' || type === 'supplier' ? 'business_name' : 'full_name';
         const statusField = type === 'vendor' ? 'status' : 'approval_status';
 
-        container.innerHTML = XSSProtection.sanitize(`
+        container.innerHTML = `
             <table class="data-table">
                 <thead>
-                    <t...                        <th>Name</th>
+                    <tr>
+                        <th>Name</th>
                         <th>Email</th>
                         <th>Phone</th>
                         <th>Status</th>
@@ -411,9 +422,9 @@ class OnboardingManagementUI {
                     </tr>
                 </thead>
                 <tbody>
-                    ${sanitize(data.map(item => `
+                    ${data.map(item => `
                         <tr>
-                            <td>${item[nameField] || 'N/A')}</td>
+                            <td>${sanitize(item[nameField] || 'N/A')}</td>
                             <td>${sanitize(item.email || 'N/A')}</td>
                             <td>${sanitize(item.phone_number || 'N/A')}</td>
                             <td><span class="status-badge status-${sanitize(item[statusField])}">${sanitize(item[statusField])}</span></td>
@@ -637,9 +648,11 @@ class OnboardingManagementUI {
 }
 
 // Initialize onboarding management UI
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     if (document.getElementById('admin-onboarding-content')) {
+        // Wait for Supabase config to be ready
+        await window.ConfigLoader.loadConfig();
         window.onboardingUI = new OnboardingManagementUI();
-        window.onboardingUI.init();
+        await window.onboardingUI.init();
     }
 });

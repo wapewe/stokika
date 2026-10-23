@@ -10,7 +10,7 @@
                    script-src 'self' https://cdn.jsdelivr.net; 
                    style-src 'self' 'unsafe-inline' 'unsafe-hashes' https://fonts.googleapis.com; 
                    font-src 'self' https://fonts.gstatic.com; 
-                   connect-src 'self' https://*.supabase.co https://cdn.jsdelivr.net; 
+                   connect-src 'self' https://*.supabase.co wss://*.supabase.co https://cdn.jsdelivr.net; 
                    img-src 'self' data: https:; base-uri 'self'; 
                    form-action 'self';">
     
@@ -46,6 +46,8 @@
             <div class="nav-item" data-tab="gps"><span class="nav-icon">📍</span><span class="nav-text">GPS Tracking</span></div>
             <div class="nav-item" data-tab="analytics"><span class="nav-icon">📊</span><span class="nav-text">Analytics</span></div>
             <div class="nav-item" data-tab="delivery"><span class="nav-icon">🚚</span><span class="nav-text">Delivery Tracking</span></div>
+            <div class="nav-item" data-tab="delivery-partners"><span class="nav-icon">🚗</span><span class="nav-text">Delivery Partners</span></div>
+            <div class="nav-item" data-tab="geographic-directory"><span class="nav-icon">🗺️</span><span class="nav-text">Geographic Directory</span></div>
             <div class="nav-item" data-tab="products"><span class="nav-icon">📦</span><span class="nav-text">Product Catalog</span></div>
             <div class="nav-item" data-tab="loyalty"><span class="nav-icon">🎁</span><span class="nav-text">Loyalty Program</span></div>
             <div class="nav-item" data-tab="sms"><span class="nav-icon">📱</span><span class="nav-text">SMS Notifications</span></div>
@@ -56,7 +58,6 @@
             <div class="nav-item" data-tab="settings"><span class="nav-icon">⚙️</span><span class="nav-text">Settings</span></div>
             <div class="nav-item" data-tab="advanced"><span class="nav-icon">🔧</span><span class="nav-text">Advanced Settings</span></div>
             <div class="nav-item" data-tab="timeout-config"><span class="nav-icon">⏱️</span><span class="nav-text">Payment Timeout Settings</span></div>
-            <div class="nav-item" data-tab="manual-payments"><span class="nav-icon">✋</span><span class="nav-text">Manual Payments</span></div>
         </nav>
         <div class="sidebar-footer">
             <button class="btn-logout" id="logoutBtn">🚪 Logout</button>
@@ -303,6 +304,117 @@
         <div id="gps-tab" class="tab-content"><div class="toolbar"><h2>GPS Tracking & Territory Management</h2><div class="bulk-actions"><button class="btn-bulk btn-view" id="btnViewMap">🗺️ View Map</button><button class="btn-bulk btn-export" id="btnExportGPS">📊 Export Data</button></div></div><div id="gpsLoading" class="loading">Loading GPS data...</div><div id="gpsContent"></div></div>
         <div id="analytics-tab" class="tab-content"><div class="toolbar"><h2>Predictive Analytics & Insights</h2><div class="bulk-actions"><button class="btn-bulk btn-view" id="btnGenerateReport">📈 Generate Report</button><button class="btn-bulk btn-export" id="btnExportAnalytics">📊 Export Analytics</button></div></div><div id="analyticsLoading" class="loading">Loading analytics...</div><div id="analyticsContent"></div></div>
         <div id="delivery-tab" class="tab-content"><div class="toolbar"><h2>🚚 Delivery Tracking with GPS</h2><div class="bulk-actions"><button class="btn-bulk btn-export" id="btnExportDeliveries">📊 Export Deliveries</button></div></div><div id="deliveryLoading" class="loading">Loading delivery data...</div><div id="deliveryContent"></div></div>
+        
+        <!-- Delivery Partners Tab -->
+        <div id="delivery-partners-tab" class="tab-content">
+            <div class="toolbar">
+                <h2>🚗 Delivery Partners Management</h2>
+                <div class="bulk-actions">
+                    <button class="btn-bulk btn-export" id="btnExportDeliveryPartners">📊 Export</button>
+                    <button class="btn-bulk btn-email" id="btnBulkEmailDP">📧 Bulk Email</button>
+                </div>
+            </div>
+
+            <div class="sub-tabs">
+                <button class="sub-tab-btn active" data-subtab="all" data-tab-type="dp">All Partners</button>
+                <button class="sub-tab-btn" data-subtab="pending" data-tab-type="dp">⏳ Pending Review</button>
+                <button class="sub-tab-btn" data-subtab="approved" data-tab-type="dp">✅ Approved</button>
+                <button class="sub-tab-btn" data-subtab="active" data-tab-type="dp">🟢 Active</button>
+            </div>
+
+            <div id="dpSubTabAll" class="sub-tab-content active">
+                <div class="search-filters">
+                    <div class="filter-group">
+                        <label for="dpNameSearch">Search Name</label>
+                        <input type="text" id="dpNameSearch" placeholder="Partner name...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="dpCountyFilter">County</label>
+                        <input type="text" id="dpCountyFilter" placeholder="County...">
+                    </div>
+                    <div class="filter-group">
+                        <label for="dpPartnerTypeFilter">Partner Type</label>
+                        <select id="dpPartnerTypeFilter" title="Filter by partner type">
+                            <option value="">All Types</option>
+                            <option value="individual">Individual</option>
+                            <option value="business">Business</option>
+                            <option value="fleet">Fleet</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="dpVehicleTypeFilter">Vehicle Type</label>
+                        <select id="dpVehicleTypeFilter" title="Filter by vehicle">
+                            <option value="">All Vehicles</option>
+                            <option value="motorcycle">Motorcycle</option>
+                            <option value="bicycle">Bicycle</option>
+                            <option value="car">Car</option>
+                            <option value="pickup">Pickup</option>
+                            <option value="van">Van</option>
+                            <option value="lorry">Lorry</option>
+                            <option value="walking">Walking</option>
+                        </select>
+                    </div>
+                    <button class="btn-search" id="btnSearchDP">Search</button>
+                </div>
+                <div id="dpLoading" class="loading">Loading delivery partners...</div>
+                <div id="dpTable"></div>
+            </div>
+
+            <div id="dpSubTabPending" class="sub-tab-content">
+                <div id="dpPendingLoading" class="loading">Loading pending applications...</div>
+                <div id="dpPendingTable"></div>
+            </div>
+
+            <div id="dpSubTabApproved" class="sub-tab-content">
+                <div id="dpApprovedLoading" class="loading">Loading approved partners...</div>
+                <div id="dpApprovedTable"></div>
+            </div>
+
+            <div id="dpSubTabActive" class="sub-tab-content">
+                <div id="dpActiveLoading" class="loading">Loading active partners...</div>
+                <div id="dpActiveTable"></div>
+            </div>
+        </div>
+
+        <!-- Geographic Directory Tab -->
+        <div id="geographic-directory-tab" class="tab-content">
+            <div class="toolbar">
+                <h2>🗺️ Geographic Directory</h2>
+                <div class="bulk-actions">
+                    <button class="btn-bulk btn-export" id="btnExportGeoDirectory">📊 Export</button>
+                </div>
+            </div>
+
+            <div class="geo-nav-tabs">
+                <button class="geo-tab-btn active" data-geo-view="county">By County</button>
+                <button class="geo-tab-btn" data-geo-view="town">By Town</button>
+                <button class="geo-tab-btn" data-geo-view="ward">By Ward</button>
+                <button class="geo-tab-btn" data-geo-view="center">By Center</button>
+            </div>
+
+            <div class="search-filters">
+                <div class="filter-group">
+                    <label for="geoSearchLocation">Search Location</label>
+                    <input type="text" id="geoSearchLocation" placeholder="Enter county, town, ward, or center...">
+                </div>
+                <div class="filter-group">
+                    <label for="geoStakeholderType">Stakeholder Type</label>
+                    <select id="geoStakeholderType" title="Select type">
+                        <option value="">All Types</option>
+                        <option value="vendors">Vendors</option>
+                        <option value="suppliers">Suppliers</option>
+                        <option value="delivery_partners">Delivery Partners</option>
+                        <option value="field_agents">Field Agents</option>
+                        <option value="supervisors">Supervisors</option>
+                    </select>
+                </div>
+                <button class="btn-search" id="btnSearchGeo">Search</button>
+            </div>
+
+            <div id="geoLoading" class="loading">Loading geographic data...</div>
+            <div id="geoContent"></div>
+        </div>
+        
         <div id="products-tab" class="tab-content"><div class="toolbar"><h2>📦 Product Catalog & Shopping Cart</h2><div class="bulk-actions"><button class="btn-bulk btn-import" id="btnImportProducts">📥 Import Products</button><button class="btn-bulk btn-export" id="btnExportProducts">📊 Export Products</button></div></div><div id="productCatalogContent"></div></div>
         <div id="loyalty-tab" class="tab-content"><div class="toolbar"><h2>🎁 Loyalty Program Management</h2><div class="bulk-actions"><button class="btn-bulk btn-export" id="btnExportLoyalty">📊 Export Loyalty Data</button></div></div><div id="loyaltyContent"></div></div>
         <div id="sms-tab" class="tab-content"><div class="toolbar"><h2>📱 SMS Notifications & Campaigns</h2><div class="bulk-actions"><button class="btn-bulk btn-export" id="btnExportSMS">📊 Export SMS Logs</button></div></div><div id="smsContent"></div></div>
@@ -527,92 +639,8 @@
             </div>
         </div>
 
-        <!-- Manual Payments Tab (Section 8) -->
-        <div id="manual-payments-tab" class="tab-content">
-            <div class="toolbar">
-                <h2>✋ Payment Verification Dashboard</h2>
-                <button class="btn-refresh" id="btnRefreshManualPayments">🔄 Refresh</button>
-            </div>
-
-            <div id="manualPaymentAlert" class="alert" style="display: none;"></div>
-
-            <!-- Sub-tabs for different payment types -->
-            <div class="sub-tabs">
-                <button class="sub-tab-btn active" data-subtab="stk-payments" data-tab-type="payment">STK Push Payments</button>
-                <button class="sub-tab-btn" data-subtab="all-payments" data-tab-type="payment">All Payments</button>
-            </div>
-
-            <!-- STK Payments Sub-tab -->
-            <div id="paymentSubTabStkPayments" class="sub-tab-content active">
-                <h3>STK Push Payments</h3>
-                <p class="info-text">Payments made via M-Pesa STK Push (phone prompt)</p>
-                
-                <div class="manual-payment-filters">
-                    <div class="filter-group">
-                        <label for="stkPaymentSearch">Search</label>
-                        <input type="text" id="stkPaymentSearch" placeholder="Application code, phone, checkout ID...">
-                    </div>
-                    <div class="filter-group">
-                        <label for="stkPaymentStatusFilter">Status Filter</label>
-                        <select id="stkPaymentStatusFilter">
-                            <option value="">All Statuses</option>
-                            <option value="pending">⏳ Pending</option>
-                            <option value="completed">✅ Completed</option>
-                            <option value="failed">❌ Failed</option>
-                            <option value="timeout">⏱️ Timeout</option>
-                        </select>
-                    </div>
-                    <div class="filter-buttons">
-                        <button class="btn-action btn-view" id="btnClearStkPaymentSearch">Clear Search</button>
-                    </div>
-                </div>
-
-                <div id="stkPaymentsLoading" class="loading" style="display: none;">Loading STK payments...</div>
-                <div id="stkPaymentsTable"></div>
-                <div id="stkPaymentsPagination"></div>
-            </div>
-
-            <!-- All Payments Sub-tab -->
-            <div id="paymentSubTabAllPayments" class="sub-tab-content">
-                <h3>All Delivery Partner Payments</h3>
-                <p class="info-text">Combined view of all payment methods</p>
-                
-                <div class="manual-payment-filters">
-                    <div class="filter-group">
-                        <label for="allPaymentSearch">Search</label>
-                        <input type="text" id="allPaymentSearch" placeholder="Application code, phone...">
-                    </div>
-                    <div class="filter-group">
-                        <label for="allPaymentTypeFilter">Payment Method</label>
-                        <select id="allPaymentTypeFilter">
-                            <option value="">All Methods</option>
-                            <option value="manual">Manual Code Entry</option>
-                            <option value="stk">STK Push</option>
-                        </select>
-                    </div>
-                    <div class="filter-buttons">
-                        <button class="btn-action btn-view" id="btnClearAllPaymentSearch">Clear Search</button>
-                    </div>
-                </div>
-
-                <div id="allPaymentsLoading" class="loading" style="display: none;">Loading all payments...</div>
-                <div id="allPaymentsTable"></div>
-                <div id="allPaymentsPagination"></div>
-            </div>
-        </div>
-
-        <!-- Payment Detail Modal -->
-        <div id="paymentDetailModal" class="modal">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h2>Payment Details</h2>
-                    <span class="close">&times;</span>
-                </div>
-                <div class="payment-detail-content">
-                    <!-- Content will be dynamically populated -->
-                </div>
-            </div>
-        </div><div id="emailModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Send Bulk Email</h2><button type="button" class="close">&times;</button></div><div class="email-form"><div class="filter-group"><label for="emailSubject">Subject</label><input type="text" id="emailSubject" placeholder="Enter email subject" aria-label="Email subject"></div><div class="filter-group"><label>Message</label><textarea id="emailMessage" placeholder="Enter your message..."></textarea></div><div class="filter-group"><label for="emailRecipients">Recipients</label><select id="emailRecipients" title="Select email recipients"><option value="all">All Applicants</option><option value="pending">Pending Applications</option><option value="approved">Approved Agents</option><option value="rejected">Rejected Applications</option><option value="selected">Selected Only</option></select></div><button class="btn-submit" id="btnSendBulkEmail">Send Email</button></div></div></div>
+        <!-- Modals Section -->
+        <div id="emailModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Send Bulk Email</h2><button type="button" class="close">&times;</button></div><div class="email-form"><div class="filter-group"><label for="emailSubject">Subject</label><input type="text" id="emailSubject" placeholder="Enter email subject" aria-label="Email subject"></div><div class="filter-group"><label>Message</label><textarea id="emailMessage" placeholder="Enter your message..."></textarea></div><div class="filter-group"><label for="emailRecipients">Recipients</label><select id="emailRecipients" title="Select email recipients"><option value="all">All Applicants</option><option value="pending">Pending Applications</option><option value="approved">Approved Agents</option><option value="rejected">Rejected Applications</option><option value="selected">Selected Only</option></select></div><button class="btn-submit" id="btnSendBulkEmail">Send Email</button></div></div></div>
     <div id="singleEmailModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Send Email to <span id="singleEmailName"></span></h2><button type="button" class="close">&times;</button></div><div class="email-form"><div class="filter-group"><label for="singleEmailTo">To</label><input type="email" id="singleEmailTo" readonly aria-label="Recipient email address"></div><div class="filter-group"><label for="singleEmailSubject">Subject</label><input type="text" id="singleEmailSubject" placeholder="Enter email subject" aria-label="Email subject"></div><div class="filter-group"><label>Message</label><textarea id="singleEmailMessage" placeholder="Enter your message..."></textarea></div><button class="btn-submit" id="btnSendSingleEmail">Send Email</button></div></div></div>
     <div id="manageSupervisorModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Manage Supervisor</h2><button type="button" class="close">&times;</button></div><form id="manageSupervisorForm" data-sanitize="true"><input type="hidden" id="manageSupervisorId"><input type="hidden" id="manageSupervisorApprovedAt"><input type="hidden" id="manageSupervisorInterviewDate"><div class="detail-section"><h3>Supervisor Information</h3><p><strong>Supervisor Number (Internal Only):</strong> <span id="manageSupervisorNumber" class="agent-number-private"></span></p><p><strong>Name:</strong> <span id="manageSupervisorName"></span></p><p class="warning-text">⚠️ Supervisor numbers are confidential and unique. Do not share.</p></div><div class="detail-section"><h3>Application Status</h3><div class="form-group"><label for="manageSupervisorApprovalStatus">Approval Status</label><select id="manageSupervisorApprovalStatus" name="approvalStatus" title="Select approval status"><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="suspended">Suspended</option></select></div><div class="form-group"><label for="manageSupervisorInterviewStatus">Interview Status</label><select id="manageSupervisorInterviewStatus" name="interviewStatus" title="Select interview status"><option value="not_interviewed">Not Interviewed</option><option value="awaiting_interview">Awaiting Interview</option><option value="interviewed">Interviewed</option></select></div><div class="form-group"><label for="manageSupervisorInterviewNotes">Interview Notes</label><textarea id="manageSupervisorInterviewNotes" name="interviewNotes" data-sanitize-type="string" rows="3" placeholder="Add interview notes..."></textarea></div><div class="form-group"><label for="manageSupervisorRejectionReason">Rejection Reason (if rejected)</label><textarea id="manageSupervisorRejectionReason" name="rejectionReason" data-sanitize-type="string" rows="3" placeholder="Reason for rejection..."></textarea></div><button type="submit" class="btn-submit">Save Changes</button></div></form></div></div>
     <div id="manageAgentModal" class="modal"><div class="modal-content"><div class="modal-header"><h2>Manage Field Agent</h2><button type="button" class="close">&times;</button></div><form id="manageAgentForm" data-sanitize="true"><input type="hidden" id="manageAgentId"><input type="hidden" id="manageApprovedAt"><input type="hidden" id="manageInterviewDate"><div class="detail-section"><h3>Agent Information</h3><p><strong>Agent Number (Internal Only):</strong> <span id="manageAgentNumber" class="agent-number-private"></span></p><p><strong>Name:</strong> <span id="manageAgentName"></span></p><p class="warning-text">⚠️ Agent numbers are confidential and unique to each agent. Do not share.</p></div><div class="detail-section"><h3>Application Status</h3><div class="form-group"><label for="manageApprovalStatus">Approval Status</label><select id="manageApprovalStatus" name="approvalStatus" title="Select approval status"><option value="pending">Pending</option><option value="approved">Approved</option><option value="rejected">Rejected</option><option value="suspended">Suspended</option></select></div><div class="form-group"><label for="manageInterviewStatus">Interview Status</label><select id="manageInterviewStatus" name="interviewStatus" title="Select interview status"><option value="not_interviewed">Not Interviewed</option><option value="awaiting_interview">Awaiting Interview</option><option value="interviewed">Interviewed</option></select></div><div class="form-group"><label for="manageInterviewNotes">Interview Notes</label><textarea id="manageInterviewNotes" name="interviewNotes" data-sanitize-type="string" rows="3" placeholder="Add interview notes..."></textarea></div><div class="form-group"><label for="manageRejectionReason">Rejection Reason (if rejected)</label><textarea id="manageRejectionReason" name="rejectionReason" data-sanitize-type="string" rows="3" placeholder="Reason for rejection..."></textarea></div><button type="submit" class="btn-submit">Save Changes</button></div></form></div></div>
@@ -628,6 +656,9 @@
     <script src="js/security/xss-protection.js?v=1.0.1"></script>
     <script src="js/security/secure-session.js?v=1.0.1"></script>
     <script src="js/security/csrf-protection.js?v=1.0.1"></script>
+    
+    <!-- Safe DOM Utility -->
+    <script src="js/utils/safe-dom.js?v=1.0.2"></script>
     <script src="js/security/input-sanitizer.js?v=1.0.1"></script>
     
     <!-- Toast Notification System (needed by feature modules) -->
@@ -644,7 +675,9 @@
     <script src="js/features/bulk-operations.js?v=1.0.1"></script>
     <script src="js/features/gps-tracking.js?v=1.0.1"></script>
     <script src="js/features/predictive-analytics.js?v=1.0.1"></script>
-    <script src="js/features/delivery-tracking.js?v=1.0.1"></script>
+    <script src="js/features/delivery-tracking.js?v=1.0.2"></script>
+    <script src="js/features/delivery-partners-management.js?v=1.0.2"></script>
+    <script src="js/features/geographic-directory.js?v=1.0.2"></script>
     <script src="js/features/product-catalog.js?v=1.0.1"></script>
     <script src="js/features/loyalty-program.js?v=1.0.1"></script>
     <script src="js/features/sms-notifications.js?v=1.0.1"></script>

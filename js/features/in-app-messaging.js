@@ -560,10 +560,12 @@ class InAppMessaging {
 }
 
 // Initialize in-app messaging
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     if (document.getElementById('messagingContent')) {
+        // Wait for Supabase config to be ready
+        await window.ConfigLoader.loadConfig();
         window.inAppMessaging = new InAppMessaging();
-        window.inAppMessaging.init();
+        await window.inAppMessaging.init();
     }
 });
 

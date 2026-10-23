@@ -416,10 +416,10 @@ class LoyaltyProgram {
                 return;
             }
 
-            historyTable.innerHTML = XSSProtection.sanitize(`
+            historyTable.innerHTML = `
                 <table class="data-table">
                     <thead>
-              ...       <tr>
+                        <tr>
                             <th>Date</th>
                             <th>Type</th>
                             <th>Points</th>
@@ -427,12 +427,12 @@ class LoyaltyProgram {
                         </tr>
                     </thead>
                     <tbody>
-                        ${sanitize(transactions.map(tx => `
+                        ${transactions.map(tx => `
                             <tr>
-                                <td>${new Date(tx.created_at).toLocaleDateString())}</td>
+                                <td>${new Date(tx.created_at).toLocaleDateString()}</td>
                                 <td><span class="transaction-type ${sanitize(tx.transaction_type)}">${sanitize(tx.transaction_type)}</span></td>
-                                <td class="${sanitize(tx.transaction_type === 'earned' ? 'points-earned' : 'points-redeemed')}">
-                                    ${sanitize(tx.transaction_type === 'earned' ? '+' : '-')}${sanitize(tx.points)}
+                                <td class="${tx.transaction_type === 'earned' ? 'points-earned' : 'points-redeemed'}">
+                                    ${tx.transaction_type === 'earned' ? '+' : '-'}${sanitize(tx.points)}
                                 </td>
                                 <td>${sanitize(tx.description)}</td>
                             </tr>
@@ -451,7 +451,7 @@ class LoyaltyProgram {
         modal.innerHTML = XSSProtection.sanitize(`
             <div class="modal-content">
                 <div class="modal-header">
-  ...               <h2>💰 Earn More Points</h2>
+                    <h2>💰 Earn More Points</h2>
                     <button type="button" class="close">&times;</button>
                 </div>
                 <div class="earn-more-content">
@@ -473,7 +473,7 @@ class LoyaltyProgram {
                     </div>
                 </div>
             </div>
-        `)
+        `);
 
         document.body.appendChild(modal);
         modal.style.display = 'block';
@@ -535,9 +535,11 @@ class LoyaltyProgram {
 }
 
 // Initialize loyalty program
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     if (document.getElementById('loyaltyContent')) {
+        // Wait for Supabase config to be ready
+        await window.ConfigLoader.loadConfig();
         window.loyaltyProgram = new LoyaltyProgram();
-        window.loyaltyProgram.init();
+        await window.loyaltyProgram.init();
     }
 });

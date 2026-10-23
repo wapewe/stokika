@@ -462,9 +462,11 @@ class ProductCatalog {
 }
 
 // Initialize product catalog
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     if (document.getElementById('productCatalogContent')) {
+        // Wait for Supabase config to be ready
+        await window.ConfigLoader.loadConfig();
         window.productCatalog = new ProductCatalog();
-        window.productCatalog.init();
+        await window.productCatalog.init();
     }
 });

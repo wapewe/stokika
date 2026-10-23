@@ -142,24 +142,27 @@ class SMSNotifications {
             const today = new Date().toISOString().split('T')[0];
             const thisMonth = new Date().toISOString().slice(0, 7);
 
-            const { data: todayMessages } = await this.supabase
-                .from('sms_logs')
-                .select('id, status')
-                .gte('created_at', today);
+            const todayResult = await window.SafeSupabase.query(
+                () => this.supabase.from('sms_logs').select('id, status').gte('created_at', today),
+                { defaultValue: [] }
+            );
 
-            const { data: monthlyMessages } = await this.supabase
-                .from('sms_logs')
-                .select('id')
-                .gte('created_at', thisMonth);
+            const monthlyResult = await window.SafeSupabase.query(
+                () => this.supabase.from('sms_logs').select('id').gte('created_at', thisMonth),
+                { defaultValue: [] }
+            );
 
-            const sentToday = todayMessages?.length || 0;
-            const deliveredToday = todayMessages?.filter(msg => msg.status === 'delivered').length || 0;
+            const todayMessages = todayResult.data || [];
+            const monthlyMessages = monthlyResult.data || [];
+
+            const sentToday = todayMessages.length || 0;
+            const deliveredToday = todayMessages.filter(msg => msg.status === 'delivered').length || 0;
             const deliveryRate = sentToday > 0 ? Math.round((deliveredToday / sentToday) * 100) : 0;
 
-            document.getElementById('messagesSentToday').textContent = sentToday;
-            document.getElementById('deliveryRate').textContent = `${deliveryRate}%`;
-            document.getElementById('smsCredits').textContent = '1,250'; // Mock data
-            document.getElementById('monthlyMessages').textContent = monthlyMessages?.length || 0;
+            window.SafeDOM.setText('messagesSentToday', sentToday);
+            window.SafeDOM.setText('deliveryRate', `${deliveryRate}%`);
+            window.SafeDOM.setText('smsCredits', '1,250'); // Mock data
+            window.SafeDOM.setText('monthlyMessages', monthlyMessages.length || 0);
         } catch (error) {
             console.error('Error loading SMS stats:', error);
         }
@@ -167,16 +170,17 @@ class SMSNotifications {
 
     async loadTemplates() {
         try {
-            const { data: templates } = await this.supabase
-                .from('sms_templates')
-                .select('*')
-                .eq('is_active', true);
+            const result = await window.SafeSupabase.query(
+                () => this.supabase.from('sms_templates').select('*').eq('is_active', true),
+                { defaultValue: [], fallbackMessage: 'No SMS templates configured yet' }
+            );
 
+            const templates = result.data || [];
             const templatesGrid = document.getElementById('templatesGrid');
             if (!templatesGrid) return;
 
-            if (!templates || templates.length === 0) {
-                templatesGrid.innerHTML = XSSProtection.sanitize('<p>No SMS templates found</p>');
+            if (result.handled || templates.length === 0) {
+                window.SafeDOM.showPlaceholder('templatesGrid', result.message || 'No SMS templates found', '📝');
                 return;
             }
 
@@ -195,6 +199,7 @@ class SMSNotifications {
             `).join(''));
         } catch (error) {
             console.error('Error loading templates:', error);
+            window.SafeDOM.showError('templatesGrid', 'Unable to load SMS templates');
         }
     }
 
@@ -589,7 +594,7 @@ class SMSNotifications {
                         `).join('')}
                     </tbody>
                 </table>
-            `;
+            `);
         } catch (error) {
             console.error('Error loading SMS history:', error);
         }
@@ -650,9 +655,11 @@ class SMSNotifications {
 }
 
 // Initialize SMS notifications
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     if (document.getElementById('smsContent')) {
+        // Wait for Supabase config to be ready
+        await window.ConfigLoader.loadConfig();
         window.smsNotifications = new SMSNotifications();
-        window.smsNotifications.init();
+        await window.smsNotifications.init();
     }
 });
