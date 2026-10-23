@@ -40,6 +40,9 @@
 # Disable directory browsing
 Options -Indexes
 
+# Set directory index files (in order of priority)
+DirectoryIndex index.html dalana.html
+
 # Protect sensitive files
 <FilesMatch "^\.">
     Order allow,deny
