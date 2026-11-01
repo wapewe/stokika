@@ -118,9 +118,9 @@
     
     .feature-item {
         display: flex;
-        align-items: flex-start;
-        gap: 0.625rem;
-        margin-bottom: 0.625rem;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 0.75rem;
         font-size: 0.875rem;
         line-height: 1.5;
         padding: 0.375rem 0;
@@ -133,11 +133,24 @@
     }
     
     .feature-check {
-        width: 18px;
-        height: 18px;
-        font-size: 0.6875rem;
+        width: 24px;
+        height: 24px;
+        min-width: 24px;
+        min-height: 24px;
+        font-size: 0.75rem;
         flex-shrink: 0;
-        margin-top: 0.125rem;
+        margin-top: 0;
+        background: #10b981;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: #ffffff;
+        line-height: 1;
+    }
+    
+    .btn-modal.supplier .feature-check {
+        background: #2563eb;
     }
     
     /* Register button - mobile optimized */
@@ -250,9 +263,11 @@
     }
     
     .feature-check {
-        width: 16px;
-        height: 16px;
-        font-size: 0.625rem;
+        width: 22px;
+        height: 22px;
+        min-width: 22px;
+        min-height: 22px;
+        font-size: 0.6875rem;
     }
     
     .register-btn {
@@ -411,5 +426,103 @@
     select,
     textarea {
         font-size: 16px !important;
+    }
+}
+
+/* ========================================
+   FEATURE BULLET STYLING - MOBILE FIX
+   Ensure circular bullets with checkmarks
+   ======================================== */
+@media (max-width: 768px) {
+    /* Ensure feature list displays properly */
+    .feature-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin: 1rem 0;
+    }
+    
+    /* Feature item alignment */
+    .feature-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 0;
+    }
+    
+    /* Circular checkmark bullet - Mobile specific */
+    .feature-check {
+        width: 24px !important;
+        height: 24px !important;
+        min-width: 24px !important;
+        min-height: 24px !important;
+        max-width: 24px !important;
+        max-height: 24px !important;
+        background: #10b981 !important;
+        border-radius: 50% !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        color: #ffffff !important;
+        font-size: 0.75rem !important;
+        font-weight: 700 !important;
+        flex-shrink: 0 !important;
+        line-height: 1 !important;
+        text-align: center !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+        aspect-ratio: 1 / 1 !important;
+    }
+    
+    /* Supplier variant - blue bullets */
+    .btn-modal.supplier .feature-check {
+        background: #2563eb !important;
+    }
+    
+    /* Delivery partner variant - purple bullets */
+    .btn-modal.delivery .feature-check {
+        background: #8b5cf6 !important;
+    }
+    
+    /* Feature text */
+    .feature-item span:not(.feature-check) {
+        flex: 1;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        color: #475569;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+}
+
+/* Small phones - slightly smaller bullets */
+@media (max-width: 480px) {
+    .feature-check {
+        width: 22px !important;
+        height: 22px !important;
+        min-width: 22px !important;
+        min-height: 22px !important;
+        max-width: 22px !important;
+        max-height: 22px !important;
+        font-size: 0.6875rem !important;
+    }
+    
+    .feature-item span:not(.feature-check) {
+        font-size: 0.8125rem;
+    }
+}
+
+/* Ensure no overflow on bullets */
+@media (max-width: 768px) {
+    .feature-check svg,
+    .feature-check img {
+        display: none !important;
+    }
+    
+    /* Prevent text wrapping inside bullet */
+    .feature-check::before,
+    .feature-check::after {
+        content: none !important;
     }
 }
