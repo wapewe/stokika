@@ -1,4 +1,10 @@
-/* Cookies Policy Page Styles */
+/* Cookies Policy Page Styles
+   Stokika Brand Colors:
+   Primary Green: #2EBD5A
+   Primary Yellow: #FFD24D
+   Dark Green: #1a8a3d
+   Light Green: #5cd687
+*/
 * { 
     margin: 0; 
     padding: 0; 
@@ -19,7 +25,7 @@ body {
 }
 
 .header { 
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+    background: linear-gradient(135deg, #1a8a3d 0%, #2EBD5A 60%, #5cd687 100%); 
     color: white; 
     padding: 60px 20px; 
     text-align: center; 
@@ -43,13 +49,15 @@ body {
 }
 
 h2 { 
-    color: #667eea; 
+    color: #1a8a3d; 
     margin: 30px 0 15px; 
     font-size: 1.8rem; 
+    border-left: 4px solid #FFD24D;
+    padding-left: 12px;
 }
 
 h3 { 
-    color: #764ba2; 
+    color: #2EBD5A; 
     margin: 20px 0 10px; 
     font-size: 1.3rem; 
 }
@@ -60,6 +68,15 @@ p, li {
 
 ul { 
     margin-left: 20px; 
+}
+
+a {
+    color: #2EBD5A;
+    text-decoration: underline;
+}
+
+a:hover {
+    color: #1a8a3d;
 }
 
 table { 
@@ -75,20 +92,23 @@ th, td {
 }
 
 th { 
-    background: #f3f4f6; 
+    background: #f0fdf4; 
     font-weight: 600; 
+    color: #1a8a3d;
 }
 
 .back-btn { 
     display: inline-block; 
     margin-bottom: 20px; 
     padding: 10px 20px; 
-    background: #667eea; 
+    background: #2EBD5A; 
     color: white; 
     text-decoration: none; 
     border-radius: 6px; 
+    font-weight: 600;
+    transition: background 0.2s;
 }
 
 .back-btn:hover { 
-    background: #764ba2; 
+    background: #1a8a3d; 
 }

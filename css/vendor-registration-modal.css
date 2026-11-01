@@ -97,7 +97,7 @@
 .registration-header h2 {
     font-size: 2rem;
     font-weight: 700;
-    color: #1e293b;
+    color: #ffffff !important;
     margin-bottom: 0.5rem;
     font-family: 'Sora', sans-serif;
 }
