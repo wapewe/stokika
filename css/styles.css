@@ -340,80 +340,222 @@ h1, h2, h3, h4 {
 }
 
 @media (max-width: 768px) {
-    .modal-content {
-        width: 98%;
-        max-width: none;
-        margin: 1rem;
+    /* Modal overlay and content fixes */
+    .modal-overlay {
+        padding: 0.5rem;
+        align-items: flex-start;
+        overflow-y: auto;
     }
     
+    .modal-content {
+        width: 100%;
+        max-width: 100%;
+        margin: 0.5rem;
+        max-height: none;
+        border-radius: 16px;
+    }
+    
+    /* Modal header */
     .modal-header {
-        padding: 2rem 1.5rem 1.5rem;
+        padding: 2rem 1.25rem 1.5rem;
     }
     
     .modal-header h3 {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
+        line-height: 1.3;
+        margin-bottom: 0.5rem;
     }
     
     .modal-header p {
-        font-size: 1rem;
+        font-size: 0.9rem;
+        line-height: 1.4;
     }
     
+    /* Modal body with proper padding */
     .modal-body {
-        padding: 2rem 1.5rem;
+        padding: 1.5rem 1rem;
+        overflow-x: hidden;
     }
     
+    /* Stack cards vertically */
     .modal-buttons {
         grid-template-columns: 1fr;
-        gap: 1.5rem;
+        gap: 1.25rem;
+        margin-bottom: 1.5rem;
     }
     
+    /* Card styling */
     .btn-modal {
-        padding: 2rem 1.5rem;
+        padding: 1.75rem 1.25rem;
+        width: 100%;
+        box-sizing: border-box;
     }
     
     .btn-modal h4 {
-        font-size: 1.25rem;
+        font-size: 1.15rem;
+        line-height: 1.3;
+        white-space: normal;
+        word-wrap: break-word;
     }
     
     .modal-subtitle {
-        font-size: 0.9rem;
+        font-size: 0.85rem;
+        line-height: 1.4;
+        white-space: normal;
+        margin-bottom: 1.5rem;
+    }
+    
+    /* Always show features on mobile */
+    .btn-modal .feature-list {
+        max-height: none;
+        opacity: 1;
+        margin-bottom: 1.5rem;
     }
     
     .feature-item {
-        font-size: 0.9rem;
-        gap: 0.75rem;
+        font-size: 0.85rem;
+        gap: 0.5rem;
+        white-space: normal;
+        word-wrap: break-word;
+        line-height: 1.4;
     }
     
+    .feature-check {
+        font-size: 0.9rem;
+        min-width: 16px;
+    }
+    
+    /* Always show register buttons on mobile */
+    .btn-modal .register-btn {
+        opacity: 1;
+        transform: translateY(0);
+        padding: 0.875rem 1.5rem;
+        font-size: 0.95rem;
+        min-height: 44px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    
+    /* Modal icon */
+    .modal-icon-circle {
+        width: 56px;
+        height: 56px;
+        font-size: 1.5rem;
+        margin-bottom: 1.25rem;
+    }
+    
+    /* Close button - touch friendly */
+    .modal-close {
+        width: 44px;
+        height: 44px;
+        font-size: 1.75rem;
+        top: 0.75rem;
+        right: 0.75rem;
+        line-height: 44px;
+    }
+    
+    /* Modal footer */
     .modal-footer {
-        padding: 1.5rem;
+        padding: 1.25rem 1rem;
+    }
+    
+    .modal-footer p {
+        font-size: 0.85rem;
+        line-height: 1.5;
     }
 }
 
 @media (max-width: 480px) {
+    /* Extra small screens */
+    .modal-overlay {
+        padding: 0.25rem;
+    }
+    
+    .modal-content {
+        margin: 0.25rem;
+        border-radius: 12px;
+    }
+    
     .modal-header {
-        padding: 1.5rem 1rem 1rem;
+        padding: 1.5rem 1rem 1.25rem;
     }
     
     .modal-header h3 {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
+    }
+    
+    .modal-header p {
+        font-size: 0.85rem;
     }
     
     .modal-body {
-        padding: 1.5rem 1rem;
+        padding: 1.25rem 0.75rem;
     }
     
     .btn-modal {
         padding: 1.5rem 1rem;
     }
     
+    .btn-modal h4 {
+        font-size: 1.05rem;
+    }
+    
+    .modal-subtitle {
+        font-size: 0.8rem;
+        margin-bottom: 1.25rem;
+    }
+    
     .modal-icon-circle {
-        width: 60px;
-        height: 60px;
-        font-size: 1.5rem;
+        width: 52px;
+        height: 52px;
+        font-size: 1.35rem;
+        margin-bottom: 1rem;
     }
     
     .feature-item {
-        white-space: normal;
+        font-size: 0.8rem;
+        gap: 0.5rem;
+    }
+    
+    .btn-modal .register-btn {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.9rem;
+        min-height: 44px;
+    }
+    
+    .modal-close {
+        width: 44px;
+        height: 44px;
+        font-size: 1.5rem;
+        top: 0.5rem;
+        right: 0.5rem;
+    }
+    
+    .modal-footer {
+        padding: 1rem 0.75rem;
+    }
+    
+    .modal-footer p {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 375px) {
+    /* Very small screens (iPhone SE, etc.) */
+    .modal-content {
+        margin: 0.125rem;
+    }
+    
+    .modal-header h3 {
+        font-size: 1.15rem;
+    }
+    
+    .btn-modal h4 {
+        font-size: 1rem;
+    }
+    
+    .modal-buttons {
+        gap: 1rem;
     }
 }
 
