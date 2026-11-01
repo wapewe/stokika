@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.id = 'orderModal';
         modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:10000;padding:1rem;backdrop-filter:blur(5px)';
         
-        modal.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(`
+        modal.innerHTML = XSSProtection.sanitize(`
             <div style="background:#fff;border-radius:20px;max-width:500px;width:100%;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);overflow:hidden;animation:slideUp 0.3s ease">
                 <div style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);padding:2rem;color:#fff">
                     <h2 style="margin:0;font-size:1.75rem;font-weight:700">Request Stock</h2>
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </div>
             </div>
-        `));
+        `);
         
         document.body.appendChild(modal);
         loadCounties();
@@ -312,7 +312,7 @@ document.addEventListener('DOMContentLoaded', function() {
         modal.id = 'paymentModal';
         modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:10000;padding:1rem;backdrop-filter:blur(5px)';
         
-        modal.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(`
+        modal.innerHTML = XSSProtection.sanitize(`
             <div style="background:#fff;border-radius:20px;max-width:500px;width:100%;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);overflow:hidden">
                 <div style="background:linear-gradient(135deg,#10b981 0%,#059669 100%);padding:2rem;color:#fff">
                     <h2 style="margin:0;font-size:1.75rem;font-weight:700">Make Payment</h2>
@@ -351,7 +351,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </div>
             </div>
-        `));
+        `);
         
         document.body.appendChild(modal);
         modal.onclick = function(e) { if (e.target === modal) closePaymentModal(); };

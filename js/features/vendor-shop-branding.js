@@ -707,7 +707,7 @@ async function editDropshipPricing(productId) {
 
     const modal = document.createElement('div');
     modal.className = 'modal-overlay';
-    modal.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(`
+    modal.innerHTML = XSSProtection.sanitize(`
         <div class="modal-content" style="max-width: 400px;">
             <h2>Edit Pricing</h2>
             <div style="background: #f9fafb; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
@@ -725,7 +725,7 @@ async function editDropshipPricing(productId) {
                 </div>
             </form>
         </div>
-    `));
+    `);
 
     document.body.appendChild(modal);
 
