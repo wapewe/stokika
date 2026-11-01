@@ -145,6 +145,11 @@
     letter-spacing: -0.03em;
 }
 
+/* Ensure modern modal design titles are white */
+.modal-overlay .registration-header h2 {
+    color: #ffffff !important;
+}
+
 .registration-tagline {
     font-size: 1.05rem;
     color: #64748b;

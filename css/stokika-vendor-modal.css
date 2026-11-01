@@ -161,6 +161,11 @@
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Ensure stokika vendor modal title is white */
+#vendorRegistrationModal .registration-header h2 {
+    color: #ffffff !important;
+}
+
 .registration-tagline {
     font-size: 1.1rem;
     color: #555;

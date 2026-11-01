@@ -578,6 +578,13 @@ h1, h2, h3, h4 {
     z-index: 1;
 }
 
+/* Ensure all registration modal titles are white - high specificity */
+#vendorRegistrationModal .registration-header h2,
+#supplierRegistrationModal .registration-header h2,
+.modal-overlay .registration-header h2 {
+    color: #ffffff !important;
+}
+
 .registration-header p {
     font-size: 1.125rem;
     opacity: 0.9;
