@@ -1,0 +1,200 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                  STOKIKA CPANEL UPLOAD INSTRUCTIONS                  ║
+║                        hostpinnacle.co.ke                            ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+📦 FILE READY: stokika-cpanel-deployment.zip (26.46 MB)
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ STEP 1: ACCESS CPANEL                                               │
+└─────────────────────────────────────────────────────────────────────┘
+
+1. Go to: https://hostpinnacle.co.ke:2083
+2. Login with your cPanel credentials (username: krietaco)
+3. Find and click "File Manager" in the Files section
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ STEP 2: NAVIGATE TO WEB ROOT                                        │
+└─────────────────────────────────────────────────────────────────────┘
+
+1. In File Manager, click on "public_html" folder
+2. Verify you're at: /home6/krietaco/public_html/
+3. Delete ALL existing files if this is a fresh deployment
+   (Backup first if you have existing content!)
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ STEP 3: UPLOAD ZIP FILE                                             │
+└─────────────────────────────────────────────────────────────────────┘
+
+1. Click "Upload" button (top right)
+2. Click "Select File" or drag-and-drop
+3. Choose: stokika-cpanel-deployment.zip
+4. Wait for upload to complete (26.46 MB - may take 2-5 minutes)
+5. Close the upload window when done
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ STEP 4: EXTRACT ZIP FILE                                            │
+└─────────────────────────────────────────────────────────────────────┘
+
+1. Back in File Manager, find "stokika-cpanel-deployment.zip"
+2. Right-click the zip file
+3. Select "Extract"
+4. Confirm extraction to current directory
+5. Wait for extraction to complete
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ STEP 5: CLEAN UP                                                    │
+└─────────────────────────────────────────────────────────────────────┘
+
+1. Select "stokika-cpanel-deployment.zip" (checkbox)
+2. Click "Delete" button
+3. Confirm deletion
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ STEP 6: SET FILE PERMISSIONS                                        │
+└─────────────────────────────────────────────────────────────────────┘
+
+1. Select ALL folders (assets, css, js, .well-known)
+2. Click "Permissions" button
+3. Set to: 755 (rwxr-xr-x)
+4. Check "Recurse into subdirectories"
+5. Click "Change Permissions"
+
+6. Select ALL files (.html, .htaccess, .user.ini, etc.)
+7. Click "Permissions" button
+8. Set to: 644 (rw-r--r--)
+9. Click "Change Permissions"
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ STEP 7: VERIFY DEPLOYMENT                                           │
+└─────────────────────────────────────────────────────────────────────┘
+
+1. Open your browser
+2. Visit: https://hostpinnacle.co.ke/ (or your domain)
+3. Open browser console (F12)
+4. Check for:
+   ✅ "Supabase client initialized successfully"
+   ✅ "CSRF Protection initialized"
+   ✅ No 404 errors for JS/CSS files
+
+5. Test key pages:
+   → https://hostpinnacle.co.ke/dalana (Supplier registration)
+   → https://hostpinnacle.co.ke/rembrandts (Admin login)
+   → https://hostpinnacle.co.ke/kit-payment (Kit payment)
+   → https://hostpinnacle.co.ke/signin (General signin)
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ EXPECTED FILE STRUCTURE AFTER EXTRACTION                            │
+└─────────────────────────────────────────────────────────────────────┘
+
+/home6/krietaco/public_html/
+├── index.html
+├── dalana.html
+├── rembrandts.html
+├── kit-payment.html
+├── signin.html
+├── (33 more .html files)
+├── .htaccess
+├── .user.ini
+├── config.json
+├── manifest.json
+├── service-worker.js
+├── assets/
+│   ├── images/
+│   ├── fonts/
+│   └── icons/
+├── css/
+│   ├── global.css
+│   ├── components/
+│   └── pages/
+├── js/
+│   ├── auth/
+│   ├── features/
+│   ├── pages/
+│   ├── security/
+│   ├── shared/
+│   └── utils/
+└── .well-known/
+    └── security.txt
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ SECURITY VERIFICATION                                                │
+└─────────────────────────────────────────────────────────────────────┘
+
+✅ What's INCLUDED (Safe to be public):
+   - All HTML pages
+   - All CSS stylesheets
+   - All JavaScript modules
+   - Public config (Supabase URL only)
+   - Images, fonts, icons
+   - .htaccess (security rules)
+
+❌ What's EXCLUDED (Never uploaded):
+   - .env file (all secrets)
+   - .git folder (source control)
+   - supabase/ folder (Edge Functions)
+   - database/ folder (SQL migrations)
+   - node_modules/ (dependencies)
+   - All .md, .txt documentation
+   - All test/diagnostic files
+   - All PowerShell scripts
+
+🔐 WHERE ARE THE SECRETS?
+   All sensitive credentials are stored in:
+   Supabase Dashboard → Project Settings → Edge Functions → Secrets
+   
+   ✓ Service Role Key
+   ✓ M-Pesa Consumer Key/Secret
+   ✓ JWT Secret
+   ✓ Encryption Keys
+   ✓ SMTP Password
+   
+   These are ONLY accessible to Supabase Edge Functions (serverless backend)
+   They are NEVER sent to the browser or accessible from frontend code.
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ TROUBLESHOOTING                                                      │
+└─────────────────────────────────────────────────────────────────────┘
+
+🔧 Issue: "Supabase configuration not available yet"
+   → Check config.json uploaded correctly
+   → Check .htaccess allows config.json access
+   → Check browser console for actual error
+
+🔧 Issue: CSS/JS not loading
+   → Check file permissions (folders=755, files=644)
+   → Check .htaccess uploaded
+   → Check Content-Security-Policy headers
+
+🔧 Issue: Pages return 404
+   → Check .htaccess uploaded to public_html root
+   → Contact Hostpinnacle to enable mod_rewrite
+   → Check Apache AllowOverride is set to All
+
+🔧 Issue: "Access Denied" on admin page
+   → Visit https://hostpinnacle.co.ke/setup-admin
+   → Complete first-time admin setup
+   → This stores admin whitelist in browser localStorage
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ SUPPORT CONTACTS                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+
+🌐 Hostpinnacle cPanel: https://hostpinnacle.co.ke:2083
+📧 Hostpinnacle Support: support@hostpinnacle.co.ke
+
+🔷 Supabase Dashboard: https://supabase.com/dashboard
+🔷 Your Project: https://supabase.com/dashboard/project/eidsqrnwfndruuufyacc
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ DEPLOYMENT COMPLETE!                                                 │
+└─────────────────────────────────────────────────────────────────────┘
+
+Your Stokika application is now live with:
+✅ Frontend hosted on cPanel (static files)
+✅ Backend running on Supabase (serverless Edge Functions)
+✅ Database on Supabase Postgres
+✅ All secrets secured in Supabase environment variables
+✅ No sensitive data exposed on cPanel
+
+🎉 Your site should now be accessible at your domain!

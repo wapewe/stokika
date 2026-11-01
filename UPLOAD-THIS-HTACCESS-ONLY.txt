@@ -1,0 +1,76 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                  SIMPLE FIX FOR 403 ERROR                            ║
+║                  Upload Just 1 File                                  ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+🎯 SOLUTION: dalana.html is now recognized as your home page
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ UPLOAD ONLY THIS FILE                                                │
+└─────────────────────────────────────────────────────────────────────┘
+
+📄 File: .htaccess
+📍 Location: c:\Users\ADMIN\Music\stokika\.htaccess
+🎯 Destination: /home6/krietaco/public_html/.htaccess
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ STEP-BY-STEP                                                         │
+└─────────────────────────────────────────────────────────────────────┘
+
+1. Go to cPanel File Manager
+2. Navigate to: /home6/krietaco/public_html/
+3. Upload .htaccess (it will ask to overwrite - click YES)
+4. Done!
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ WHAT THIS DOES                                                       │
+└─────────────────────────────────────────────────────────────────────┘
+
+The updated .htaccess contains:
+
+    DirectoryIndex dalana.html
+
+This tells Apache: "When someone visits stokika.com/, serve dalana.html"
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ EXPECTED RESULT                                                      │
+└─────────────────────────────────────────────────────────────────────┘
+
+✅ https://stokika.com/          → Shows supplier registration (dalana.html)
+✅ https://stokika.com/dalana    → Shows supplier registration  
+✅ https://stokika.com/rembrandts → Shows admin login
+✅ All other pages work normally
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ ALTERNATIVE: FULL REUPLOAD                                           │
+└─────────────────────────────────────────────────────────────────────┘
+
+If you prefer to reupload everything:
+
+Use: stokika-cpanel-deployment.zip (26.46 MB)
+     Contains updated .htaccess + all 290 files
+     No index.html (removed)
+     dalana.html serves as home page
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ VERIFICATION                                                         │
+└─────────────────────────────────────────────────────────────────────┘
+
+After uploading .htaccess:
+
+1. Clear browser cache (Ctrl+Shift+Del)
+2. Visit: https://stokika.com/
+3. Should see: Supplier registration form
+4. Press F12 → Console
+5. Should see: ✅ "Supabase client initialized successfully"
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ SUMMARY                                                              │
+└─────────────────────────────────────────────────────────────────────┘
+
+✅ Removed unnecessary index.html
+✅ Updated .htaccess to use dalana.html as home page
+✅ One file upload fixes the 403 error
+✅ dalana.html = Your official home/landing page
+
+🎯 Upload .htaccess and you're done!

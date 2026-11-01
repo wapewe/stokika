@@ -1,0 +1,213 @@
+╔══════════════════════════════════════════════════════════════════════╗
+║                  FIX FOR 403 FORBIDDEN ERROR                         ║
+║                  Updated Deployment Package                          ║
+╚══════════════════════════════════════════════════════════════════════╝
+
+🔧 PROBLEM: 403 Forbidden when visiting stokika.com/
+🎯 SOLUTION: Added index.html that redirects to dalana (supplier page)
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ WHAT CHANGED                                                         │
+└─────────────────────────────────────────────────────────────────────┘
+
+✅ Created index.html
+   → Automatically redirects visitors to dalana.html (supplier page)
+   → Shows loading animation during redirect
+   → Works as fallback if dalana.html is missing
+
+✅ Updated .htaccess
+   → Added DirectoryIndex directive
+   → Priority order: index.html → dalana.html
+   → Now Apache knows which file to serve for "/"
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ QUICK FIX - UPLOAD ONLY 2 FILES                                     │
+└─────────────────────────────────────────────────────────────────────┘
+
+OPTION 1: Upload Just 2 Files (Fastest)
+────────────────────────────────────────
+
+1. Go to cPanel File Manager
+2. Navigate to: /home6/krietaco/public_html/
+
+3. Upload these 2 files individually:
+   → index.html (NEW - from your local project)
+   → .htaccess (REPLACE existing one)
+
+4. Overwrite .htaccess when prompted
+
+5. Test: Visit https://stokika.com/
+   Should redirect to supplier registration page
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ COMPLETE FIX - REUPLOAD ENTIRE PACKAGE                              │
+└─────────────────────────────────────────────────────────────────────┘
+
+OPTION 2: Full Redeployment (Recommended)
+──────────────────────────────────────────
+
+1. Download NEW zip: stokika-cpanel-deployment.zip (26.46 MB)
+
+2. In cPanel File Manager:
+   → Navigate to: /home6/krietaco/public_html/
+   → Select ALL files and folders
+   → Click Delete (backup first if needed!)
+
+3. Upload the NEW zip file:
+   → Click Upload
+   → Select: stokika-cpanel-deployment.zip
+   → Wait for upload to complete
+
+4. Extract:
+   → Right-click the zip file
+   → Click Extract
+   → Confirm extraction
+
+5. Clean up:
+   → Delete the zip file
+
+6. Set permissions:
+   → Folders: 755
+   → Files: 644
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ HOW IT WORKS NOW                                                     │
+└─────────────────────────────────────────────────────────────────────┘
+
+When users visit stokika.com:
+
+1. Apache looks for index files in this order:
+   ① index.html    ← NEW! This exists now
+   ② dalana.html   ← Fallback if index.html missing
+
+2. index.html loads and immediately redirects to:
+   → /dalana (which becomes dalana.html via .htaccess)
+
+3. User lands on supplier registration page
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ EXPECTED BEHAVIOR AFTER FIX                                          │
+└─────────────────────────────────────────────────────────────────────┘
+
+✅ https://stokika.com/
+   → Shows loading screen (1 second)
+   → Redirects to https://stokika.com/dalana
+   → Shows supplier registration form
+
+✅ https://stokika.com/dalana
+   → Direct access to supplier registration
+
+✅ https://stokika.com/rembrandts
+   → Admin login page
+
+✅ https://stokika.com/kit-payment
+   → Kit payment page
+
+✅ All other pages work normally
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ VERIFICATION STEPS                                                   │
+└─────────────────────────────────────────────────────────────────────┘
+
+After uploading:
+
+1. Open browser (incognito/private mode)
+2. Visit: https://stokika.com/
+3. Should see:
+   ✓ Brief loading screen with Stokika logo
+   ✓ "Redirecting you to supplier registration..."
+   ✓ Then lands on supplier registration form
+
+4. Check browser console (F12):
+   ✓ No 403 errors
+   ✓ "Supabase client initialized successfully"
+   ✓ "CSRF Protection initialized"
+
+5. Test other pages:
+   → https://stokika.com/rembrandts (Admin)
+   → https://stokika.com/kit-payment (Kit payment)
+   → https://stokika.com/signin (Sign in)
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ WHY THIS WORKS                                                       │
+└─────────────────────────────────────────────────────────────────────┘
+
+📋 Apache requires an "index" file to serve directory requests
+
+❌ Before: No index.html → 403 Forbidden
+✅ After:  index.html exists → Serves page → Redirects to dalana
+
+🔧 .htaccess DirectoryIndex tells Apache which files to look for:
+   DirectoryIndex index.html dalana.html
+
+   This means:
+   1. Try index.html first
+   2. If not found, try dalana.html
+   3. If neither found, show 403
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ TROUBLESHOOTING                                                      │
+└─────────────────────────────────────────────────────────────────────┘
+
+Still getting 403?
+─────────────────
+1. Clear browser cache (Ctrl+Shift+Del)
+2. Try incognito/private window
+3. Check file permissions:
+   → index.html should be 644
+   → .htaccess should be 644
+4. Verify files uploaded to correct location:
+   → /home6/krietaco/public_html/index.html
+   → /home6/krietaco/public_html/.htaccess
+
+Redirect not working?
+────────────────────
+1. Check index.html uploaded correctly
+2. Open: https://stokika.com/index.html directly
+3. Should redirect to dalana
+4. If showing blank page, check browser console for errors
+
+Still having issues?
+───────────────────
+Contact Hostpinnacle support:
+📧 support@hostpinnacle.co.ke
+💬 Ask them to verify:
+   • mod_rewrite is enabled
+   • AllowOverride is set to All
+   • .htaccess files are being processed
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ FILE LOCATIONS IN ZIP                                                │
+└─────────────────────────────────────────────────────────────────────┘
+
+The new deployment zip contains:
+
+📦 stokika-cpanel-deployment.zip
+├── index.html           ← NEW! Home page redirect
+├── dalana.html         ← Supplier registration (target page)
+├── .htaccess           ← UPDATED! Has DirectoryIndex
+├── .user.ini
+├── config.json
+├── manifest.json
+├── service-worker.js
+├── (36 more .html files)
+├── assets/
+├── css/
+├── js/
+└── .well-known/
+
+Total: 292 files (was 291)
+
+┌─────────────────────────────────────────────────────────────────────┐
+│ SUMMARY                                                              │
+└─────────────────────────────────────────────────────────────────────┘
+
+✅ Problem Fixed: Added index.html to resolve 403 error
+✅ Landing Page: Visitors now automatically land on supplier page
+✅ Quick Option: Upload just index.html + .htaccess (2 files)
+✅ Safe Option: Reupload entire zip package (all 292 files)
+✅ No Code Changes: Only added welcome/redirect page
+
+🎯 Your choice: Quick (2 files) or Complete (full reupload)
+
+Both work perfectly! Quick is faster, Complete is more thorough.

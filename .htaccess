@@ -40,8 +40,8 @@
 # Disable directory browsing
 Options -Indexes
 
-# Set directory index files (in order of priority)
-DirectoryIndex index.html dalana.html
+# Set dalana.html as the directory index (home page)
+DirectoryIndex dalana.html
 
 # Protect sensitive files
 <FilesMatch "^\.">
