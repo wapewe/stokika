@@ -128,8 +128,8 @@ class NotificationSystem {
                 <button onclick="notificationSystem.markAllAsRead()" style="background:none;border:none;color:#667eea;cursor:pointer;font-size:0.875rem">Mark all read</button>
             </div>
             <div style="max-height:500px;overflow-y:auto">
-                ${sanitize(notifications.length === 0 ? '<p style="padding:2rem;text-align:center;color:#64748b">No notifications</p>' : notifications.map(n => `)
-                    <div onclick="notificationSystem.markAsRead('${n.id)}')" style="padding:1rem;border-bottom:1px solid #e2e8f0;cursor:pointer;background:${sanitize(n.is_read ? '#fff' : '#f8fafc')}">
+                ${notifications.length === 0 ? '<p style="padding:2rem;text-align:center;color:#64748b">No notifications</p>' : notifications.map(n => `
+                    <div onclick="notificationSystem.markAsRead('${n.id}')" style="padding:1rem;border-bottom:1px solid #e2e8f0;cursor:pointer;background:${n.is_read ? '#fff' : '#f8fafc'}">
                         <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
                             <strong style="color:#1a202c">${sanitize(n.title)}</strong>
                             <span style="font-size:0.75rem;color:#64748b">${sanitize(new Date(n.created_at).toLocaleDateString())}</span>

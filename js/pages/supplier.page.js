@@ -124,7 +124,7 @@ async function loadRecentOrders() {
             </table>
         ` : '<p class="no-data">No recent orders</p>';
         
-        document.getElementById('recentOrders').innerHTML = XSSProtection.sanitize(html;
+        document.getElementById('recentOrders').innerHTML = XSSProtection.sanitize(html);
     } catch (err) {
         console.error('Error loading recent orders:', err);
     }
@@ -188,10 +188,10 @@ async function loadOrders() {
             </table>
         ` : '<p class="no-data">No orders found</p>';
         
-        document.getElementById('ordersTable').innerHTML = XSSProtection.sanitize(html;
+        document.getElementById('ordersTable').innerHTML = XSSProtection.sanitize(html);
     } catch (err) {
         console.error('Error loading orders:', err);
-        document.getElementById('ordersTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(<p class="no-data">Error loading orders</p>';
+        document.getElementById('ordersTable').innerHTML = XSSProtection.sanitize(`<p class="no-data">Error loading orders</p>`);
     }
     
     document.getElementById('ordersLoading').style.display = 'none';
@@ -322,10 +322,10 @@ async function loadInventory() {
             </table>
         ` : '<p class="no-data">No products in inventory</p>';
         
-        document.getElementById('inventoryTable').innerHTML = XSSProtection.sanitize(html;
+        document.getElementById('inventoryTable').innerHTML = XSSProtection.sanitize(html);
     } catch (err) {
         console.error('Error loading inventory:', err);
-        document.getElementById('inventoryTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(<p class="no-data">Error loading inventory</p>';
+        document.getElementById('inventoryTable').innerHTML = XSSProtection.sanitize(`<p class="no-data">Error loading inventory</p>`);
     }
     
     document.getElementById('inventoryLoading').style.display = 'none';
@@ -368,10 +368,10 @@ async function loadPayments() {
             </table>
         ` : '<p class="no-data">No payment history</p>';
         
-        document.getElementById('paymentsTable').innerHTML = XSSProtection.sanitize(html;
+        document.getElementById('paymentsTable').innerHTML = XSSProtection.sanitize(html);
     } catch (err) {
         console.error('Error loading payments:', err);
-        document.getElementById('paymentsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(<p class="no-data">Error loading payments</p>';
+        document.getElementById('paymentsTable').innerHTML = XSSProtection.sanitize(`<p class="no-data">Error loading payments</p>`);
     }
     
     document.getElementById('paymentsLoading').style.display = 'none';

@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!tbody) return;
             
             if (!orders || orders.length === 0) {
-                tbody.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<tr><td colspan="5" style="text-align:center;padding:2rem;color:#64748b">No recent orders</td></tr>');
+                tbody.innerHTML = XSSProtection.sanitize('<tr><td colspan="5" style="text-align:center;padding:2rem;color:#64748b">No recent orders</td></tr>');
                 return;
             }
             
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const statusClass = o.status === 'delivered' ? 'success' : o.status === 'processing' ? 'info' : 'warning';
                 return '<tr><td>' + XSSProtection.escapeHtml(o.order_number || 'N/A') + '</td><td>' + XSSProtection.escapeHtml(o.suppliers?.company_name || 'Stokika') + '</td><td>KES ' + XSSProtection.escapeHtml((o.total_amount || 0).toString()) + '</td><td><span class="badge ' + XSSProtection.escapeHtml(statusClass) + '">' + XSSProtection.escapeHtml(o.status) + '</span></td><td>' + XSSProtection.escapeHtml(new Date(o.created_at).toLocaleDateString()) + '</td></tr>';
             }).join('');
-            tbody.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(orderRows);
+            tbody.innerHTML = XSSProtection.sanitize(orderRows);
         } catch (err) {
             console.error('Error loading orders:', err);
         }
@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!timeline) return;
             
             if (!payments || payments.length === 0) {
-                timeline.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<p style="text-align:center;padding:2rem;color:#64748b">No upcoming payments</p>');
+                timeline.innerHTML = XSSProtection.sanitize('<p style="text-align:center;padding:2rem;color:#64748b">No upcoming payments</p>');
                 return;
             }
             
@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const dueText = diffDays === 0 ? 'Due Today' : diffDays === 1 ? 'Due Tomorrow' : 'Due in ' + diffDays + ' days';
                 return '<div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content"><div class="timeline-header"><h4>' + XSSProtection.escapeHtml(p.cycle_type || 'Payment') + '</h4><span class="timeline-amount">KES ' + XSSProtection.escapeHtml((p.amount || 0).toString()) + '</span></div><p>' + XSSProtection.escapeHtml(dueText) + '</p></div></div>';
             }).join('');
-            timeline.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(paymentItems);
+            timeline.innerHTML = XSSProtection.sanitize(paymentItems);
         } catch (err) {
             console.error('Error loading payments:', err);
         }
@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', function() {
     async function loadLowStockAlerts() {
         const alertList = document.querySelector('.alert-list');
         if (!alertList) return;
-        alertList.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<p style="text-align:center;padding:2rem;color:#64748b">No low stock alerts</p>');
+        alertList.innerHTML = XSSProtection.sanitize('<p style="text-align:center;padding:2rem;color:#64748b">No low stock alerts</p>');
     }
 
     const requestStock = document.getElementById('requestStock');
@@ -166,7 +166,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </div>
             </div>
-        `);
+        `));
         
         document.body.appendChild(modal);
         loadCounties();
@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const select = document.getElementById('orderSupplier');
             if (!select) return;
             
-            select.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<option value="">Select a supplier</option>');
+            select.innerHTML = XSSProtection.sanitize('<option value="">Select a supplier</option>');
             
             if (suppliers && suppliers.length > 0) {
                 const filteredSuppliers = suppliers.filter(function(s) {
@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
                 
                 if (filteredSuppliers.length === 0) {
-                    select.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<option value="">No suppliers in your county</option>');
+                    select.innerHTML = XSSProtection.sanitize('<option value="">No suppliers in your county</option>');
                     return;
                 }
                 
@@ -243,12 +243,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     select.appendChild(option);
                 });
             } else {
-                select.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<option value="">No suppliers available</option>');
+                select.innerHTML = XSSProtection.sanitize('<option value="">No suppliers available</option>');
             }
         } catch (err) {
             console.error('Error loading suppliers:', err);
             const select = document.getElementById('orderSupplier');
-            if (select) select.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<option value="">Error loading suppliers</option>');
+            if (select) select.innerHTML = XSSProtection.sanitize('<option value="">Error loading suppliers</option>');
         }
     }
     
@@ -351,7 +351,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                 </div>
             </div>
-        `);
+        `));
         
         document.body.appendChild(modal);
         modal.onclick = function(e) { if (e.target === modal) closePaymentModal(); };
@@ -363,11 +363,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Only STK Push supported now
         if (codeField) {
-            codeField.style.display = 'none';
-        }
-            codeField.style.display = 'none';
-        } else {
-            paybillInfo.style.display = 'none';
             codeField.style.display = 'none';
         }
     }
@@ -536,7 +531,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!tbody) return;
             
             if (!orders || orders.length === 0) {
-                tbody.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<tr><td colspan="5" style="text-align:center;padding:2rem;color:#64748b">No results found for "' + XSSProtection.escapeHtml(query) + '"</td></tr>');
+                tbody.innerHTML = XSSProtection.sanitize('<tr><td colspan="5" style="text-align:center;padding:2rem;color:#64748b">No results found for "' + XSSProtection.escapeHtml(query) + '"</td></tr>');
                 return;
             }
             
@@ -544,7 +539,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const statusClass = o.status === 'delivered' ? 'success' : o.status === 'processing' ? 'info' : 'warning';
                 return '<tr><td>' + XSSProtection.escapeHtml(o.order_number || 'N/A') + '</td><td>' + XSSProtection.escapeHtml(o.suppliers?.company_name || 'Stokika') + '</td><td>KES ' + XSSProtection.escapeHtml((o.total_amount || 0).toString()) + '</td><td><span class="badge ' + XSSProtection.escapeHtml(statusClass) + '">' + XSSProtection.escapeHtml(o.status) + '</span></td><td>' + XSSProtection.escapeHtml(new Date(o.created_at).toLocaleDateString()) + '</td></tr>';
             }).join('');
-            tbody.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(searchRows);
+            tbody.innerHTML = XSSProtection.sanitize(searchRows);
         } catch (err) {
             console.error('Search error:', err);
         }

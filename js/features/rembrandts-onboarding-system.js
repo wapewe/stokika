@@ -332,7 +332,7 @@ class OnboardingDashboardUI {
     async render() {
         const data = await this.system.getOnboardingDashboard();
         if (!data) {
-            this.container.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(<div class="error">Error loading onboarding data</div>';
+            this.container.innerHTML = XSSProtection.sanitize(`<div class="error">Error loading onboarding data</div>`);
             return;
         }
 
@@ -360,10 +360,10 @@ class OnboardingDashboardUI {
                     <div class="section">
                         <h3>Pending Kit Payments</h3>
                         <div class="payments-list">
-                            ${sanitize(data.pendingPayments.map(payment => `
+                            ${data.pendingPayments.map(payment => `
                                 <div class="payment-item">
                                     <div class="payment-info">
-                                        <strong>${payment.field_agents?.full_name || payment.supervisors?.full_name)}</strong>
+                                        <strong>${sanitize(payment.field_agents?.full_name || payment.supervisors?.full_name)}</strong>
                                         <span class="role-badge">${sanitize(payment.role_type.replace('_', ' '))}</span>
                                         <div class="payment-details">
                                             <span>KES ${sanitize(payment.payment_amount)}</span>
@@ -388,7 +388,7 @@ class OnboardingDashboardUI {
                     </div>
                 </div>
             </div>
-        `;
+        `);
     }
 
     async renderOnboardingList(agentSteps, supervisorSteps) {
@@ -476,8 +476,8 @@ class OnboardingDashboardUI {
                         </div>
                     </div>
                     <div class="steps-list">
-                        ${sanitize(progress.steps.map(step => `
-                            <div class="step-item ${step.status)}">
+                        ${progress.steps.map(step => `
+                            <div class="step-item ${step.status}">
                                 <div class="step-number">${sanitize(step.step_number)}</div>
                                 <div class="step-content">
                                     <h4>${sanitize(step.step_name)}</h4>

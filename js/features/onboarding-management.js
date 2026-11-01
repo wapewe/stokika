@@ -489,7 +489,7 @@ class OnboardingDashboard {
         const pipeline = await this.manager.getOnboardingPipeline();
 
         if (!stats) {
-            this.container.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(<div class="error">Error loading onboarding data</div>';
+            this.container.innerHTML = XSSProtection.sanitize(`<div class="error">Error loading onboarding data</div>`);
             return;
         }
 
@@ -558,10 +558,10 @@ class OnboardingDashboard {
                         <div class="pipeline-column">
                             <h4>Field Agents (${sanitize(pipeline.agents.length)})</h4>
                             <div class="pipeline-items">
-                                ${sanitize(pipeline.agents.map(agent => `
+                                ${pipeline.agents.map(agent => `
                                     <div class="pipeline-item">
                                         <div class="item-info">
-                                            <strong>${agent.full_name)}</strong>
+                                            <strong>${sanitize(agent.full_name)}</strong>
                                             <span class="county">${sanitize(agent.county)}</span>
                                             <span class="waiting">${sanitize(agent.daysWaiting)} days waiting</span>
                                         </div>
@@ -597,7 +597,7 @@ class OnboardingDashboard {
                     </div>
                 </div>
             </div>
-        `;
+        `);
     }
 
     // Quick approve candidate
@@ -700,7 +700,7 @@ class OnboardingDashboard {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `onboarding_report_${report.period.start}_${report.period.end}.json`);
+        a.download = `onboarding_report_${report.period.start}_${report.period.end}.json`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);

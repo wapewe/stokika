@@ -38,7 +38,7 @@ function displayInventory(items) {
     const tbody = document.getElementById('inventoryBody');
     
     if (items.length === 0) {
-        tbody.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(<tr><td colspan="6" style="text-align:center;padding:2rem;color:#64748b">No inventory items found</td></tr>';
+        tbody.innerHTML = XSSProtection.sanitize(`<tr><td colspan="6" style="text-align:center;padding:2rem;color:#64748b">No inventory items found</td></tr>`);
         return;
     }
     
@@ -59,7 +59,7 @@ function displayInventory(items) {
                 </td>
             </tr>
         `;
-    }).join('');
+    }).join(''));
 }
 
 function updateStats(items) {

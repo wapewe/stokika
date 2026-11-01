@@ -10,3 +10,9 @@
     } else {
         initVendorModal();
     }
+    
+    function initVendorModal() {
+        // Placeholder for initialization
+        console.log('Vendor modal initialized');
+    }
+})();

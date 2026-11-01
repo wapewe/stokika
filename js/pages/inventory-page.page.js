@@ -123,7 +123,7 @@ function showAddItemModal() {
                 </div>
             </form>
         </div>
-    `);
+    `;
     
     document.body.appendChild(modal);
     

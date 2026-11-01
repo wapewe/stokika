@@ -205,12 +205,12 @@ class ClientSecurityManager {
     preventXSS() {
         // Override dangerous functions
         const originalInnerHTML = Element.prototype.innerHTML;
-        Element.prototype.innerHTML = XSSProtection.sanitize(function(value) {
+        Element.prototype.innerHTML = function(value) {
             if (typeof value === 'string') {
                 value = this.sanitizeInput(value);
             }
             return originalInnerHTML.call(this, value);
-        }.bind(this);
+        };
     }
 
     setupSessionTimeout() {
@@ -385,8 +385,7 @@ class SecureFormValidator {
 
     showFormErrors(errors) {
         const errorContainer = document.querySelector('.form-errors') || this.createErrorContainer();
-        errorContainer.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(<h4>Please fix the following errors:</h4><ul>' + 
-            sanitize(errors.map)(error => `<li>${error}</li>`).join('') + '</ul>';
+        errorContainer.innerHTML = XSSProtection.sanitize(`<h4>Please fix the following errors:</h4><ul>${errors.map(error => `<li>${sanitize(error)}</li>`).join('')}</ul>`);
         errorContainer.scrollIntoView({ behavior: 'smooth' });
     }
 

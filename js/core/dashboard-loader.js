@@ -52,7 +52,7 @@ class DashboardLoader {
     showLoading(elementId) {
         const element = document.getElementById(elementId);
         if (element) {
-            element.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(<div class="loading">Loading...</div>';
+            element.innerHTML = XSSProtection.sanitize(`<div class="loading">Loading...</div>`);
         }
     }
 
@@ -60,7 +60,7 @@ class DashboardLoader {
     showError(elementId, message) {
         const element = document.getElementById(elementId);
         if (element) {
-            element.innerHTML = XSSProtection.sanitize(`<div class="error">${sanitize(message)}</div>`;
+            element.innerHTML = XSSProtection.sanitize(`<div class="error">${sanitize(message)}</div>`);
         }
     }
 }

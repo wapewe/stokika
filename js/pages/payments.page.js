@@ -13,7 +13,7 @@ async function initSupabase() {
 async function loadPayments(page = 1) {
     const container = document.getElementById('paymentsList');
     if (!supabase) {
-        container.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<p>Unable to connect to database.</p>');
+        container.innerHTML = XSSProtection.sanitize('<p>Unable to connect to database.</p>');
         return;
     }
     
@@ -33,31 +33,31 @@ async function loadPayments(page = 1) {
         if (error) throw error;
         
         if (!data || data.length === 0) {
-            container.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(<p class="empty-state">No payments found.</p>';
-            document.getElementById('paginationContainer').innerHTML = XSSProtection.sanitize('';
+            container.innerHTML = XSSProtection.sanitize(`<p class="empty-state">No payments found.</p>`);
+            document.getElementById('paginationContainer').innerHTML = XSSProtection.sanitize('');
         } else {
-            container.innerHTML = XSSProtection.sanitize(`<div class="payments-grid">${sanitize(data.map(p => {
+            container.innerHTML = XSSProtection.sanitize(`<div class="payments-grid">${data.map(p => {
                 const paymentDate = new Date(p.payment_date || p.due_date);
                 const statusClass = p.status === 'verified' ? 'verified' : p.status === 'rejected' ? 'rejected' : 'pending';
                 const cardStatusClass = p.status === 'verified' ? 'status-verified' : p.status === 'rejected' ? 'status-rejected' : 'status-pending';
                 
-                return `<div class="payment-card ${cardStatusClass)}">
+                return `<div class="payment-card ${cardStatusClass}">
                     <div class="payment-header">
                         <div>
                             <strong class="payment-vendor">${sanitize(p.vendor_name || 'Unknown Vendor')}</strong><br>
                             <span class="payment-amount">KES ${sanitize((p.amount || 0).toLocaleString())}</span><br>
                             <small class="payment-details">${sanitize(paymentDate.toLocaleDateString())} - ${sanitize(p.payment_method || 'N/A')}</small>
-                            ${sanitize(p.mpesa_code ? '<br><small class="payment-details">Code: ' + p.mpesa_code + '</small>' : '')}
+                            ${p.mpesa_code ? '<br><small class="payment-details">Code: ' + sanitize(p.mpesa_code) + '</small>' : ''}
                         </div>
-                        <span class="payment-status ${sanitize(statusClass)}">${sanitize(p.status || 'pending')}</span>
+                        <span class="payment-status ${statusClass}">${sanitize(p.status || 'pending')}</span>
                     </div>
                 </div>`;
-            }).join('')}</div>`;
+            }).join('')}</div>`);
             
             displayPagination(count, page);
         }
     } catch (err) {
-        container.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<p>Error loading payments.</p>');
+        container.innerHTML = XSSProtection.sanitize('<p>Error loading payments.</p>');
     }
 }
 

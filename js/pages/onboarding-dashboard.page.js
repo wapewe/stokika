@@ -233,7 +233,7 @@ function showSuccess(message) {
     successDiv.innerHTML = XSSProtection.sanitize(`
         <i class="fas fa-check-circle"></i>
         <strong>Success:</strong> ${sanitize(message)}
-    `;
+    `);
     
     const dashboard = document.getElementById('onboarding-dashboard');
     dashboard.insertBefore(successDiv, dashboard.firstChild);

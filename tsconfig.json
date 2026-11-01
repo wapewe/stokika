@@ -11,7 +11,7 @@
     "strict": false,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "moduleResolution": "node"
+    "moduleResolution": "bundler"
   },
   "include": ["js/**/*"],
   "exclude": ["node_modules", "dist"]

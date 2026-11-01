@@ -3,3 +3,4 @@
     'use strict';
     
     console.log('🔧 Loading vendor modal fix...');
+})();

@@ -318,7 +318,7 @@ async function openProductModal(productId = null) {
                         <label>Category *</label>
                         <select name="category" required>
                             <option value="">Select Category</option>
-                            ${sanitize(categories.map(c => `<option value="${c.name)}">${sanitize(c.name)}</option>`).join('')}
+                            ${categories.map(c => `<option value="${sanitize(c.name)}">${sanitize(c.name)}</option>`).join('')}
                         </select>
                     </div>
                     <div>
@@ -400,24 +400,24 @@ async function loadProducts() {
     if (!container) return;
 
     if (products.length === 0) {
-        container.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<p>No products found. Add your first product!</p>');
+        container.innerHTML = XSSProtection.sanitize('<p>No products found. Add your first product!</p>');
         return;
     }
 
     container.innerHTML = XSSProtection.sanitize(products.map(p => `
         <div class="product-card" style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-            <h3>${p.product_name}</h3>
-            <p><strong>SKU:</strong> ${p.sku || 'N/A'}</p>
-            <p><strong>Category:</strong> ${p.category}</p>
+            <h3>${sanitize(p.product_name)}</h3>
+            <p><strong>SKU:</strong> ${sanitize(p.sku) || 'N/A'}</p>
+            <p><strong>Category:</strong> ${sanitize(p.category)}</p>
             <p><strong>Price:</strong> KES ${parseFloat(p.price).toLocaleString()}</p>
-            <p><strong>Stock:</strong> ${p.quantity} (${p.stock_status})</p>
+            <p><strong>Stock:</strong> ${p.quantity} (${sanitize(p.stock_status)})</p>
             <p><strong>Type:</strong> ${p.listing_type === 'marketplace' ? 'Marketplace' : 'Integrated Shop'}</p>
             <div style="display: flex; gap: 10px; margin-top: 10px;">
                 <button onclick="openProductModal('${p.id}')" class="btn-secondary">Edit</button>
                 <button onclick="deleteProduct('${p.id}')" class="btn-danger">Delete</button>
             </div>
         </div>
-    `).join('');
+    `).join(''));
 }
 
 async function deleteProduct(productId) {
@@ -454,7 +454,7 @@ async function loadSalesReport(period = 'month') {
                 <p style="font-size: 24px; font-weight: bold;">${sanitize(report.summary.avgRating.toFixed(1))} ⭐</p>
             </div>
         </div>
-    `;
+    `);
 }
 
 // Initialize on page load

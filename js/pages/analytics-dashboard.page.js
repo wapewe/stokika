@@ -349,9 +349,9 @@ class AnalyticsDashboard {
 
             container.innerHTML = XSSProtection.sanitize(`
                 <div class="predictions-grid">
-                    ${sanitize(predictions.map(prediction => `)
+                    ${predictions.map(prediction => `
                         <div class="prediction-card">
-                            <h4>${prediction.prediction_type.replace('_', ' ').toUpperCase())}</h4>
+                            <h4>${sanitize(prediction.prediction_type.replace('_', ' ').toUpperCase())}</h4>
                             <div class="prediction-value">${sanitize(prediction.predicted_value)}</div>
                             <div class="prediction-confidence">
                                 Confidence: ${sanitize(prediction.confidence_level)}
@@ -362,7 +362,7 @@ class AnalyticsDashboard {
                         </div>
                     `).join('')}
                 </div>
-            `;
+            `);
         } catch (error) {
             console.error('Error loading predictions:', error);
         }

@@ -416,24 +416,24 @@ async function loadVendorProducts() {
     if (!container) return;
 
     if (products.length === 0) {
-        container.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<p>No products. Add your first product!</p>');
+        container.innerHTML = XSSProtection.sanitize('<p>No products. Add your first product!</p>');
         return;
     }
 
     container.innerHTML = XSSProtection.sanitize(products.map(p => `
         <div class="product-card" style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-            <h3>${p.product_name}</h3>
-            <p><strong>Category:</strong> ${p.category}</p>
+            <h3>${sanitize(p.product_name)}</h3>
+            <p><strong>Category:</strong> ${sanitize(p.category)}</p>
             <p><strong>Cost:</strong> KES ${parseFloat(p.cost_price).toLocaleString()} | 
                <strong>Selling:</strong> KES ${parseFloat(p.selling_price).toLocaleString()} | 
                <strong>Profit:</strong> ${p.profit_margin ? p.profit_margin.toFixed(1) : 0}%</p>
-            <p><strong>Stock:</strong> ${p.quantity} (${p.stock_status})</p>
+            <p><strong>Stock:</strong> ${p.quantity} (${sanitize(p.stock_status)})</p>
             <div style="display: flex; gap: 10px; margin-top: 10px;">
                 <button onclick="openVendorProductModal('${p.id}')" class="btn-secondary">Edit</button>
                 <button onclick="deleteVendorProduct('${p.id}')" class="btn-danger">Delete</button>
             </div>
         </div>
-    `).join('');
+    `).join(''));
 }
 
 async function deleteVendorProduct(productId) {
@@ -451,24 +451,24 @@ async function loadVendorOrders() {
     if (!container) return;
 
     if (orders.length === 0) {
-        container.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<p>No orders yet.</p>');
+        container.innerHTML = XSSProtection.sanitize('<p>No orders yet.</p>');
         return;
     }
 
     container.innerHTML = XSSProtection.sanitize(orders.map(o => `
         <div class="order-card" style="border: 1px solid #ddd; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-            <h3>${o.order_number}</h3>
-            <p><strong>Customer:</strong> ${o.customer_name} (${o.customer_phone})</p>
+            <h3>${sanitize(o.order_number)}</h3>
+            <p><strong>Customer:</strong> ${sanitize(o.customer_name)} (${sanitize(o.customer_phone)})</p>
             <p><strong>Total:</strong> KES ${parseFloat(o.total_amount).toLocaleString()}</p>
-            <p><strong>Status:</strong> ${o.order_status} | <strong>Payment:</strong> ${o.payment_status}</p>
-            <p><strong>Address:</strong> ${o.delivery_address}</p>
+            <p><strong>Status:</strong> ${sanitize(o.order_status)} | <strong>Payment:</strong> ${sanitize(o.payment_status)}</p>
+            <p><strong>Address:</strong> ${sanitize(o.delivery_address)}</p>
             <div style="display: flex; gap: 10px; margin-top: 10px;">
                 <button onclick="updateVendorOrderStatus('${o.id}', 'processing')" class="btn-secondary">Process</button>
                 <button onclick="updateVendorOrderStatus('${o.id}', 'shipped')" class="btn-secondary">Ship</button>
                 <button onclick="updateVendorOrderStatus('${o.id}', 'delivered')" class="btn-primary">Deliver</button>
             </div>
         </div>
-    `).join('');
+    `).join(''));
 }
 
 async function updateVendorOrderStatus(orderId, status) {
@@ -503,7 +503,7 @@ async function loadVendorSalesReport(period = 'month') {
                 <p style="font-size: 24px; font-weight: bold;">KES ${sanitize(report.avgOrderValue.toFixed(0))}</p>
             </div>
         </div>
-    `;
+    `);
 }
 
 if (typeof window !== 'undefined') {

@@ -629,8 +629,8 @@ class DashboardFeaturesIntegration {
             if (element && !element.querySelector('.contextual-help')) {
                 const helpButton = document.createElement('button');
                 helpButton.className = 'contextual-help';
-                helpButton.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(<i class="fas fa-question-circle"></i>';
-                helpButton.title = `Get help with ${trigger.topic}`);
+                helpButton.innerHTML = XSSProtection.sanitize(`<i class="fas fa-question-circle"></i>`);
+                helpButton.title = `Get help with ${trigger.topic}`;
                 helpButton.onclick = () => {
                     this.features.helpSupport?.openDocs?.();
                     document.dispatchEvent(new CustomEvent('helpOpened', {
@@ -836,4 +836,4 @@ document.head.insertAdjacentHTML('beforeend', XSSProtection.sanitize(`
             opacity: 1;
         }
     </style>
-`);
+`));

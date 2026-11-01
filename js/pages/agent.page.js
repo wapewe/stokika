@@ -139,10 +139,10 @@ async function loadMyVendors() {
             </table>
         ` : '<p class="no-data">No vendors yet</p>';
         
-        document.getElementById('vendorsTable').innerHTML = XSSProtection.sanitize(table;
+        document.getElementById('vendorsTable').innerHTML = XSSProtection.sanitize(table);
     } catch (err) {
         console.error('Error loading vendors:', err);
-        document.getElementById('vendorsTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(<p class="no-data">Error loading vendors</p>';
+        document.getElementById('vendorsTable').innerHTML = XSSProtection.sanitize(`<p class="no-data">Error loading vendors</p>`);
     }
     
     document.getElementById('vendorsLoading').style.display = 'none';
@@ -189,10 +189,10 @@ async function loadMySuppliers() {
             </table>
         ` : '<p class="no-data">No suppliers yet</p>';
         
-        document.getElementById('suppliersTable').innerHTML = XSSProtection.sanitize(table;
+        document.getElementById('suppliersTable').innerHTML = XSSProtection.sanitize(table);
     } catch (err) {
         console.error('Error loading suppliers:', err);
-        document.getElementById('suppliersTable').innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(<p class="no-data">Error loading suppliers</p>';
+        document.getElementById('suppliersTable').innerHTML = XSSProtection.sanitize(`<p class="no-data">Error loading suppliers</p>`);
     }
     
     document.getElementById('suppliersLoading').style.display = 'none';

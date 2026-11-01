@@ -10,7 +10,7 @@ if (window.SUPABASE_URL && window.SUPABASE_ANON_KEY) {
 async function loadSuppliers(page = 1) {
     const container = document.getElementById('suppliersList');
     if (!supabase) {
-        container.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<p>Unable to connect to database.</p>');
+        container.innerHTML = XSSProtection.sanitize('<p>Unable to connect to database.</p>');
         return;
     }
     
@@ -30,23 +30,23 @@ async function loadSuppliers(page = 1) {
         if (error) throw error;
         
         if (!data || data.length === 0) {
-            container.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize(<p class="empty-state">No suppliers found.</p>';
-            document.getElementById('paginationContainer').innerHTML = XSSProtection.sanitize('';
+            container.innerHTML = XSSProtection.sanitize(`<p class="empty-state">No suppliers found.</p>`);
+            document.getElementById('paginationContainer').innerHTML = XSSProtection.sanitize('');
         } else {
-            container.innerHTML = XSSProtection.sanitize(`<div class="suppliers-grid">${sanitize(data.map(s => `
+            container.innerHTML = XSSProtection.sanitize(`<div class="suppliers-grid">${data.map(s => `
                 <div class="supplier-card">
-                    <h3 class="supplier-title">${s.company_name)}</h3>
+                    <h3 class="supplier-title">${sanitize(s.company_name)}</h3>
                     <p class="supplier-info">Contact: ${sanitize(s.contact_person || 'N/A')}</p>
                     <p class="supplier-info">Phone: ${sanitize(s.phone || 'N/A')}</p>
                     <p class="supplier-info">Email: ${sanitize(s.email || 'N/A')}</p>
                     <p class="supplier-info">County: ${sanitize(s.county || 'N/A')}</p>
                 </div>
-            `).join('')}</div>`;
+            `).join('')}</div>`);
             
             displayPagination(count, page);
         }
     } catch (err) {
-        container.innerHTML =XSSProtection.sanitize( XSSProtection.sanitize('<p>Error loading suppliers.</p>');
+        container.innerHTML = XSSProtection.sanitize('<p>Error loading suppliers.</p>');
     }
 }
 
